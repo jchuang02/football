@@ -17,6 +17,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { fixtureFinished, fixtureInProgress } from "../helpers/fixtureHelper";
 import { keyframes } from "@mui/styled-engine";
+import LazyLoad from "react-lazyload";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -99,10 +100,13 @@ export default function FixtureCard({ fixture }) {
   `;
 
   const TeamCrest = styled(Box)`
+    width: 48px;
+    height: 48px;
     img {
-      width: 48px;
-      height: 48px;
+      max-width: 100%;
+      height: auto;
     }
+    padding: 0.1rem;
   `;
 
   const pulse = keyframes`
@@ -167,10 +171,12 @@ export default function FixtureCard({ fixture }) {
                 ""
               )}
               <TeamCrest>
-                <img
-                  src={fixture.teams.home.logo}
-                  alt={`${fixture.teams.home.name} Logo`}
-                ></img>
+                <LazyLoad height={80}>
+                  <img
+                    src={fixture.teams.home.logo}
+                    alt={`${fixture.teams.home.name} Logo`}
+                  ></img>
+                </LazyLoad>
               </TeamCrest>
               <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
                 {fixture.teams.home.name}
@@ -196,10 +202,12 @@ export default function FixtureCard({ fixture }) {
                 ""
               )}
               <TeamCrest>
-                <img
-                  src={fixture.teams.away.logo}
-                  alt={`${fixture.teams.away.name} Logo`}
-                ></img>
+                <LazyLoad height={80}>
+                  <img
+                    src={fixture.teams.away.logo}
+                    alt={`${fixture.teams.away.name} Logo`}
+                  ></img>
+                </LazyLoad>
               </TeamCrest>
               <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
                 {fixture.teams.away.name}

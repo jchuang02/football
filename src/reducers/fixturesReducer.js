@@ -4,7 +4,7 @@ export default (state = {}, action) => {
     case "FETCH_FIXTURES":
       return {
         ...state,
-        [action.payload.fixtureInfo[0].league.id]: action.payload,
+        [action.payload.league]: action.payload,
       };
     case "UPDATE_FIXTURES":
       const currentFixturesWithEvents = state[
@@ -15,7 +15,7 @@ export default (state = {}, action) => {
       if (currentFixturesWithEvents.length === 0) {
         return {
           ...state,
-          [action.payload.fixtureInfo[0].league.id]: action.payload,
+          [action.payload.league]: action.payload,
         };
       } else {
         const newFixturesArray = action.payload.fixtureInfo.map((fixture) => {
@@ -43,7 +43,7 @@ export default (state = {}, action) => {
         return { ...state };
       } else {
         const updatedFixturesArray = state[
-          action.payload.fixtureInfo[0].league.id
+          action.payload.league
         ].fixtureInfo.map((fixture) => {
           for (let i = 0; i < action.payload.fixtureInfo.length; i++) {
             if (
@@ -56,7 +56,7 @@ export default (state = {}, action) => {
         });
         return {
           ...state,
-          [action.payload.fixtureInfo[0].league.id]: {
+          [action.payload.league]: {
             fixtureInfo: updatedFixturesArray,
             lastUpdated: action.payload.lastUpdated,
           },

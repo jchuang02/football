@@ -10,7 +10,8 @@ export default function App() {
 
   useEffect(() => {
     const topFiveIds = [
-      39, 61, 135, 140, 78, 2, 3, 128, 45, 46, 47, 48, 299, 243, 263, 344, 266, 262
+      39, 61, 135, 140, 78, 2, 3, 128, 45, 46, 47, 48, 299, 243, 263, 344, 266,
+      262,
     ];
 
     if (!Object.keys(leagues).length > 0) {
@@ -31,8 +32,8 @@ export default function App() {
         <Competitions />
       ) : (
         <Box sx={{ display: "flex" }}>
-        <CircularProgress />
-      </Box>
+          <CircularProgress />
+        </Box>
       )}
     </Container>
   );

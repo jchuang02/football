@@ -28,7 +28,6 @@ import {
 export default function Fixtures() {
   const selectedLeague = useSelector((state) => state.selectedLeague);
   const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
-
   const standings = useSelector((state) => state.standings[selectedLeague]);
 
   const dispatch = useDispatch();
@@ -38,6 +37,7 @@ export default function Fixtures() {
   const twoWeeksLater = new Date(Date.parse(new Date()) + 604800000 * 2)
     .toISOString()
     .substring(0, 10);
+
   useEffect(() => {
     //If no fixtures exist, fetch fixtures.
     if (fixtures === undefined) {
@@ -48,8 +48,7 @@ export default function Fixtures() {
       dispatch(
         updateFixtures(2021, selectedLeague, twoWeeksAgo, twoWeeksLater)
       );
-      //IF there are live fixtures stored and it has been more than 1 minute since a live update OR
-      //IF , update.
+      //IF there are live fixtures stored and it has been more than 1 minute since a live update
     } else if (
       (fixtures.fixtureInfo.filter(({ fixture }) => {
         return (
@@ -71,11 +70,19 @@ export default function Fixtures() {
         updateFixtures(2021, selectedLeague, twoWeeksAgo, twoWeeksLater)
       );
     }
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [selectedLeague]);
 
   useEffect(() => {
     if (fixtures !== undefined) {
+      const fixturesInProgress = fixtures.fixtureInfo.filter(({ fixture }) => {
+        return fixtureInProgress(fixture.status.short);
+      });
+
+      const fixturesEnding = fixtures.fixtureInfo.filter(({ fixture }) => {
+        return fixtureEnding(fixture.status.elapsed, fixture.status.short);
+      });
+
       //Identifies fixtures happening today.
       const todaysFixtures = fixtures.fixtureInfo.filter(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now() <= 60000 * 60 * 24;
@@ -87,21 +94,17 @@ export default function Fixtures() {
       });
       //Removes duplicate start times
       startUpdateTimes = [...new Set(startUpdateTimes)];
+      startUpdateTimes = startUpdateTimes.filter((time) => {
+        return time > 0;
+      });
+      console.log(startUpdateTimes);
 
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
       });
-      startUpdateTimes = startUpdateTimes.filter((time) => {
-        return time > 0;
-      });
 
       //If a game is starting later, start a timer to start updating live fixtures when the game begins.
-      if (
-        startUpdateTimes.length > 0 &&
-        !fixtures.fixtureInfo.filter(({ fixture }) => {
-          return fixtureInProgress(fixture.status.short);
-        }).length > 0
-      ) {
+      if (startUpdateTimes.length > 0 && !fixturesInProgress > 0) {
         startUpdateTimes.forEach((timeUntil) => {
           console.log("Starting timer for fixture starting later today");
           initializer = setTimeout(() => {
@@ -114,12 +117,7 @@ export default function Fixtures() {
       //Updates live fixtures every minute until all live fixtures are finished.
 
       //Checks if any fixtures are live or starting.
-      if (
-        fixtures.fixtureInfo.filter(({ fixture }) => {
-          return fixtureInProgress(fixture.status.short);
-        }).length > 0 ||
-        continueUpdates.length > 0
-      ) {
+      if (fixturesInProgress.length > 0 || continueUpdates.length > 0) {
         console.log("Live fixture updating starting...");
         //Fixtures in the halftime break
         const fixturesBreak = fixtures.fixtureInfo.filter(({ fixture }) => {
@@ -127,10 +125,7 @@ export default function Fixtures() {
         });
         if (
           fixturesBreak.length > 0 &&
-          fixturesBreak.length ===
-            fixtures.fixtureInfo.filter(({ fixture }) => {
-              return fixtureInProgress(fixture.status.short);
-            }).length
+          fixturesBreak.length === fixturesInProgress.length
         ) {
           timer = setTimeout(() => {
             dispatch(updateLiveFixtures(2021, selectedLeague));
@@ -140,55 +135,21 @@ export default function Fixtures() {
         } else {
           timer = setTimeout(() => {
             if (
-              fixtures.fixtureInfo.filter(({ fixture }) => {
-                return fixtureEnding(
-                  fixture.status.elapsed,
-                  fixture.status.short
-                );
-              }).length > 0 &&
-              fixtures.fixtureInfo.filter(({ fixture }) => {
-                return fixtureEnding(
-                  fixture.status.elapsed,
-                  fixture.status.short
-                );
-              }).length <
-                fixtures.fixtureInfo.filter(({ fixture }) => {
-                  return fixtureInProgress(fixture.status.short);
-                }).length
+              fixturesEnding.length > 0 &&
+              fixturesEnding.length < fixturesInProgress.length
             ) {
               console.log("Fixture ending while other games still live");
-              fixtures.fixtureInfo
-                .filter(({ fixture }) => {
-                  return fixtureEnding(
-                    fixture.status.elapsed,
-                    fixture.status.short
-                  );
-                })
-                .forEach(({ fixture }) => {
-                  console.log("Updating via fixture id's");
-                  dispatch(updateLiveFixturesById(fixture.id));
-                });
+              fixturesEnding.forEach(({ fixture }) => {
+                console.log("Updating via fixture id's");
+                dispatch(updateLiveFixturesById(fixture.id));
+              });
               dispatch(updateLiveFixtures(2021, selectedLeague));
               console.log("Live fixtures updated. (1)");
-            } else if (
-              fixtures.fixtureInfo.filter(({ fixture }) => {
-                return fixtureEnding(
-                  fixture.status.elapsed,
-                  fixture.status.short
-                );
-              }).length > 0
-            ) {
-              fixtures.fixtureInfo
-                .filter(({ fixture }) => {
-                  return fixtureEnding(
-                    fixture.status.elapsed,
-                    fixture.status.short
-                  );
-                })
-                .forEach(({ fixture }) => {
-                  console.log("Updating via fixture id's");
-                  dispatch(updateLiveFixturesById(fixture.id));
-                });
+            } else if (fixturesEnding.length > 0) {
+              fixturesEnding.forEach(({ fixture }) => {
+                console.log("Updating via fixture id's");
+                dispatch(updateLiveFixturesById(fixture.id));
+              });
             } else {
               dispatch(updateLiveFixtures(2021, selectedLeague));
               console.log("Live fixtures updated. (1)");
@@ -218,21 +179,21 @@ export default function Fixtures() {
     twoWeeksLater,
     dispatch,
     fixtures,
-    standings,
+    standings
   ]);
 
   const showFixtures = () => {
     if (fixtures !== undefined) {
+      const fixturesInProgress = fixtures.fixtureInfo.filter(({ fixture }) => {
+        return fixtureInProgress(fixture.status.short);
+      });
+      const fixturesFinished = fixtures.fixtureInfo.filter(({ fixture }) => {
+        return fixtureFinished(fixture.status.short);
+      });
       return (
         <>
           <Container
-            sx={
-              !fixtures.fixtureInfo.filter(({ fixture }) => {
-                return fixtureInProgress(fixture.status.short);
-              }).length > 0
-                ? { display: "none" }
-                : ""
-            }
+            sx={!fixturesInProgress.length > 0 ? { display: "none" } : ""}
           >
             <Typography variant="h5">Live Fixtures</Typography>
             <Container
@@ -242,15 +203,11 @@ export default function Fixtures() {
                 overflowX: "auto",
               }}
             >
-              {fixtures.fixtureInfo
-                .filter((fixture) => {
-                  return fixtureInProgress(fixture.fixture.status.short);
-                })
-                .map((fixture) => {
-                  return (
-                    <FixtureCard fixture={fixture} key={fixture.fixture.id} />
-                  );
-                })}
+              {fixturesInProgress.map((fixture) => {
+                return (
+                  <FixtureCard fixture={fixture} key={fixture.fixture.id} />
+                );
+              })}
             </Container>
           </Container>
           <Container>
@@ -292,7 +249,7 @@ export default function Fixtures() {
               )}
             </Container>
 
-            <Accordion
+            {/* <Accordion
               sx={{
                 border: "none",
                 boxShadow: "none",
@@ -314,10 +271,10 @@ export default function Fixtures() {
                 expandIcon={<ExpandMore />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
-              >
+              > */}
                 <Typography variant="h5">Previous Fixtures</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
+              {/* </AccordionSummary>
+              <AccordionDetails> */}
                 <Container
                   sx={{
                     display: "flex",
@@ -325,13 +282,8 @@ export default function Fixtures() {
                     overflowX: "auto",
                   }}
                 >
-                  {fixtures.fixtureInfo.filter((fixture) => {
-                    return fixtureFinished(fixture.fixture.status.short);
-                  }).length > 0 ? (
-                    fixtures.fixtureInfo
-                      .filter((fixture) => {
-                        return fixtureFinished(fixture.fixture.status.short);
-                      })
+                  {fixturesFinished.length > 0 ? (
+                    fixturesFinished
                       .sort((fixtureOne, fixtureTwo) => {
                         return (
                           fixtureTwo.fixture.timestamp -
@@ -350,8 +302,8 @@ export default function Fixtures() {
                     <Typography>No previous fixtures available</Typography>
                   )}
                 </Container>
-              </AccordionDetails>
-            </Accordion>
+              {/* </AccordionDetails>
+            </Accordion> */}
           </Container>
         </>
       );

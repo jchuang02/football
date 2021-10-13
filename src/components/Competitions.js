@@ -79,7 +79,7 @@ export default function Competitions() {
               }}
               input={<OutlinedInput />}
               renderValue={() => {
-                if (selectedLeague === null) {
+                if (selectedLeague.length === 0) {
                   return <em>Choose Competition</em>;
                 }
 
@@ -118,7 +118,7 @@ export default function Competitions() {
               }}
               inputProps={{ "aria-label": "Without label" }}
             >
-              <MenuItem value={null}>
+              <MenuItem disabled value="">
                 <em>Select Competition</em>
               </MenuItem>
               {Object.values(leagues).map((league) => {

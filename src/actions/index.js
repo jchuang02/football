@@ -82,7 +82,7 @@ export const fetchFixtures = (season, league, from, to) => async (dispatch) => {
   const { data } = await football.get("/fixtures", {
     params: { season, league, from, to },
   });
-  let theData = { fixtureInfo: data.response, lastUpdated: Date.now() };
+  let theData = { league: league, fixtureInfo: data.response, lastUpdated: Date.now() };
 
   dispatch({ type: "FETCH_FIXTURES", payload: theData });
 };
@@ -93,7 +93,7 @@ export const updateFixtures =
       params: { season, league, from, to },
     });
 
-    let theData = { fixtureInfo: data.response, lastUpdated: Date.now() };
+    let theData = { league: league, fixtureInfo: data.response, lastUpdated: Date.now() };
 
     dispatch({ type: "UPDATE_FIXTURES", payload: theData });
   };
@@ -121,7 +121,7 @@ export const updateLiveFixtures =
       );
     }
 
-    const theData = { fixtureInfo: data.response, lastUpdated: Date.now() };
+    const theData = { league: league, fixtureInfo: data.response, lastUpdated: Date.now() };
 
     dispatch({ type: "UPDATE_LIVE_FIXTURES", payload: theData });
   };
