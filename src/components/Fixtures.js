@@ -1,7 +1,4 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Container,
   Typography,
@@ -17,7 +14,6 @@ import {
   updateStandings,
 } from "../actions";
 import FixtureCard from "./FixtureCard";
-import { ExpandMore } from "@mui/icons-material";
 import {
   fixtureEnding,
   fixtureFinished,
