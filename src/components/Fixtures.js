@@ -268,7 +268,7 @@ export default function Fixtures() {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               > */}
-                <Typography variant="h5">Previous Fixtures</Typography>
+                <Typography variant="h5">Previous Matches</Typography>
               {/* </AccordionSummary>
               <AccordionDetails> */}
                 <Container
@@ -295,7 +295,7 @@ export default function Fixtures() {
                         );
                       })
                   ) : (
-                    <Typography>No previous fixtures available</Typography>
+                    <Typography>No previous matches available</Typography>
                   )}
                 </Container>
               {/* </AccordionDetails>
