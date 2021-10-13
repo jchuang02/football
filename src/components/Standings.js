@@ -14,7 +14,7 @@ export default function Standings() {
     if (standings === undefined) {
       dispatch(fetchStandings(selectedLeague, 2021));
     } else if (Date.now() - standings.lastUpdated >= 86400000) {
-      console.log("Updating Standings...");
+      
       dispatch(updateStandings(selectedLeague, 2021));
     }
   }, [dispatch, standings, selectedLeague]);

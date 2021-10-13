@@ -22,7 +22,7 @@ export default function Cup({ standings }) {
     return team.description;
   });
   qualifications = [...new Set(qualifications)];
-  console.log(qualifications);
+  
   const showQualificationStage = (team) => {
     if (qualifications.length <= 2) {
       if (team.description === qualifications[0]) {

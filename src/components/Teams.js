@@ -31,7 +31,7 @@ export default function Standings() {
   });
 
   const classes = useStyles();
-  console.log(teamStats);
+  
   const showTeamStats = () => {
     if (!Array.isArray(teamStats)) {
       return (

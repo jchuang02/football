@@ -37,7 +37,7 @@ export default function Fixtures() {
   useEffect(() => {
     //If no fixtures exist, fetch fixtures.
     if (fixtures === undefined) {
-      console.log("Fetching Fixtures");
+      
       dispatch(fetchFixtures(2021, selectedLeague, twoWeeksAgo, twoWeeksLater));
       //If it's been more than 24 hours since it has been updated.
     } else if (Date.now() - fixtures.lastUpdated >= 86400000) {
@@ -61,7 +61,7 @@ export default function Fixtures() {
           return fixture.status.short === "NS";
         }).length > 0
     ) {
-      console.log("Intial render clean up and fixture updates");
+      
       dispatch(
         updateFixtures(2021, selectedLeague, twoWeeksAgo, twoWeeksLater)
       );
@@ -93,7 +93,7 @@ export default function Fixtures() {
       startUpdateTimes = startUpdateTimes.filter((time) => {
         return time > 0;
       });
-      console.log(startUpdateTimes);
+      
 
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
@@ -102,9 +102,9 @@ export default function Fixtures() {
       //If a game is starting later, start a timer to start updating live fixtures when the game begins.
       if (startUpdateTimes.length > 0 && !fixturesInProgress > 0) {
         startUpdateTimes.forEach((timeUntil) => {
-          console.log("Starting timer for fixture starting later today");
+          
           initializer = setTimeout(() => {
-            console.log("Beginning live fixture updates");
+            
             dispatch(updateLiveFixtures(2021, selectedLeague));
           }, timeUntil);
         });
@@ -114,7 +114,7 @@ export default function Fixtures() {
 
       //Checks if any fixtures are live or starting.
       if (fixturesInProgress.length > 0 || continueUpdates.length > 0) {
-        console.log("Live fixture updating starting...");
+        
         //Fixtures in the halftime break
         const fixturesBreak = fixtures.fixtureInfo.filter(({ fixture }) => {
           return fixture.status.short === "HT" && fixture.status.elapsed === 45;
@@ -125,7 +125,7 @@ export default function Fixtures() {
         ) {
           timer = setTimeout(() => {
             dispatch(updateLiveFixtures(2021, selectedLeague));
-            console.log("Live fixtures updated (5).");
+            
           }, 60000 * 5.1);
           //Replace arbitrary value
         } else {
@@ -134,21 +134,21 @@ export default function Fixtures() {
               fixturesEnding.length > 0 &&
               fixturesEnding.length < fixturesInProgress.length
             ) {
-              console.log("Fixture ending while other games still live");
+              
               fixturesEnding.forEach(({ fixture }) => {
-                console.log("Updating via fixture id's");
+                
                 dispatch(updateLiveFixturesById(fixture.id));
               });
               dispatch(updateLiveFixtures(2021, selectedLeague));
-              console.log("Live fixtures updated. (1)");
+              
             } else if (fixturesEnding.length > 0) {
               fixturesEnding.forEach(({ fixture }) => {
-                console.log("Updating via fixture id's");
+                
                 dispatch(updateLiveFixturesById(fixture.id));
               });
             } else {
               dispatch(updateLiveFixtures(2021, selectedLeague));
-              console.log("Live fixtures updated. (1)");
+              
             }
           }, 60000);
         }
@@ -164,7 +164,7 @@ export default function Fixtures() {
         dispatch(updateStandings(selectedLeague, 2021));
       }
       return () => {
-        console.log("Live Updates Finished. Clearing timers and intervals");
+        
         clearTimeout(timer);
         clearTimeout(initializer);
       };
@@ -191,7 +191,7 @@ export default function Fixtures() {
           <Container
             sx={!fixturesInProgress.length > 0 ? { display: "none" } : ""}
           >
-            <Typography variant="h5">Live Fixtures</Typography>
+            <Typography variant="h5">Live Matches</Typography>
             <Container
               sx={{
                 display: "flex",
@@ -207,7 +207,7 @@ export default function Fixtures() {
             </Container>
           </Container>
           <Container>
-            <Typography variant="h5">Upcoming Fixtures</Typography>
+            <Typography variant="h5">Upcoming Matches</Typography>
             <Container
               sx={{
                 display: "flex",
@@ -241,7 +241,7 @@ export default function Fixtures() {
                     );
                   })
               ) : (
-                <Typography>No upcoming fixtures</Typography>
+                <Typography>No Upcoming Matches</Typography>
               )}
             </Container>
 
