@@ -9,8 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import Fixtures from "./Fixtures";
-import Standings from "./Standings";
+import Fixtures from "../components/Fixtures";
+import Standings from "../components/Standings";
 import { selectLeague } from "../actions";
 import { useDispatch } from "react-redux";
 

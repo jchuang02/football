@@ -22,7 +22,9 @@ export default function Cup({ standings }) {
     return team.description;
   });
   qualifications = [...new Set(qualifications)];
-  
+
+
+  //FIXME: Descriptions aren't being provided. Omitting Qualification Color Label for now.
   const showQualificationStage = (team) => {
     if (qualifications.length <= 2) {
       if (team.description === qualifications[0]) {
@@ -40,6 +42,7 @@ export default function Cup({ standings }) {
       }
     }
   };
+
   return (
     <Container
       sx={{
@@ -82,7 +85,7 @@ export default function Cup({ standings }) {
                       <TableRow key={team.team.id}>
                         <TableCell
                           sx={{
-                            paddingLeft: 0,
+                            paddingLeft: "1em",
                             paddingTop: 0,
                             paddingBottom: 0,
                           }}
@@ -93,7 +96,7 @@ export default function Cup({ standings }) {
                               alignItems: "center",
                             }}
                           >
-                            {showQualificationStage(team)}
+                            {/* {showQualificationStage(team)} */}
                             <Typography>{team.rank}</Typography>
                           </Box>
                         </TableCell>

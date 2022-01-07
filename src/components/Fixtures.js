@@ -20,6 +20,7 @@ import {
   fixtureInProgress,
   fixtureOnBreak,
 } from "../helpers/fixtureHelper";
+// import WindowFocusHandler from "./WindowFocusHandler";
 
 export default function Fixtures() {
   const selectedLeague = useSelector((state) => state.selectedLeague);
@@ -188,8 +189,9 @@ export default function Fixtures() {
       });
       return (
         <>
+        {/* <WindowFocusHandler /> */}
           <Container
-            sx={!fixturesInProgress.length > 0 ? { display: "none" } : ""}
+            sx={!fixturesInProgress.length > 0 ? { display: "none" } : {}}
           >
             <Typography variant="h5">Live Matches</Typography>
             <Container
@@ -244,33 +246,7 @@ export default function Fixtures() {
                 <Typography>No Upcoming Matches</Typography>
               )}
             </Container>
-
-            {/* <Accordion
-              sx={{
-                border: "none",
-                boxShadow: "none",
-                "&:before": {
-                  top: 0,
-                  height: 0,
-                },
-                display: "block",
-                flexGrow: 0,
-                marginTop: "2rem",
-                padding: 0,
-              }}
-            >
-              <AccordionSummary
-                sx={{
-                  display: "inline-flex",
-                  padding: 0,
-                }}
-                expandIcon={<ExpandMore />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              > */}
                 <Typography variant="h5">Previous Matches</Typography>
-              {/* </AccordionSummary>
-              <AccordionDetails> */}
                 <Container
                   sx={{
                     display: "flex",

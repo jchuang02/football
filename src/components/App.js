@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, CircularProgress } from "@mui/material";
-import Competitions from "./Competitions";
+import Competitions from "../pages/Competitions";
 import { fetchLeagues, updateLeagues } from "../actions";
 
 export default function App() {
