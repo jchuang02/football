@@ -11,37 +11,37 @@ import {
   Typography,
 } from "@mui/material";
 
-const colors = ["#1BB55C", "#FFBB12", "#E74C3C"];
+// const colors = ["#1BB55C", "#FFBB12", "#E74C3C"];
 
-const QualificationLabel = ({ color }) => {
-  return <Box width={8} height={64} bgcolor={color} mr={1}></Box>;
-};
+// const QualificationLabel = ({ color }) => {
+//   return <Box width={8} height={64} bgcolor={color} mr={1}></Box>;
+// };
 
 export default function Cup({ standings }) {
-  let qualifications = standings[0].map((team) => {
-    return team.description;
-  });
-  qualifications = [...new Set(qualifications)];
+  // let qualifications = standings[0].map((team) => {
+  //   return team.description;
+  // });
+  // qualifications = [...new Set(qualifications)];
 
 
   //FIXME: Descriptions aren't being provided. Omitting Qualification Color Label for now.
-  const showQualificationStage = (team) => {
-    if (qualifications.length <= 2) {
-      if (team.description === qualifications[0]) {
-        return <QualificationLabel color={colors[0]} />;
-      } else {
-        return <QualificationLabel color={colors[2]} />;
-      }
-    } else {
-      if (team.description === qualifications[0]) {
-        return <QualificationLabel color={colors[0]} />;
-      } else if (team.description === qualifications[1]) {
-        return <QualificationLabel color={colors[1]} />;
-      } else if (team.description === qualifications[2]) {
-        return <QualificationLabel color={colors[2]} />;
-      }
-    }
-  };
+  // const showQualificationStage = (team) => {
+  //   if (qualifications.length <= 2) {
+  //     if (team.description === qualifications[0]) {
+  //       return <QualificationLabel color={colors[0]} />;
+  //     } else {
+  //       return <QualificationLabel color={colors[2]} />;
+  //     }
+  //   } else {
+  //     if (team.description === qualifications[0]) {
+  //       return <QualificationLabel color={colors[0]} />;
+  //     } else if (team.description === qualifications[1]) {
+  //       return <QualificationLabel color={colors[1]} />;
+  //     } else if (team.description === qualifications[2]) {
+  //       return <QualificationLabel color={colors[2]} />;
+  //     }
+  //   }
+  // };
 
   return (
     <Container
