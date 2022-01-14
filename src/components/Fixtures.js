@@ -37,9 +37,9 @@ export default function Fixtures() {
 
   useEffect(() => {
     //If no fixtures exist, fetch fixtures.
-    if (fixtures === undefined) {
+    if (fixtures === undefined || fixtures.length === 0) {
       
-      dispatch(fetchFixtures(2021, selectedLeague, twoWeeksAgo, twoWeeksLater));
+      dispatch(fetchFixtures(2021, selectedLeague));
       //If it's been more than 24 hours since it has been updated.
     } else if (Date.now() - fixtures.lastUpdated >= 86400000) {
       dispatch(

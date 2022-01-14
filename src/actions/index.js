@@ -78,14 +78,45 @@ export const fetchTeamPlayers = (team, season, league) => async (dispatch) => {
   dispatch({ type: "FETCH_TEAM_PLAYERS", payload: allPlayers });
 };
 
-export const fetchFixtures = (season, league, from, to) => async (dispatch) => {
+export const fetchFixtures = (season, league) => async (dispatch) => {
   const { data } = await football.get("/fixtures", {
-    params: { season, league, from, to },
+    params: { season, league },
   });
-  let theData = { league: league, fixtureInfo: data.response, lastUpdated: Date.now() };
+  let theData = {
+    league: league,
+    fixtureInfo: data.response,
+    lastUpdated: Date.now(),
+  };
 
   dispatch({ type: "FETCH_FIXTURES", payload: theData });
 };
+
+export const fetchUpcomingFixtures =
+  (season, league, next = 12) => async (dispatch) => {
+    const { data } = await football.get("/fixtures", {
+      params: { season, league, next },
+    });
+
+    let theData = {
+      league: league,
+      fixtureInfo: data.response,
+      lastUpdated: Date.now(),
+    };
+    dispatch({ type: "FETCH_FIXTURES", payload: theData });
+  };
+
+export const fetchPreviousFixtures =
+  (season, league, last = 12) => async (dispatch) => {
+    const { data } = await football.get("/fixtures", {
+      params: { season, league, last },
+    });
+    let theData = {
+      league: league,
+      fixtureInfo: data.response,
+      lastUpdated: Date.now(),
+    };
+    dispatch({ type: "FETCH_FIXTURES", payload: theData });
+  };
 
 export const updateFixtures =
   (season, league, from, to) => async (dispatch) => {
@@ -93,7 +124,11 @@ export const updateFixtures =
       params: { season, league, from, to },
     });
 
-    let theData = { league: league, fixtureInfo: data.response, lastUpdated: Date.now() };
+    let theData = {
+      league: league,
+      fixtureInfo: data.response,
+      lastUpdated: Date.now(),
+    };
 
     dispatch({ type: "UPDATE_FIXTURES", payload: theData });
   };
@@ -121,7 +156,11 @@ export const updateLiveFixtures =
       );
     }
 
-    const theData = { league: league, fixtureInfo: data.response, lastUpdated: Date.now() };
+    const theData = {
+      league: league,
+      fixtureInfo: data.response,
+      lastUpdated: Date.now(),
+    };
 
     dispatch({ type: "UPDATE_LIVE_FIXTURES", payload: theData });
   };
