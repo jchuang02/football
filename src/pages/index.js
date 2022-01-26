@@ -1,24 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App";
-import { Provider } from "react-redux";
+import App from "../components/App";
+// import { Provider } from "react-redux";
 // import { compose, applyMiddleware } from "redux";
 // import thunk from "redux-thunk";
-import reducers from "./reducers";
+// import reducers from "../reducers";
 import { CssBaseline, createTheme, ThemeProvider } from "@mui/material";
-import { loadState, saveState } from "./localStorage";
-import { configureStore } from "@reduxjs/toolkit";
+// import { loadState, saveState } from "../localStorage";
+// import { configureStore } from "@reduxjs/toolkit";
 
-const persistedState = loadState();
+// const persistedState = loadState();
 // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = configureStore({
-  reducer: reducers,
-  preloadedState: persistedState,
-});
+// const store = configureStore({
+//   reducer: reducers,
+//   preloadedState: persistedState,
+// });
 
-store.subscribe(() => {
-  saveState(store.getState());
-});
+// store.subscribe(() => {
+//   saveState(store.getState());
+// });
 
 const theme = createTheme({
   typography: {
@@ -61,12 +61,23 @@ const theme = createTheme({
   },
 });
 
-ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <Provider store={store}>
+export default function Home() {
+  return (
+    <ThemeProvider theme={theme}>
+      {/* <Provider store={store}> */}
       <CssBaseline />
       <App />
-    </Provider>
-  </ThemeProvider>,
-  document.querySelector("#root")
-);
+      {/* </Provider> */}
+    </ThemeProvider>
+  );
+}
+
+// ReactDOM.render(
+//   <ThemeProvider theme={theme}>
+//     {/* <Provider store={store}> */}
+//       <CssBaseline />
+//       <App />
+//     {/* </Provider> */}
+//   </ThemeProvider>,
+//   document.querySelector("#root")
+// );
