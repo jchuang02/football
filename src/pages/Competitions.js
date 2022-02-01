@@ -42,6 +42,7 @@ export default function Competitions() {
             alignContent: "center",
             textAlign: "center",
             margin: "auto",
+            marginTop: "4rem",
           }}
         >
           {selectedLeague ? (

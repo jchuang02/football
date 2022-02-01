@@ -11,6 +11,15 @@ export const fetchLeagues =
     dispatch({ type: "FETCH_LEAGUES", payload: theData });
   };
 
+export const fetchSearchLeagues = (search) => async (dispatch) => {
+  const { data } = await football.get("/leagues", {
+    params: { search },
+  });
+  const theData = { leagueInfo: data.response[0], lastUpdated: Date.now() };
+
+  dispatch({ type: "FETCH_SEARCH_LEAGUES", payload: theData });
+};
+
 export const updateLeagues =
   (id, current = "true") =>
   async (dispatch) => {
@@ -92,7 +101,8 @@ export const fetchFixtures = (season, league) => async (dispatch) => {
 };
 
 export const fetchUpcomingFixtures =
-  (season, league, next = 12) => async (dispatch) => {
+  (season, league, next = 12) =>
+  async (dispatch) => {
     const { data } = await football.get("/fixtures", {
       params: { season, league, next },
     });
@@ -106,7 +116,8 @@ export const fetchUpcomingFixtures =
   };
 
 export const fetchPreviousFixtures =
-  (season, league, last = 12) => async (dispatch) => {
+  (season, league, last = 12) =>
+  async (dispatch) => {
     const { data } = await football.get("/fixtures", {
       params: { season, league, last },
     });
