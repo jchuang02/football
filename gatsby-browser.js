@@ -1,6 +1,5 @@
-import wrapWithProvider from "./wrap-with-provider"
-import "firebase/auth"
-import "firebase/firestore"
-import "firebase/functions"
-export const wrapRootElement = wrapWithProvider
-
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/functions";
+import wrapWithProvider from "./wrap-with-provider";
+export const wrapRootElement = wrapWithProvider;

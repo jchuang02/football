@@ -1,7 +1,17 @@
 import React from "react";
 import App from "../components/App";
 import { CssBaseline, createTheme, ThemeProvider } from "@mui/material";
+import { FirebaseAppProvider } from "reactfire";
 
+const firebaseConfig = {
+  apiKey: process.env.GATSBY_APP_FIREBASE_API_KEY,
+  authDomain: "football-dashboard-488e1.firebaseapp.com",
+  projectId: "football-dashboard-488e1",
+  storageBucket: "football-dashboard-488e1.appspot.com",
+  messagingSenderId: "321068336527",
+  appId: "1:321068336527:web:7eb3ea81261fd6091637fa",
+  measurementId: "G-54JD715SLD",
+};
 
 const theme = createTheme({
   typography: {
@@ -47,8 +57,10 @@ const theme = createTheme({
 export default function Home() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
+      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+        <CssBaseline />
+        <App />
+      </FirebaseAppProvider>
     </ThemeProvider>
   );
 }

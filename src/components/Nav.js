@@ -15,7 +15,7 @@ function ElevationScroll(props) {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 0,
-    target: window ? window() : undefined,
+    target: undefined,
   });
 
   return React.cloneElement(children, {
@@ -50,7 +50,7 @@ export default function Nav(props) {
             >
               Football Dashboard
             </Typography>
-            <Link to="onboard">Login / Signup</Link>
+            <Link to="/onboard">Login / Signup</Link>
           </Toolbar>
         </AppBar>
       </ElevationScroll>
