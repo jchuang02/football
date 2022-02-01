@@ -8,7 +8,7 @@ import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
 const actionCodeSettings = {
   // URL you want to redirect back to. The domain (www.example.com) for this
   // URL must be in the authorized domains list in the Firebase Console.
-  url: "https://localhost:8000",
+  url: "https://football.gatsbyjs.io",
   handleCodeInApp: true,
 };
 
