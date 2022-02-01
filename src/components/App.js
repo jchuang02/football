@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, CircularProgress } from "@mui/material";
-import Competitions from "../pages/competitions";
 import Layout from "./layout";
 import { fetchLeagues, updateLeagues } from "../actions";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { Link } from "gatsby";
 
 export default function App() {
   const leagues = useSelector((state) => state.leagues);
@@ -45,7 +45,7 @@ export default function App() {
     <Layout>
       <Container>
         {Object.keys(leagues).length > 0 ? (
-          <Competitions />
+          <Link to="competitions">Competitions</Link>
         ) : (
           <Box sx={{ display: "flex" }}>
             <CircularProgress />
