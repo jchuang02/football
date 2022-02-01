@@ -55,20 +55,21 @@ export default function Home() {
   const dispatch = useDispatch();
   const email = useSelector((state) => state.email);
   const auth = getAuth();
-
-  if (isSignInWithEmailLink(auth, window.location.href)) {
+  const isBrowser = typeof window !== "undefined";
+  if (isBrowser && isSignInWithEmailLink(auth, window.location.href)) {
     if (email.length > 0) {
       console.log(`Your email is : ${email}`);
     }
   }
-
-  signInWithEmailLink(auth, email, window.location.href)
-    .then((result) => {
-      dispatch(deleteEmail());
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  if (isBrowser) {
+    signInWithEmailLink(auth, email, window.location.href)
+      .then((result) => {
+        dispatch(deleteEmail());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <ThemeProvider theme={theme}>
