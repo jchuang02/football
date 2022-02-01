@@ -11,7 +11,7 @@ import { Link } from "gatsby";
 import { Home } from "iconoir-react";
 
 function ElevationScroll(props) {
-  const { children, window } = props;
+  const { children } = props;
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 0,

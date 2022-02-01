@@ -31,6 +31,7 @@ export default function MyForm() {
       .then(() => {
         console.log("Email Link Sent");
         //TODO Set LocalStorage Item of EmailForSignIn to the user's email
+        window.localStorage.setItem("emailForSignIn", values.email);
       })
       .catch((error) => {
         const errorCode = error.code;
