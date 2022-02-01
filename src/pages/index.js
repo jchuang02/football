@@ -1,17 +1,14 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import App from "../components/App";
 import { CssBaseline, createTheme, ThemeProvider } from "@mui/material";
-import { FirebaseAppProvider } from "reactfire";
-
-const firebaseConfig = {
-  apiKey: process.env.GATSBY_APP_FIREBASE_API_KEY,
-  authDomain: "football-dashboard-488e1.firebaseapp.com",
-  projectId: "football-dashboard-488e1",
-  storageBucket: "football-dashboard-488e1.appspot.com",
-  messagingSenderId: "321068336527",
-  appId: "1:321068336527:web:7eb3ea81261fd6091637fa",
-  measurementId: "G-54JD715SLD",
-};
+import {
+  getAuth,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+} from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { deleteEmail } from "../actions";
 
 const theme = createTheme({
   typography: {
@@ -55,12 +52,28 @@ const theme = createTheme({
 });
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const email = useSelector((state) => state.email);
+  const auth = getAuth();
+
+  if (isSignInWithEmailLink(auth, window.location.href)) {
+    if (email.length > 0) {
+      console.log(`Your email is : ${email}`);
+    }
+  }
+
+  signInWithEmailLink(auth, email, window.location.href)
+    .then((result) => {
+      dispatch(deleteEmail());
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
   return (
     <ThemeProvider theme={theme}>
-      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-        <CssBaseline />
-        <App />
-      </FirebaseAppProvider>
+      <CssBaseline />
+      <App />
     </ThemeProvider>
   );
 }

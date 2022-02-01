@@ -197,3 +197,11 @@ export const fetchFixture = (id) => async (dispatch) => {
 export const selectLeague = (league) => {
   return { type: "SET_SELECTED", payload: league };
 };
+
+export const setEmail = (email) => {
+  return { type: "SET_EMAIL", payload: email };
+};
+
+export const deleteEmail = (email) => {
+  return { type: "DELETE_EMAIL", payload: email };
+};

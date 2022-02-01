@@ -4,6 +4,8 @@ import { ProfileCircled } from "iconoir-react";
 import { TextField } from "mui-rff";
 import { Form } from "react-final-form";
 import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
+import { setEmail } from "../actions";
+import { useDispatch } from "react-redux";
 
 const actionCodeSettings = {
   // URL you want to redirect back to. The domain (www.example.com) for this
@@ -25,13 +27,15 @@ const style = {
 };
 
 export default function MyForm() {
+  const dispatch = useDispatch();
+
   const onSubmit = async (values) => {
     const auth = getAuth();
-    sendSignInLinkToEmail(auth, values.email, actionCodeSettings)
+    sendSignInLinkToEmail(auth, values.email, actionCodeSettings, dispatch)
       .then(() => {
         console.log("Email Link Sent");
         //TODO Set LocalStorage Item of EmailForSignIn to the user's email
-        window.localStorage.setItem("emailForSignIn", values.email);
+        dispatch(setEmail(values.email));
       })
       .catch((error) => {
         const errorCode = error.code;

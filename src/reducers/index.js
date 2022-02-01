@@ -6,6 +6,7 @@ import TeamReducer from "./TeamReducer";
 import fixturesReducer from "./fixturesReducer";
 import fixtureReducer from "./fixtureReducer";
 import selectedLeagueReducer from "./selectedLeagueReducer";
+import emailReducer from "./emailReducer";
 
 export default combineReducers({
   leagues: leaguesReducer,
@@ -15,4 +16,5 @@ export default combineReducers({
   fixtures: fixturesReducer,
   fixture: fixtureReducer,
   selectedLeague: selectedLeagueReducer,
+  email: emailReducer,
 });

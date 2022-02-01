@@ -4,32 +4,10 @@ import { Box, Container, CircularProgress, Typography } from "@mui/material";
 import Layout from "./layout";
 import { fetchLeagues, updateLeagues } from "../actions";
 import { Link } from "gatsby";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
 
 export default function App() {
   const leagues = useSelector((state) => state.leagues);
   const dispatch = useDispatch();
-  const auth = getAuth();
-  let email;
-
-  if (isSignInWithEmailLink(auth, window.location.href)) {
-    email = window.localStorage.getItem("emailForSignIn");
-    if (!email) {
-      email = window.prompt("Please provide your email for confirmation");
-    }
-  }
-
-  signInWithEmailLink(auth, email, window.location.href)
-    .then((result) => {
-      window.localStorage.removeItem("emailForSignIn");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 
   useEffect(() => {
     const topFiveIds = [
