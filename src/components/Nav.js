@@ -9,6 +9,10 @@ import {
 } from "@mui/material";
 import { Link } from "gatsby";
 import { Home } from "iconoir-react";
+import theme from "./MaterialUI/Theme";
+import { ProfileCircled } from "iconoir-react";
+import { getAuth } from "firebase/auth";
+import Followed from "../components/Followed";
 
 function ElevationScroll(props) {
   const { children } = props;
@@ -24,36 +28,65 @@ function ElevationScroll(props) {
 }
 
 export default function Nav(props) {
-  const primaryColor = "#2E3A59";
-
+  const auth = getAuth();
+  const user = auth.currentUser;
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <ElevationScroll {...props}>
-        <AppBar sx={{ backgroundColor: "white" }}>
-          <Toolbar>
-            <Link to="/">
-              <IconButton
-                size="large"
-                edge="start"
-                color="primary"
-                sx={{ mr: 2 }}
-                aria-label="home"
-              >
-                <Home />
-              </IconButton>
-            </Link>
-
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, color: primaryColor }}
+    <ElevationScroll {...props}>
+      <AppBar>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Link to="/">
+            <IconButton
+              size="large"
+              edge="start"
+              color="primary"
+              sx={{ mr: 2 }}
+              aria-label="home"
             >
-              Football Dashboard
-            </Typography>
-            <Link to="/onboard">Login / Signup</Link>
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
-    </Box>
+              <Home strokeWidth={2} />
+            </IconButton>
+          </Link>
+          <Followed />
+
+          {user ? (
+            <Link to="/account">
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography>{user.email}</Typography>
+                <ProfileCircled
+                  color={theme.palette.primary.main}
+                  width={"48px"}
+                  height={"48px"}
+                  style={{ marginLeft: "1rem" }}
+                />
+              </Box>
+            </Link>
+          ) : (
+            <Link
+              style={{
+                fontSize: "24pt",
+                fontWeight: "bold",
+                margin: "1rem",
+                padding: "1rem",
+                textDecoration: "none",
+                color: theme.palette.primary.main,
+              }}
+              activeStyle={{
+                color: "#FFF",
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "16px",
+              }}
+              to="/onboard"
+            >
+              Login / Signup
+            </Link>
+          )}
+        </Toolbar>
+      </AppBar>
+    </ElevationScroll>
   );
 }

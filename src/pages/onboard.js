@@ -1,12 +1,77 @@
 import React from "react";
-import MyForm from "../components/MyForm";
+import MyForm from "../components/Onboarding/MyForm";
 import Layout from "../components/layout";
+import ValueProposition from "../components/Onboarding/ValueProposition";
+import { Container } from "@mui/material";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Box } from "@mui/material";
+import { Trophy, StatsSquareUp, AntennaSignal } from "iconoir-react";
+import theme from "../components/MaterialUI/Theme";
+
+const style = {
+  height: "40vh",
+  width: "70vw",
+  display: "flex",
+  bgcolor: "background.paper",
+  border: "4px solid #2E3A59",
+  p: 4,
+  marginTop: "10rem",
+  marginBottom: 4,
+  marginLeft: "auto",
+  marginRight: "auto",
+  borderRadius: "16px",
+};
 
 export default function Onboard() {
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("User is currently signed in");
+    } else {
+      console.log("User is currently signed out");
+    }
+  });
   return (
     <>
       <Layout>
-        <MyForm />
+        <Container maxWidth="lg">
+          <Box sx={style}>
+            <ValueProposition
+              proposition="Follow your favourite leagues and teams in one convenient place"
+              icon={
+                <Trophy
+                  height={48}
+                  width={48}
+                  strokeWidth={2}
+                  color={theme.palette.primary.main}
+                />
+              }
+            />
+            <ValueProposition
+              proposition="Get live updates for all the games you follow"
+              icon={
+                <AntennaSignal
+                  height={48}
+                  width={48}
+                  strokeWidth={2}
+                  color={theme.palette.primary.main}
+                />
+              }
+            />
+            <ValueProposition
+              proposition="With in depth statistics of individual matches"
+              icon={
+                <StatsSquareUp
+                  height={48}
+                  width={48}
+                  strokeWidth={2}
+                  color={theme.palette.primary.main}
+                />
+              }
+            />
+          </Box>
+          <MyForm />
+        </Container>
       </Layout>
     </>
   );
