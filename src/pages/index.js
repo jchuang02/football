@@ -35,7 +35,9 @@ export default function Home() {
       flag: leagues[league].leagueInfo.country.flag,
     };
   });
-  const [selected, setSelected] = useState(selectorItems[0].id || "");
+  const [selected, setSelected] = useState(
+    selectorItems[0] ? selectorItems[0].id : ""
+  );
 
   const fixtures = useSelector((state) => {
     const teamFixtures = Object.values(state.teamFixtures).map((team) => {
