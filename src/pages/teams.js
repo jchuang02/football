@@ -1,55 +1,42 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import Standings from "../components/Standings";
-import { useDispatch } from "react-redux";
-import Layout from "../components/layout";
-import Selector from "../components/Selector";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 import {
-  updateLiveFixtures,
-  updateLiveFixturesById,
-  updateStandings,
-  updateFixtures,
-  fetchFixtures,
+  fetchTeamFixtures,
+  updateTeamFixtures,
+  updateLiveTeamFixtures,
+  updateLiveTeamFixturesById,
 } from "../actions";
 import {
   fixtureInProgress,
-  fixtureFinished,
   fixtureEnding,
   fixtureOnBreak,
 } from "../helpers/fixtureStatusHelper";
-import Live from "../components/Matches/Live";
 import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
+import Live from "../components/Matches/Live";
+import Layout from "../components/layout";
 import {
   fixturesInProgress,
-  fixturesFinished,
   fixturesUpcoming,
+  fixturesFinished,
 } from "../helpers/fixturesHelper";
 
-export default function Competitions() {
+export default function Teams() {
   const dispatch = useDispatch();
-  const leagues = useSelector((state) => state.leagues);
-  const selectedLeague = useSelector((state) => state.selectedLeague);
-  const followedLeagues = useSelector((state) => state.followed.leagues);
-  const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
-  const current = useSelector((state) =>
-    state.leagues[selectedLeague]
-      ? state.leagues[selectedLeague].leagueInfo.seasons[0].year
-      : 2021
-  );
-  const standings = useSelector((state) => state.standings[selectedLeague]);
+  const teams = useSelector((state) => state.teams);
+  const selectedTeam = useSelector((state) => state.selectedTeam);
+  const fixtures = useSelector((state) => state.teamFixtures[selectedTeam]);
 
   useEffect(() => {
     if (!fixtures) {
-      dispatch(fetchFixtures(current, selectedLeague));
+      dispatch(fetchTeamFixtures(selectedTeam, 2021));
       //If it's been more than 24 hours since fixtures have been updated.
     } else if (Date.now() - fixtures.lastUpdated >= 86400000) {
-      dispatch(fetchFixtures(current, selectedLeague));
+      dispatch(updateTeamFixtures(selectedTeam, 2021));
     }
   });
 
-  //If live fixtures are present in fixtures, update them.
   useEffect(() => {
     if (fixtures) {
       if (
@@ -68,14 +55,12 @@ export default function Competitions() {
             return fixture.status.short === "NS";
           }).length > 0
       ) {
-        dispatch(updateFixtures(current, selectedLeague));
+        dispatch(updateTeamFixtures(selectedTeam, 2021));
       }
     }
-
     // eslint-disable-next-line
-  }, [selectedLeague]);
+  }, [selectedTeam]);
 
-  //For matches starting later today
   useEffect(() => {
     if (fixtures !== undefined) {
       const fixturesInProgress = fixtures.fixtureInfo.filter(({ fixture }) => {
@@ -108,7 +93,7 @@ export default function Competitions() {
       if (startUpdateTimes.length > 0 && !fixturesInProgress > 0) {
         startUpdateTimes.forEach((timeUntil) => {
           initializer = setTimeout(() => {
-            dispatch(updateLiveFixtures(current, selectedLeague));
+            dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
           }, timeUntil);
         });
       }
@@ -126,7 +111,7 @@ export default function Competitions() {
           fixturesBreak.length === fixturesInProgress.length
         ) {
           timer = setTimeout(() => {
-            dispatch(updateLiveFixtures(current, selectedLeague));
+            dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
           }, 60000 * 5.1);
           //Replace arbitrary value
         } else {
@@ -136,40 +121,41 @@ export default function Competitions() {
               fixturesEnding.length < fixturesInProgress.length
             ) {
               fixturesEnding.forEach(({ fixture }) => {
-                dispatch(updateLiveFixturesById(fixture.id));
+                dispatch(updateLiveTeamFixturesById(fixture.id));
               });
-              dispatch(updateLiveFixtures(current, selectedLeague));
+              dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
             } else if (fixturesEnding.length > 0) {
               fixturesEnding.forEach(({ fixture }) => {
-                dispatch(updateLiveFixturesById(fixture.id));
+                dispatch(updateLiveTeamFixturesById(fixture.id));
               });
             } else {
-              dispatch(updateLiveFixtures(current, selectedLeague));
+              dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
             }
           }, 60000);
         }
         //If all fixtures have been played, update Standings after an hour.
-      } else if (
-        todaysFixtures.length > 0 &&
-        todaysFixtures.filter(({ fixture }) => {
-          return fixtureFinished(fixture.status.short);
-        }).length === todaysFixtures.length &&
-        standings &&
-        Date.now() - standings.lastUpdated >= 60000 * 60
-      ) {
-        dispatch(updateStandings(selectedLeague, current));
       }
+      //   else if (
+      //     todaysFixtures.length > 0 &&
+      //     todaysFixtures.filter(({ fixture }) => {
+      //       return fixtureFinished(fixture.status.short);
+      //     }).length === todaysFixtures.length &&
+      //     standings &&
+      //     Date.now() - standings.lastUpdated >= 60000 * 60
+      //   ) {
+      //     dispatch(updateStandings(selectedLeague, 2021));
+      //   }
       return () => {
         clearTimeout(timer);
         clearTimeout(initializer);
       };
     }
-  }, [selectedLeague, dispatch, fixtures, standings, current]);
+  }, [selectedTeam, dispatch, fixtures]);
 
-  if (leagues) {
+  if (teams) {
     return (
       <Layout>
-        {!selectedLeague ? (
+        {!selectedTeam ? (
           <Typography
             variant="h2"
             sx={{ padding: "4rem", textAlign: "center" }}
@@ -179,7 +165,7 @@ export default function Competitions() {
         ) : (
           ""
         )}
-        {selectedLeague ? (
+        {selectedTeam ? (
           <>
             <Live
               fixtures={fixturesInProgress(
@@ -190,7 +176,7 @@ export default function Competitions() {
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-evenly",
+                justifyContent: "center",
               }}
             >
               <Recent
@@ -204,8 +190,6 @@ export default function Competitions() {
                 )}
               />
             </Box>
-
-            <Standings selectedLeague={selectedLeague} />
           </>
         ) : (
           ""

@@ -17,7 +17,6 @@ export const fixtureFinished = (fixtureStatus) => {
     fixtureStatus === "AET" ||
     fixtureStatus === "PEN" ||
     fixtureStatus === "ABD" ||
-    fixtureStatus === "PST" ||
     fixtureStatus === "INT" ||
     fixtureStatus === "SUSP" ||
     fixtureStatus === "AWD" ||

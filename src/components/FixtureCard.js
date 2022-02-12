@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { fixtureFinished, fixtureInProgress } from "../helpers/fixtureHelper";
+import { fixtureFinished, fixtureInProgress } from "../helpers/fixtureStatusHelper";
 import { keyframes } from "@mui/styled-engine";
 import LazyLoad from "react-lazyload";
 
@@ -134,10 +134,11 @@ export default function FixtureCard({ fixture }) {
       key={fixture.fixture.id}
       sx={{
         minWidth: "320px",
-        margin: "32px",
-        border: "solid 2px #E5E5E5",
-        borderRadius: "8px",
+        minHeight: "340px",
         boxShadow: "none",
+        border: "2px solid #2E3A59",
+        m: 1,
+        borderRadius: "16px",
       }}
     >
       <CardContent>
@@ -161,8 +162,8 @@ export default function FixtureCard({ fixture }) {
                 <Typography
                   sx={
                     fixture.teams.home.winner
-                      ? { fontSize: "24px", fontWeight: "700" }
-                      : { fontSize: "24px", fontWeight: "regular" }
+                      ? { fontSize: "18pt", fontWeight: "700" }
+                      : { fontSize: "18pt", fontWeight: "regular" }
                   }
                 >
                   {fixture.goals.home}
@@ -183,7 +184,7 @@ export default function FixtureCard({ fixture }) {
               </Typography>
             </TeamInfo>
             <Typography
-              sx={{ alignSelf: "center", fontSize: "16px", fontWeight: "500" }}
+              sx={{ alignSelf: "center", fontSize: "18pt", fontWeight: "500" }}
             >
               vs.
             </Typography>
@@ -192,8 +193,8 @@ export default function FixtureCard({ fixture }) {
                 <Typography
                   sx={
                     fixture.teams.away.winner
-                      ? { fontSize: "24px", fontWeight: "700" }
-                      : { fontSize: "24px", fontWeight: "regular" }
+                      ? { fontSize: "18pt", fontWeight: "700" }
+                      : { fontSize: "18pt", fontWeight: "regular" }
                   }
                 >
                   {fixture.goals.away}
@@ -235,10 +236,8 @@ export default function FixtureCard({ fixture }) {
                 ""
               )}
             </Box>
-            <Typography sx={{ fontWeight: "600", fontSize: "14px" }}>
-              {fixture.fixture.status.long}
-            </Typography>
-            <Typography sx={{ fontSize: "14px" }}>
+
+            <Typography sx={{ fontWeight: "600", fontSize: "14pt" }}>
               {fixture.fixture.status.elapsed === null
                 ? new Date(fixture.fixture.date).toLocaleTimeString("en-US", {
                     hour: "2-digit",
@@ -262,7 +261,7 @@ export default function FixtureCard({ fixture }) {
               : ""}
           </Typography>
         </CardActionArea>
-        {showEvents()}
+        {/* {showEvents()} */}
       </CardContent>
     </Card>
   );

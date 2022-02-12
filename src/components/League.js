@@ -12,55 +12,44 @@ import {
 
 export default function League({ standings }) {
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        border: "solid 2px #E5E5E5",
-        borderRadius: "8px",
-        boxShadow: "none",
-        marginBottom: "2rem",
-        marginTop: "2rem",
-      }}
-    >
+    <TableContainer component={Paper}>
       <Table sx={{ borderCollapse: "separate" }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Rank</TableCell>
-            <TableCell>Team</TableCell>
-            <TableCell align="right">GP</TableCell>
-            <TableCell align="right">Points</TableCell>
-            <TableCell align="right">W</TableCell>
-            <TableCell align="right">D</TableCell>
-            <TableCell align="right">L</TableCell>
-            <TableCell align="right">GD</TableCell>
-            <TableCell align="right">GF</TableCell>
-            <TableCell align="right">GA</TableCell>
+            <TableCell align="center">Rank</TableCell>
+            <TableCell align="center">Team</TableCell>
+            <TableCell align="center">GP</TableCell>
+            <TableCell align="center">Points</TableCell>
+            <TableCell align="center">W</TableCell>
+            <TableCell align="center">D</TableCell>
+            <TableCell align="center">L</TableCell>
+            <TableCell align="center">GD</TableCell>
+            <TableCell align="center">GF</TableCell>
+            <TableCell align="center">GA</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {standings.map((team) => {
             return (
               <TableRow key={team.team.id}>
-                <TableCell component="th" scope="row">
-                  {team.rank}
-                </TableCell>
                 <TableCell
+                  align="center"
                   component="th"
                   scope="row"
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  {team.team.name}
+                  {team.rank}
                   <Box
                     sx={{
                       img: {
                         width: "40px",
                         height: "40px",
                         marginLeft: "1rem",
-                        marginRight: "1rem"
+                        marginRight: "1rem",
                       },
                     }}
                   >
@@ -70,28 +59,31 @@ export default function League({ standings }) {
                     ></img>
                   </Box>
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
+                  {team.team.name}
+                </TableCell>
+                <TableCell align="center" component="th" scope="row">
                   {team.all.played}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.points}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.all.win}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.all.draw}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.all.lose}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.goalsDiff}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.all.goals.for}
                 </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                <TableCell align="center" component="th" scope="row">
                   {team.all.goals.against}
                 </TableCell>
               </TableRow>

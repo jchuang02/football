@@ -1,34 +1,22 @@
 import football from "../api/football";
 
-export const fetchLeagues =
-  (id, current = "true") =>
-  async (dispatch) => {
-    const { data } = await football.get("/leagues", {
-      params: { id, current },
-    });
-    const theData = { leagueInfo: data.response[0], lastUpdated: Date.now() };
-
-    dispatch({ type: "FETCH_LEAGUES", payload: theData });
-  };
-
-export const fetchSearchLeagues = (search) => async (dispatch) => {
-  const { data } = await football.get("/leagues", {
-    params: { search },
+export const fetchTeams = (id) => async (dispatch) => {
+  const { data } = await football.get("/teams", {
+    params: { id },
   });
-  const theData = { leagueInfo: data.response[0], lastUpdated: Date.now() };
 
-  dispatch({ type: "FETCH_SEARCH_LEAGUES", payload: theData });
+  const theData = { teamInfo: data.response[0], lastUpdated: Date.now() };
+  dispatch({ type: "FETCH_TEAMS", payload: theData });
 };
 
-export const updateLeagues =
-  (id, current = "true") =>
-  async (dispatch) => {
-    const { data } = await football.get("/leagues", {
-      params: { id, current },
-    });
-    const theData = { leagueInfo: data.response[0], lastUpdated: Date.now() };
-    dispatch({ type: "UPDATE_LEAGUES", payload: theData });
-  };
+export const updateTeams = (id) => async (dispatch) => {
+  const { data } = await football.get("/teams", {
+    params: { id },
+  });
+
+  const theData = { teamInfo: data.response[0], lastUpdated: Date.now() };
+  dispatch({ type: "UPDATE_TEAMS", payload: theData });
+};
 
 export const fetchStandings = (league, season) => async (dispatch) => {
   const { data } = await football.get("/standings", {
@@ -91,7 +79,7 @@ export const fetchFixtures = (season, league) => async (dispatch) => {
   const { data } = await football.get("/fixtures", {
     params: { season, league },
   });
-  let theData = {
+  const theData = {
     league: league,
     fixtureInfo: data.response,
     lastUpdated: Date.now(),
@@ -101,48 +89,47 @@ export const fetchFixtures = (season, league) => async (dispatch) => {
 };
 
 export const fetchUpcomingFixtures =
-  (season, league, next = 12) =>
+  (league, next = 12) =>
   async (dispatch) => {
     const { data } = await football.get("/fixtures", {
-      params: { season, league, next },
+      params: { league, next },
     });
 
-    let theData = {
+    const theData = {
       league: league,
       fixtureInfo: data.response,
       lastUpdated: Date.now(),
     };
-    dispatch({ type: "FETCH_FIXTURES", payload: theData });
+    dispatch({ type: "FETCH__UPCOMING_FIXTURES", payload: theData });
   };
 
 export const fetchPreviousFixtures =
-  (season, league, last = 12) =>
+  (league, last = 12) =>
   async (dispatch) => {
     const { data } = await football.get("/fixtures", {
-      params: { season, league, last },
+      params: { league, last },
     });
-    let theData = {
+    const theData = {
       league: league,
       fixtureInfo: data.response,
       lastUpdated: Date.now(),
     };
-    dispatch({ type: "FETCH_FIXTURES", payload: theData });
+    dispatch({ type: "FETCH_PREVIOUS_FIXTURES", payload: theData });
   };
 
-export const updateFixtures =
-  (season, league, from, to) => async (dispatch) => {
-    const { data } = await football.get("/fixtures", {
-      params: { season, league, from, to },
-    });
+export const updateFixtures = (season, league) => async (dispatch) => {
+  const { data } = await football.get("/fixtures", {
+    params: { season, league },
+  });
 
-    let theData = {
-      league: league,
-      fixtureInfo: data.response,
-      lastUpdated: Date.now(),
-    };
-
-    dispatch({ type: "UPDATE_FIXTURES", payload: theData });
+  const theData = {
+    league: league,
+    fixtureInfo: data.response,
+    lastUpdated: Date.now(),
   };
+
+  dispatch({ type: "UPDATE_FIXTURES", payload: theData });
+};
 
 export const updateLiveFixtures =
   (season, league, live = "all") =>
@@ -195,7 +182,11 @@ export const fetchFixture = (id) => async (dispatch) => {
 };
 
 export const selectLeague = (league) => {
-  return { type: "SET_SELECTED", payload: league };
+  return { type: "SET_SELECTED_LEAGUE", payload: league };
+};
+
+export const selectTeam = (team) => {
+  return { type: "SET_SELECTED_TEAM", payload: team };
 };
 
 export const setEmail = (email) => {
@@ -204,4 +195,108 @@ export const setEmail = (email) => {
 
 export const deleteEmail = (email) => {
   return { type: "DELETE_EMAIL", payload: email };
+};
+
+export const searchLeagues = (search) => async (dispatch) => {
+  const { data } = await football.get("/leagues", {
+    params: { search },
+  });
+
+  dispatch({ type: "SEARCH_LEAGUES", payload: data.response });
+};
+
+export const searchTeams = (search) => async (dispatch) => {
+  const { data } = await football.get("/teams", {
+    params: { search },
+  });
+
+  dispatch({ type: "SEARCH_TEAMS", payload: data.response });
+};
+
+export const searchReset = () => {
+  return { type: "SEARCH_RESET", payload: "" };
+};
+
+export const setTerm = (term) => {
+  return { type: "SET_TERM", payload: term };
+};
+
+export const resetTerm = () => {
+  return { type: "RESET_TERM", payload: "" };
+};
+
+export const addFaveTeam = (id) => {
+  return { type: "ADD_TEAM", payload: id };
+};
+
+export const addFaveLeague = (id) => {
+  return { type: "ADD_LEAGUE", payload: id };
+};
+
+export const deleteFaveTeam = (id) => {
+  return { type: "DELETE_TEAM", payload: id };
+};
+
+export const deleteFaveLeague = (id) => {
+  return { type: "DELETE_LEAGUE", payload: id };
+};
+
+export const resetFollowed = () => {
+  return { type: "RESET_FOLLOWED", payload: null };
+};
+
+export const fetchTeamFixtures = (team, season) => async (dispatch) => {
+  const { data } = await football.get("/fixtures", {
+    params: { team, season },
+  });
+  const theData = {
+    team: team,
+    fixtureInfo: data.response,
+    lastUpdated: Date.now(),
+  };
+  dispatch({ type: "FETCH_TEAM_FIXTURES", payload: theData });
+};
+
+export const updateTeamFixtures = (team, season) => async (dispatch) => {
+  const { data } = await football.get("fixtures", {
+    params: { team, season },
+  });
+
+  const theData = {
+    team: team,
+    fixtureInfo: data.response,
+    lastUpdated: Date.now(),
+  };
+  dispatch({ type: "UPDATE_TEAM_FIXTURES", payload: theData });
+};
+
+export const updateLiveTeamFixtures =
+  (team, season, live = "all") =>
+  async (dispatch) => {
+    const { data } = await football.get("/fixtures", {
+      params: { team, season, live },
+    });
+
+    if (data.results === 0) {
+      console.log("No Live fixtures.");
+      dispatch(updateTeamFixtures(team, season));
+    }
+
+    const theData = {
+      team: team,
+      fixtureInfo: data.response,
+      lastUpdated: Date.now(),
+    };
+
+    dispatch({ type: "UPDATE_LIVE_TEAM_FIXTURES", payload: theData });
+  };
+
+export const updateLiveTeamFixturesById = (id) => async (dispatch) => {
+  const { data } = await football.get("/fixtures", {
+    params: { id },
+  });
+
+  const theData = { fixtureInfo: data.response, lastUpdated: Date.now() };
+
+  dispatch({ type: "UPDATE_LIVE_TEAM_FIXTURES_BY_ID", payload: theData });
 };

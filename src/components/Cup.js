@@ -23,7 +23,6 @@ export default function Cup({ standings }) {
   // });
   // qualifications = [...new Set(qualifications)];
 
-
   //FIXME: Descriptions aren't being provided. Omitting Qualification Color Label for now.
   // const showQualificationStage = (team) => {
   //   if (qualifications.length <= 2) {
@@ -46,7 +45,6 @@ export default function Cup({ standings }) {
   return (
     <Container
       sx={{
-        margin: "1rem",
         display: "flex",
         flexWrap: "wrap",
       }}
@@ -57,26 +55,21 @@ export default function Cup({ standings }) {
             disableGutters={true}
             maxWidth={false}
             sx={{
-              width: "45%",
-              margin: "1rem",
+              width: "48%",
+              margin: "1%",
             }}
             key={group[0].group}
           >
             <Typography variant="h5">{group[0].group}</Typography>
-            <TableContainer
-              sx={{
-                border: "solid 2px #E5E5E5",
-                borderRadius: "8px",
-              }}
-            >
+            <TableContainer>
               <Table sx={{ borderCollapse: "separate" }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Rank</TableCell>
                     <TableCell>Team</TableCell>
-                    <TableCell align="right">Games Played</TableCell>
-                    <TableCell align="right">Points</TableCell>
-                    <TableCell align="right">Goal Difference</TableCell>
+                    <TableCell align="center">Points</TableCell>
+                    <TableCell align="center">Goal Difference</TableCell>
+                    <TableCell align="center">Games Played</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -128,9 +121,9 @@ export default function Cup({ standings }) {
                             {team.team.name}
                           </Typography>
                         </TableCell>
-                        <TableCell align="right">{team.all.played}</TableCell>
-                        <TableCell align="right">{team.points}</TableCell>
-                        <TableCell align="right">{team.goalsDiff}</TableCell>
+                        <TableCell align="center">{team.all.played}</TableCell>
+                        <TableCell align="center">{team.points}</TableCell>
+                        <TableCell align="center">{team.goalsDiff}</TableCell>
                       </TableRow>
                     );
                   })}

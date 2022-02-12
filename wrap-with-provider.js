@@ -3,6 +3,9 @@ import React from "react";
 import { Provider } from "react-redux";
 import createStore from "./src/state/createStore";
 import { initializeApp } from "firebase/app";
+import theme from "./src/components/MaterialUI/Theme";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.GATSBY_APP_FIREBASE_API_KEY,
@@ -16,11 +19,28 @@ const firebaseConfig = {
 
 // eslint-disable-next-line react/display-name,react/prop-types
 const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     // User is signed in, see docs for a list of available properties
+//     // https://firebase.google.com/docs/reference/js/firebase.User
+//     const uid = user.uid;
+//     // ...
+//   } else {
+//     // User is signed out
+//     // ...
+//   }
+// });
 export default ({ element }) => {
   // Instantiating store in `wrapRootElement` handler ensures:
   //  - there is fresh store for each SSR page
   //  - it will be called only once in browser, when React mounts
   const store = createStore();
 
-  return <Provider store={store}>{element}</Provider>;
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Provider store={store}>{element}</Provider>
+    </ThemeProvider>
+  );
 };

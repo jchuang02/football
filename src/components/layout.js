@@ -1,11 +1,11 @@
 import React from "react";
 import Nav from "./Nav";
 
-export default function Layout({ children }) {
+export default function Layout({ children, user }) {
   return (
     <>
-      <Nav></Nav>
-      <div>{children}</div>
+      <Nav user={user} />
+      {children}
     </>
   );
 }

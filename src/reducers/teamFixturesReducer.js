@@ -1,33 +1,21 @@
-/* eslint-disable import/no-anonymous-default-export */
+// eslint-disable-next-line import/no-anonymous-default-export
 export default (state = {}, action) => {
   switch (action.type) {
-    case "FETCH_FIXTURES":
+    case "FETCH_TEAM_FIXTURES":
       return {
         ...state,
-        [action.payload.league]: action.payload,
+        [action.payload.team]: action.payload,
       };
-
-    case "FETCH_PREVIOUS_FIXTURES":
-      return {
-        ...state,
-        [action.payload.league]: action.payload,
-      };
-
-    case "FETCH_UPCOMING_FIXTURES":
-      return {
-        ...state,
-        [action.payload.league]: action.payload,
-      };
-    case "UPDATE_FIXTURES":
+    case "UPDATE_TEAM_FIXTURES":
       const currentFixturesWithEvents = state[
-        action.payload.fixtureInfo[0].league.id
+        action.payload.team
       ].fixtureInfo.filter((fixture) => {
         return fixture.events;
       });
       if (currentFixturesWithEvents.length === 0) {
         return {
           ...state,
-          [action.payload.league]: action.payload,
+          [action.payload.team]: action.payload,
         };
       } else {
         const newFixturesArray = action.payload.fixtureInfo.map((fixture) => {
@@ -44,39 +32,39 @@ export default (state = {}, action) => {
         });
         return {
           ...state,
-          [action.payload.fixtureInfo[0].league.id]: {
+          [action.payload.fixtureInfo[0].team.id]: {
             fixtureInfo: newFixturesArray,
             lastUpdated: action.payload.lastUpdated,
           },
         };
       }
-    case "UPDATE_LIVE_FIXTURES":
+    case "UPDATE_LIVE_TEAM_FIXTURES":
       if (action.payload.fixtureInfo.length === 0) {
         return { ...state };
       } else {
-        const updatedFixturesArray = state[
-          action.payload.league
-        ].fixtureInfo.map((fixture) => {
-          for (let i = 0; i < action.payload.fixtureInfo.length; i++) {
-            if (
-              fixture.fixture.id === action.payload.fixtureInfo[i].fixture.id
-            ) {
-              return action.payload.fixtureInfo[i];
+        const updatedFixturesArray = state[action.payload.team].fixtureInfo.map(
+          (fixture) => {
+            for (let i = 0; i < action.payload.fixtureInfo.length; i++) {
+              if (
+                fixture.fixture.id === action.payload.fixtureInfo[i].fixture.id
+              ) {
+                return action.payload.fixtureInfo[i];
+              }
             }
+            return fixture;
           }
-          return fixture;
-        });
+        );
         return {
           ...state,
-          [action.payload.league]: {
+          [action.payload.team]: {
             fixtureInfo: updatedFixturesArray,
             lastUpdated: action.payload.lastUpdated,
           },
         };
       }
-    case "UPDATE_LIVE_FIXTURES_BY_ID":
+    case "UPDATE_LIVE_TEAM_FIXTURES_BY_ID":
       const updatedFixturesArrayById = state[
-        action.payload.fixtureInfo[0].league.id
+        action.payload.fixtureInfo[0].team.id
       ].fixtureInfo.map((fixture) => {
         if (fixture.fixture.id === action.payload.fixtureInfo[0].fixture.id) {
           return action.payload.fixtureInfo[0];
@@ -85,7 +73,7 @@ export default (state = {}, action) => {
       });
       return {
         ...state,
-        [action.payload.fixtureInfo[0].league.id]: {
+        [action.payload.fixtureInfo[0].team.id]: {
           fixtureInfo: updatedFixturesArrayById,
           lastUpdated: action.payload.lastUpdated,
         },

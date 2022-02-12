@@ -6,10 +6,7 @@ import reducers from "../reducers";
 import { loadState, saveState } from "../localStorage";
 const persistedState = loadState();
 
-const composeEnhancers =
-  (typeof window !== "undefined" &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-  compose;
+const composeEnhancers = compose;
 const middlewareEnhancer = applyMiddleware(thunkMiddleware);
 const composedEnhancers = composeEnhancers(middlewareEnhancer);
 const store = configureStore({
