@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import Standings from "../components/Standings";
 import { useDispatch } from "react-redux";
 import Layout from "../components/layout";
-import Selector from "../components/Selector";
 import {
   updateLiveFixtures,
   updateLiveFixturesById,

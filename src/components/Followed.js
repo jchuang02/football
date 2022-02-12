@@ -5,7 +5,7 @@ import { fetchLeagues, updateLeagues } from "../actions/leagues";
 import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
 import { AddSquare } from "iconoir-react";
 import theme from "./MaterialUI/Theme";
-import { Link } from "gatsby";
+import { navigate } from "gatsby";
 
 export default function Followed() {
   const dispatch = useDispatch();
@@ -78,23 +78,24 @@ export default function Followed() {
         {leagues
           ? followedTeams.map((team) => {
               return (
-                <Link key={team} to="/teams">
-                  <Box
-                    onClick={() => {
-                      if (selectedTeam !== team) {
-                        dispatch(selectTeam(team));
-                      }
-                    }}
-                    sx={{
-                      ...choiceStyle,
-                      backgroundImage: teams[team]
-                        ? `url(${teams[team].teamInfo.team.logo})`
-                        : "",
-                    }}
-                  >
-                    {teams[team] ? "" : ""}
-                  </Box>
-                </Link>
+                <Box
+                  onClick={() => {
+                    if (selectedTeam !== team) {
+                      dispatch(selectTeam(team));
+                    }
+                    if (window && window.location.pathname !== "/teams") {
+                      navigate("/teams");
+                    }
+                  }}
+                  sx={{
+                    ...choiceStyle,
+                    backgroundImage: teams[team]
+                      ? `url(${teams[team].teamInfo.team.logo})`
+                      : "",
+                  }}
+                >
+                  {teams[team] ? "" : ""}
+                </Box>
               );
             })
           : ""}
@@ -115,23 +116,27 @@ export default function Followed() {
         {leagues
           ? followedLeagues.map((league) => {
               return (
-                <Link key={league} to="/competitions">
-                  <Box
-                    onClick={() => {
-                      if (selectedLeague !== league) {
-                        dispatch(selectLeague(league));
-                      }
-                    }}
-                    sx={{
-                      ...choiceStyle,
-                      backgroundImage: leagues[league]
-                        ? `url(${leagues[league].leagueInfo.league.logo})`
-                        : "",
-                    }}
-                  >
-                    {leagues[league] ? "" : ""}
-                  </Box>
-                </Link>
+                <Box
+                  onClick={() => {
+                    if (selectedLeague !== league) {
+                      dispatch(selectLeague(league));
+                    }
+                    if (
+                      window &&
+                      window.location.pathname !== "/competitions"
+                    ) {
+                      navigate("/competitions");
+                    }
+                  }}
+                  sx={{
+                    ...choiceStyle,
+                    backgroundImage: leagues[league]
+                      ? `url(${leagues[league].leagueInfo.league.logo})`
+                      : "",
+                  }}
+                >
+                  {leagues[league] ? "" : ""}
+                </Box>
               );
             })
           : ""}

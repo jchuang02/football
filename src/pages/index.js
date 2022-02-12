@@ -92,14 +92,8 @@ export default function Home() {
   const email = useSelector((state) => state.email);
   const isBrowser = typeof window !== "undefined";
   if (isBrowser && isSignInWithEmailLink(auth, window.location.href)) {
-    if (email.length > 0) {
-      console.log(`Your email is : ${email}`);
-    } else {
-      console.log("Ask user for their email");
-    }
     signInWithEmailLink(auth, email, window.location.href)
       .then((result) => {
-        console.log(result.user);
         dispatch(deleteEmail());
       })
       .catch((error) => {

@@ -13,9 +13,6 @@ export default function Option({ step, result }) {
   const dispatch = useDispatch();
   const followed = useSelector((state) => state.followed);
   const handleChange = () => {
-    console.log("====================================");
-    console.log(result);
-    console.log("====================================");
     setChecked(!checked);
     if (!step && checked) {
       dispatch(deleteFaveTeam(result.team.id));
