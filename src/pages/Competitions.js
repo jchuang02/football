@@ -31,11 +31,7 @@ export default function Competitions() {
   const leagues = useSelector((state) => state.leagues);
   const selectedLeague = useSelector((state) => state.selectedLeague);
   const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
-  const current = useSelector((state) =>
-    state.leagues[selectedLeague]
-      ? state.leagues[selectedLeague].leagueInfo.seasons[0].year
-      : 2021
-  );
+  const current = 2021;
   const standings = useSelector((state) => state.standings[selectedLeague]);
 
   useEffect(() => {
