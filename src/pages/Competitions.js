@@ -30,7 +30,6 @@ export default function Competitions() {
   const dispatch = useDispatch();
   const leagues = useSelector((state) => state.leagues);
   const selectedLeague = useSelector((state) => state.selectedLeague);
-  const followedLeagues = useSelector((state) => state.followed.leagues);
   const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
   const current = useSelector((state) =>
     state.leagues[selectedLeague]
