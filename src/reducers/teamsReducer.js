@@ -7,10 +7,9 @@ export default (state = {}, action) => {
         [action.payload.teamInfo.team.id]: action.payload,
       };
     case "UPDATE_TEAMS":
-      const id = action.payload.teamInfo.team.id;
       return {
         ...state,
-        [id]: {
+        [action.payload.teamInfo.team.id]: {
           teamInfo: action.payload.teamInfo,
           lastUpdated: action.payload.lastUpdated,
         },

@@ -45,7 +45,7 @@ export default function Followed() {
 
     Object.values(teams).forEach((team) => {
       if (Date.now() - team.lastUpdated >= 86400000) {
-        dispatch(updateTeams(team.teamInfo.league.id));
+        dispatch(updateTeams(team.teamInfo.team.id));
       }
     });
   }, [followedLeagues, followedTeams, dispatch, leagues, teams]);

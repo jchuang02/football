@@ -20,7 +20,7 @@
     "firebase": "^9.6.5",
     "gatsby": "^4.6.0",
     "gatsby-plugin-image": "^2.6.0",
-    "gatsby-plugin-material-ui": "^4.0.2",
+    "gatsby-plugin-material-ui": "^4.1.0",
     "gatsby-plugin-react-redux": "^1.1.0",
     "gatsby-plugin-react-redux-persist": "^1.1.0",
     "gatsby-plugin-sharp": "^4.6.0",
