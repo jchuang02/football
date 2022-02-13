@@ -37,6 +37,7 @@ export default function Teams() {
     }
   });
 
+  //If live fixtures are present in fixtures, update them.
   useEffect(() => {
     if (fixtures) {
       if (
@@ -60,6 +61,7 @@ export default function Teams() {
     }
   }, [selectedTeam, fixtures, dispatch]);
 
+  //For matches starting later today
   useEffect(() => {
     if (fixtures !== undefined) {
       const fixturesInProgress = fixtures.fixtureInfo.filter(({ fixture }) => {
