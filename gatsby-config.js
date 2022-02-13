@@ -1,12 +1,14 @@
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
+
 module.exports = {
   plugins: [
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-material-ui`,
+    `gatsby-plugin-gatsby-cloud`,
 
     {
       resolve: `gatsby-plugin-react-redux`,
