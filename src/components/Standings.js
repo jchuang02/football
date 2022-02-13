@@ -1,26 +1,11 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
-import { fetchStandings, updateStandings } from "../actions";
 import Cup from "./Cup";
 import League from "./League";
-import Selector from "../components/Selector";
 
 export default function Standings({ selectedLeague = 0 }) {
-  // const selectedLeague = useSelector((state) => state.selectedLeague);
   const standings = useSelector((state) => state.standings[selectedLeague]);
-  const dispatch = useDispatch();
-  const leagues = useSelector((state) => state.leagues);
-  const followedLeagues = useSelector((state) => state.followed.leagues);
-  useEffect(() => {
-    if (selectedLeague) {
-      if (standings === undefined) {
-        dispatch(fetchStandings(selectedLeague, 2021));
-      } else if (Date.now() - standings.lastUpdated >= 86400000) {
-        dispatch(updateStandings(selectedLeague, 2021));
-      }
-    }
-  }, [dispatch, standings, selectedLeague]);
 
   const showStandings = () => {
     if (standings !== undefined) {

@@ -1,8 +1,7 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import Standings from "../components/Standings";
-import { useDispatch } from "react-redux";
 import Layout from "../components/layout";
 import {
   updateLiveFixtures,
@@ -10,7 +9,13 @@ import {
   updateStandings,
   updateFixtures,
   fetchFixtures,
+  fetchStandings,
 } from "../actions";
+import {
+  fixturesInProgress,
+  fixturesFinished,
+  fixturesUpcoming,
+} from "../helpers/fixturesHelper";
 import {
   fixtureInProgress,
   fixtureFinished,
@@ -20,11 +25,6 @@ import {
 import Live from "../components/Matches/Live";
 import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
-import {
-  fixturesInProgress,
-  fixturesFinished,
-  fixturesUpcoming,
-} from "../helpers/fixturesHelper";
 
 export default function Competitions() {
   const dispatch = useDispatch();
@@ -33,6 +33,16 @@ export default function Competitions() {
   const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
   const current = 2021;
   const standings = useSelector((state) => state.standings[selectedLeague]);
+
+  useEffect(() => {
+    if (selectedLeague) {
+      if (standings === undefined) {
+        dispatch(fetchStandings(selectedLeague, 2021));
+      } else if (Date.now() - standings.lastUpdated >= 86400000) {
+        dispatch(updateStandings(selectedLeague, 2021));
+      }
+    }
+  }, [dispatch, standings, selectedLeague]);
 
   useEffect(() => {
     if (!fixtures) {
@@ -65,9 +75,7 @@ export default function Competitions() {
         dispatch(updateFixtures(current, selectedLeague));
       }
     }
-
-    // eslint-disable-next-line
-  }, [selectedLeague]);
+  }, [selectedLeague, dispatch, fixtures]);
 
   //For matches starting later today
   useEffect(() => {

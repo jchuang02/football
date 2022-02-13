@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   fetchTeamFixtures,
   updateTeamFixtures,
@@ -12,15 +12,15 @@ import {
   fixtureEnding,
   fixtureOnBreak,
 } from "../helpers/fixtureStatusHelper";
-import Upcoming from "../components/Matches/Upcoming";
-import Recent from "../components/Matches/Recent";
-import Live from "../components/Matches/Live";
-import Layout from "../components/layout";
 import {
   fixturesInProgress,
   fixturesUpcoming,
   fixturesFinished,
 } from "../helpers/fixturesHelper";
+import Upcoming from "../components/Matches/Upcoming";
+import Recent from "../components/Matches/Recent";
+import Live from "../components/Matches/Live";
+import Layout from "../components/layout";
 
 export default function Teams() {
   const dispatch = useDispatch();
@@ -58,8 +58,7 @@ export default function Teams() {
         dispatch(updateTeamFixtures(selectedTeam, 2021));
       }
     }
-    // eslint-disable-next-line
-  }, [selectedTeam]);
+  }, [selectedTeam, fixtures, dispatch]);
 
   useEffect(() => {
     if (fixtures !== undefined) {
