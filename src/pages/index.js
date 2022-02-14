@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import {
@@ -104,12 +104,20 @@ export default function Home() {
 
   return (
     <Layout>
-      <Live fixtures={fixturesInProgress(fixtures ? fixtures : "")} />
       <Box
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <Live fixtures={fixturesInProgress(fixtures ? fixtures : "")} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-evenly",
         }}
       >
         <Recent fixtures={fixturesFinished(fixtures ? fixtures : "")} />

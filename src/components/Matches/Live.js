@@ -9,7 +9,6 @@ export default function Live({ fixtures }) {
     const fixtureCards = separateFixtures(fixtures);
     return (
       <Box sx={!fixtures.length > 0 ? { display: "none" } : {}}>
-        <Typography variant="h5">Live Matches</Typography>
         <Box
           sx={{
             display: "flex",
@@ -38,6 +37,9 @@ export default function Live({ fixtures }) {
             <Typography>No Upcoming Matches</Typography>
           )}
         </Box>
+        <Typography variant="h5" align="center">
+          Live
+        </Typography>
       </Box>
     );
   } else {

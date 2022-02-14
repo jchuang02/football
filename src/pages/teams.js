@@ -168,16 +168,25 @@ export default function Teams() {
         )}
         {selectedTeam ? (
           <>
+          <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+              }}
+            >
             <Live
               fixtures={fixturesInProgress(
                 fixtures ? fixtures.fixtureInfo : ""
               )}
             />
+            </Box>
+
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "center",
+                justifyContent: "space-evenly",
               }}
             >
               <Recent

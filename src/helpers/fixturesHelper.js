@@ -8,8 +8,10 @@ export const separateFixtures = (fixtures) => {
       const first = fixtures[i];
       const second = fixtures[i + 1];
       separatedFixtures.push([first, second]);
-    } else {
+    } else if (i > 0) {
       separatedFixtures.push([fixtures[i - 1]]);
+    } else {
+      separatedFixtures.push([fixtures[i]]);
     }
   }
 

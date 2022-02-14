@@ -1,8 +1,4 @@
 import React from "react";
-import {
-  fixtureInProgress,
-  fixtureFinished,
-} from "../../helpers/fixtureStatusHelper";
 import { separateFixtures } from "../../helpers/fixturesHelper";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import FixtureCard from "../FixtureCard";

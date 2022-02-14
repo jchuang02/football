@@ -183,11 +183,20 @@ export default function Competitions() {
         )}
         {selectedLeague ? (
           <>
-            <Live
-              fixtures={fixturesInProgress(
-                fixtures ? fixtures.fixtureInfo : ""
-              )}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+              }}
+            >
+              <Live
+                fixtures={fixturesInProgress(
+                  fixtures ? fixtures.fixtureInfo : ""
+                )}
+              />
+            </Box>
+
             <Box
               sx={{
                 display: "flex",
