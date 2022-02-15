@@ -18,6 +18,8 @@ export default function Standings({ selectedLeague = 0 }) {
       } else {
         return <Typography>No Standings Available</Typography>;
       }
+    } else if (selectedLeague === 0) {
+      return "";
     } else {
       return (
         <Box sx={{ display: "flex", padding: "4rem" }}>

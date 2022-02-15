@@ -21,8 +21,12 @@ export default function Account() {
   };
   return (
     <Layout>
-      <Button onClick={handleSignOut}>Sign Out</Button>
-      <Link to="/personalize">I'm a Link</Link>
+      <Button variant="contained" onClick={handleSignOut}>
+        Sign Out
+      </Button>
+      <Link to="/personalize">
+        <Button variant="contained">Personalize</Button>
+      </Link>
     </Layout>
   );
 }

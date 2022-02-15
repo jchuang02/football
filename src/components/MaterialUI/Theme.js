@@ -58,16 +58,9 @@ const theme = createTheme({
     },
     MuiOutlinedInput: {
       styleOverrides: {
-        root: {
+        notchedOutline: {
           border: "2px solid #2E3A59",
           borderRadius: "16px",
-          "&:hover": {
-            border: "4px solid #2E3A59",
-            borderRadius: "16px",
-          },
-        },
-        notchedOutline: {
-          border: 0,
         },
       },
     },

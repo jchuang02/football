@@ -1,25 +1,35 @@
 import {
+  styled,
   Box,
   Container,
-  CircularProgress,
   FormControl,
   OutlinedInput,
   Select,
   MenuItem,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { selectitem } from "../actions";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { MoonSat } from "iconoir-react";
 import theme from "../components/MaterialUI/Theme";
+
+const SelectorInput = styled(OutlinedInput)(({ theme }) => ({
+  border: "2px solid #2E3A59",
+  borderRadius: "16px",
+  "&:hover": {
+    border: "4px solid #2E3A59",
+    borderRadius: "16px",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: 0,
+  },
+}));
 
 //Passed in an array of Object items, each containing an id, name, logo, country, and flag.
 export default function Selector({ selected, setSelected, items = [] }) {
   const currentItemIndex = items.findIndex((element) => {
     return element.id === selected;
   });
+
   return (
     <Container
       sx={{
@@ -64,7 +74,7 @@ export default function Selector({ selected, setSelected, items = [] }) {
           onChange={(e) => {
             setSelected(e.target.value);
           }}
-          input={<OutlinedInput />}
+          input={<SelectorInput />}
           renderValue={() => {
             if (!selected) {
               return <em>Choose Competition</em>;

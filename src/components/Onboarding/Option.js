@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Typography } from "@mui/material";
+import { Box, Checkbox, Typography } from "@mui/material";
 import {
   addFaveTeam,
   addFaveLeague,
@@ -9,9 +9,12 @@ import {
 } from "../../actions";
 
 export default function Option({ step, result }) {
-  const [checked, setChecked] = useState(false);
-  const dispatch = useDispatch();
   const followed = useSelector((state) => state.followed);
+  const [checked, setChecked] = useState(
+    followed.teams.includes(result.team ? result.team.id : 0) ||
+      followed.leagues.includes(result.league ? result.league.id : 0)
+  );
+  const dispatch = useDispatch();
   const handleChange = () => {
     setChecked(!checked);
     if (!step && checked) {
@@ -33,7 +36,7 @@ export default function Option({ step, result }) {
     width: "23%",
     flexBasis: "23%",
     textAlign: "center",
-    background: "url('images/greenCheck.png')",
+    background: "url('../../images/source_icons_check.svg')",
     backgroundColor: "rgba(0,0,0,0.2);",
     "&:hover": {
       cursor: "pointer",
@@ -52,6 +55,9 @@ export default function Option({ step, result }) {
       cursor: "pointer",
     },
   };
+
+  const label = { inputProps: { "aria-label": "Checkbox option" } };
+
   return (
     <Box onClick={handleChange} sx={checked ? checkedBox : uncheckedBox}>
       <img
@@ -60,6 +66,7 @@ export default function Option({ step, result }) {
         style={{ height: "80px", width: "80px" }}
       ></img>
       <Typography>{step ? result.league.name : result.team.name}</Typography>
+      <Checkbox {...label} checked={checked} />
     </Box>
   );
 }

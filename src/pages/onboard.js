@@ -23,14 +23,6 @@ const style = {
 };
 
 export default function Onboard() {
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("User is currently signed in");
-    } else {
-      console.log("User is currently signed out");
-    }
-  });
   return (
     <>
       <Layout>

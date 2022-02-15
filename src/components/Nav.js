@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useScrollTrigger,
   AppBar,
@@ -11,8 +11,8 @@ import { Link } from "gatsby";
 import { Home } from "iconoir-react";
 import theme from "./MaterialUI/Theme";
 import { ProfileCircled } from "iconoir-react";
-import { getAuth } from "firebase/auth";
 import Followed from "../components/Followed";
+import useAuth from "../hooks/useAuth";
 
 function ElevationScroll(props) {
   const { children } = props;
@@ -28,8 +28,8 @@ function ElevationScroll(props) {
 }
 
 export default function Nav(props) {
-  const auth = getAuth();
-  const user = auth.currentUser;
+  const user = useAuth();
+
   return (
     <ElevationScroll {...props}>
       <AppBar>
@@ -56,7 +56,7 @@ export default function Nav(props) {
                   alignItems: "center",
                 }}
               >
-                <Typography>{user.email}</Typography>
+                <Typography>{user}</Typography>
                 <ProfileCircled
                   color={theme.palette.primary.main}
                   width={"48px"}

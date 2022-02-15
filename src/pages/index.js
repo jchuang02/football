@@ -9,7 +9,7 @@ import {
 import { useDispatch } from "react-redux";
 import { deleteEmail } from "../actions";
 import Layout from "../components/layout";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Live from "../components/Matches/Live";
 import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
@@ -36,7 +36,7 @@ export default function Home() {
     };
   });
   const [selected, setSelected] = useState(
-    selectorItems[0] ? selectorItems[0].id : ""
+    selectorItems[0] ? selectorItems[0].id : 0
   );
 
   const fixtures = useSelector((state) => {
@@ -102,33 +102,41 @@ export default function Home() {
       });
   }
 
-  return (
-    <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <Live fixtures={fixturesInProgress(fixtures ? fixtures : "")} />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <Recent fixtures={fixturesFinished(fixtures ? fixtures : "")} />
-        <Upcoming fixtures={fixturesUpcoming(fixtures ? fixtures : "")} />
-      </Box>
-      <Selector
-        selected={selected}
-        setSelected={setSelected}
-        items={selectorItems}
-      />
-      <Standings selectedLeague={selected} />
-    </Layout>
-  );
+  if (!followedLeagues.length > 0 && !followedTeams.length > 0) {
+    return (
+      <Layout>
+        <Typography variant="h1">Welcome to dashboard.football</Typography>
+      </Layout>
+    );
+  } else {
+    return (
+      <Layout>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Live fixtures={fixturesInProgress(fixtures ? fixtures : "")} />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Recent fixtures={fixturesFinished(fixtures ? fixtures : "")} />
+          <Upcoming fixtures={fixturesUpcoming(fixtures ? fixtures : "")} />
+        </Box>
+        <Selector
+          selected={selected}
+          setSelected={setSelected}
+          items={selectorItems}
+        />
+        <Standings selectedLeague={selected} />
+      </Layout>
+    );
+  }
 }

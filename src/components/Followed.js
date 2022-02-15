@@ -3,9 +3,8 @@ import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLeagues, updateLeagues } from "../actions/leagues";
 import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
-import { AddSquare } from "iconoir-react";
-import theme from "./MaterialUI/Theme";
 import { navigate } from "gatsby";
+import PersonalizationModal from "./Onboarding/PersonalizationModal";
 
 export default function Followed() {
   const dispatch = useDispatch();
@@ -79,6 +78,7 @@ export default function Followed() {
           ? followedTeams.map((team) => {
               return (
                 <Box
+                  key={team}
                   onClick={() => {
                     if (selectedTeam !== team) {
                       dispatch(selectTeam(team));
@@ -99,11 +99,7 @@ export default function Followed() {
               );
             })
           : ""}
-        <AddSquare
-          color={theme.palette.primary.main}
-          width={"32px"}
-          height={"32px"}
-        />
+        <PersonalizationModal />
       </Box>
 
       <Box
@@ -117,6 +113,7 @@ export default function Followed() {
           ? followedLeagues.map((league) => {
               return (
                 <Box
+                  key={league}
                   onClick={() => {
                     if (selectedLeague !== league) {
                       dispatch(selectLeague(league));
@@ -140,11 +137,7 @@ export default function Followed() {
               );
             })
           : ""}
-        <AddSquare
-          color={theme.palette.primary.main}
-          width={"32px"}
-          height={"32px"}
-        />
+        <PersonalizationModal />
       </Box>
     </>
   );

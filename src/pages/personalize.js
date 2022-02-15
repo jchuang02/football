@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { styled } from "@mui/material/styles";
+import {
+  getAuth,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+} from "firebase/auth";
 import {
   Box,
   Button,
@@ -9,6 +13,7 @@ import {
   Stepper,
   IconButton,
   Typography,
+  styled,
 } from "@mui/material";
 import StepConnector, {
   stepConnectorClasses,
@@ -26,6 +31,7 @@ import { useSelector, useDispatch } from "react-redux";
 import theme from "../components/MaterialUI/Theme";
 import Option from "../components/Onboarding/Option";
 import { navigate } from "gatsby";
+import { deleteEmail } from "../actions";
 
 const steps = ["Choose Teams", "Choose Competitions and Leagues"];
 const style = {
@@ -48,8 +54,22 @@ export default function Personalize() {
   const [activeStep, setActiveStep] = useState(0);
   const term = useSelector((state) => state.term);
   const results = useSelector((state) => state.search);
-  const followed = useSelector((state) => state.followed);
   const dispatch = useDispatch();
+
+  const email = useSelector((state) => state.email);
+  const auth = getAuth();
+
+  const isBrowser = typeof window !== "undefined";
+  if (isBrowser && isSignInWithEmailLink(auth, window.location.href)) {
+    signInWithEmailLink(auth, email, window.location.href)
+      .then((result) => {
+        dispatch(deleteEmail());
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.code);
+      });
+  }
 
   useEffect(() => {
     dispatch(resetTerm());
@@ -59,10 +79,8 @@ export default function Personalize() {
   useEffect(() => {
     const debouncedSearch = setTimeout(() => {
       if (!activeStep && term.length >= 3) {
-        console.log("searching Teams");
         dispatch(searchTeams(term));
       } else if (activeStep && term.length >= 3) {
-        console.log("searching Competitions");
         dispatch(searchLeagues(term));
       }
     }, 500);
@@ -190,7 +208,13 @@ export default function Personalize() {
         >
           {results.length > 0 ? (
             results.map((result) => {
-              return <Option step={activeStep} result={result} />;
+              return (
+                <Option
+                  step={activeStep}
+                  result={result}
+                  key={result.team ? result.team.id : result.league.id}
+                />
+              );
             })
           ) : (
             <Box
