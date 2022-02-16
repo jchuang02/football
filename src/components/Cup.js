@@ -67,9 +67,9 @@ export default function Cup({ standings }) {
                   <TableRow>
                     <TableCell>Rank</TableCell>
                     <TableCell>Team</TableCell>
+                    <TableCell align="center">Games Played</TableCell>
                     <TableCell align="center">Points</TableCell>
                     <TableCell align="center">Goal Difference</TableCell>
-                    <TableCell align="center">Games Played</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

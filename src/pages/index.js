@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
 import {
   getAuth,
   isSignInWithEmailLink,
   signInWithEmailLink,
 } from "firebase/auth";
-import { useDispatch } from "react-redux";
 import { deleteEmail } from "../actions";
 import Layout from "../components/layout";
 import { Box, Typography } from "@mui/material";
@@ -20,21 +18,26 @@ import {
 } from "../helpers/fixturesHelper";
 import Standings from "../components/Standings";
 import Selector from "../components/Selector";
+import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
 
 export default function Home() {
   const dispatch = useDispatch();
   const leagues = useSelector((state) => state.leagues);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
-  const selectorItems = followedLeagues.map((league) => {
-    return {
-      id: leagues[league].leagueInfo.league.id,
-      name: leagues[league].leagueInfo.league.name,
-      logo: leagues[league].leagueInfo.league.logo,
-      country: leagues[league].leagueInfo.country.name,
-      flag: leagues[league].leagueInfo.country.flag,
-    };
-  });
+  const selectorItems = followedLeagues
+    .filter((league) => {
+      return Object.keys(leagues).includes(String(league));
+    })
+    .map((league) => {
+      return {
+        id: leagues[league].leagueInfo.league.id,
+        name: leagues[league].leagueInfo.league.name,
+        logo: leagues[league].leagueInfo.league.logo,
+        country: leagues[league].leagueInfo.country.name,
+        flag: leagues[league].leagueInfo.country.flag,
+      };
+    });
   const [selected, setSelected] = useState(
     selectorItems[0] ? selectorItems[0].id : 0
   );
@@ -87,20 +90,7 @@ export default function Home() {
     return Array.from(allFixtures);
   });
 
-  const auth = getAuth();
-
-  const email = useSelector((state) => state.email);
-  const isBrowser = typeof window !== "undefined";
-  if (isBrowser && isSignInWithEmailLink(auth, window.location.href)) {
-    signInWithEmailLink(auth, email, window.location.href)
-      .then((result) => {
-        dispatch(deleteEmail());
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.code);
-      });
-  }
+  useSignInWithEmailLink();
 
   if (!followedLeagues.length > 0 && !followedTeams.length > 0) {
     return (
@@ -130,12 +120,18 @@ export default function Home() {
           <Recent fixtures={fixturesFinished(fixtures ? fixtures : "")} />
           <Upcoming fixtures={fixturesUpcoming(fixtures ? fixtures : "")} />
         </Box>
-        <Selector
-          selected={selected}
-          setSelected={setSelected}
-          items={selectorItems}
-        />
-        <Standings selectedLeague={selected} />
+        {leagues ? (
+          <>
+            <Selector
+              selected={selected}
+              setSelected={setSelected}
+              items={selectorItems}
+            />
+            <Standings selectedLeague={selected} />
+          </>
+        ) : (
+          ""
+        )}
       </Layout>
     );
   }

@@ -8,7 +8,6 @@ import fixtureReducer from "./fixtureReducer";
 import selectedLeagueReducer from "./selectedLeagueReducer";
 import emailReducer from "./emailReducer";
 import searchReducer from "./searchReducer";
-import termReducer from "./termReducer";
 import followedReducer from "./followedReducer";
 import teamFixturesReducer from "./teamFixturesReducer";
 import selectedTeamReducer from "./selectedTeamReducer";
@@ -25,6 +24,5 @@ export default combineReducers({
   selectedTeam: selectedTeamReducer,
   email: emailReducer,
   search: searchReducer,
-  term: termReducer,
   followed: followedReducer,
 });

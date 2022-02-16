@@ -7,13 +7,6 @@ import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
 import { setEmail } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 
-const actionCodeSettings = {
-  // URL you want to redirect back to. The domain (www.example.com) for this
-  // URL must be in the authorized domains list in the Firebase Console.
-  url: "http://localhost:8000/personalize",
-  handleCodeInApp: true,
-};
-
 const style = {
   width: "40vw",
   bgcolor: "background.paper",
@@ -28,9 +21,19 @@ const style = {
 
 export default function MyForm() {
   const dispatch = useDispatch();
+  const followed = useSelector((state) => state.followed);
   const email = useSelector((state) => state.email);
   const auth = getAuth();
 
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be in the authorized domains list in the Firebase Console.
+    url:
+      followed.teams.length > 0 && followed.leagues.length > 0
+        ? "http://localhost:8000/"
+        : "http://localhost:8000/personalize",
+    handleCodeInApp: true,
+  };
   const onSubmit = async (values) => {
     sendSignInLinkToEmail(auth, values.email, actionCodeSettings, dispatch)
       .then(() => {
@@ -93,7 +96,7 @@ export default function MyForm() {
             {email ? (
               <Typography>
                 {" "}
-                {`Login email has been sent to ${email}`}
+                {`A login email has been sent to ${email}!`}
               </Typography>
             ) : (
               ""

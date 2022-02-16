@@ -14,6 +14,7 @@ export default function Option({ step, result }) {
     followed.teams.includes(result.team ? result.team.id : 0) ||
       followed.leagues.includes(result.league ? result.league.id : 0)
   );
+
   const dispatch = useDispatch();
   const handleChange = () => {
     setChecked(!checked);

@@ -20,18 +20,26 @@ export const separateFixtures = (fixtures) => {
 
 export const fixturesInProgress = (fixtures) => {
   if (fixtures) {
-    return fixtures.filter(({ fixture }) => {
-      return fixtureInProgress(fixture.status.short);
-    });
+    return fixtures
+      .filter(({ fixture }) => {
+        return fixtureInProgress(fixture.status.short);
+      })
+      .sort((fixtureOne, fixtureTwo) => {
+        return fixtureOne.fixture.timestamp - fixtureTwo.fixture.timestamp;
+      });
   }
   return "";
 };
 
 export const fixturesFinished = (fixtures) => {
   if (fixtures) {
-    return fixtures.filter(({ fixture }) => {
-      return fixtureFinished(fixture.status.short);
-    });
+    return fixtures
+      .filter(({ fixture }) => {
+        return fixtureFinished(fixture.status.short);
+      })
+      .sort((fixtureOne, fixtureTwo) => {
+        return fixtureTwo.fixture.timestamp - fixtureOne.fixture.timestamp;
+      });
   }
   return "";
 };
@@ -50,4 +58,5 @@ export const fixturesUpcoming = (fixtures) => {
         return fixtureOne.fixture.timestamp - fixtureTwo.fixture.timestamp;
       });
   }
+  return "";
 };

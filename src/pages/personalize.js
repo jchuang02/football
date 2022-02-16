@@ -1,37 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
-import {
-  Box,
-  Button,
-  InputBase,
-  Step,
-  StepLabel,
-  Stepper,
-  IconButton,
-  Typography,
-  styled,
-} from "@mui/material";
+import { getAuth } from "firebase/auth";
+import { Box, Button, Step, StepLabel, Stepper, styled } from "@mui/material";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import Layout from "../components/layout";
-import { Search, Trophy, Group } from "iconoir-react";
-import {
-  searchTeams,
-  searchLeagues,
-  searchReset,
-  setTerm,
-  resetTerm,
-} from "../actions";
+import SearchInput from "../components/SearchInput";
+import { Trophy, Group } from "iconoir-react";
+import { searchTeams, searchLeagues, searchReset } from "../actions";
 import { useSelector, useDispatch } from "react-redux";
-import theme from "../components/MaterialUI/Theme";
 import Option from "../components/Onboarding/Option";
 import { navigate } from "gatsby";
-import { deleteEmail } from "../actions";
+import { addFollowsToFirebase } from "../helpers/firebaseHelper";
+import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
 
 const steps = ["Choose Teams", "Choose Competitions and Leagues"];
 const style = {
@@ -52,27 +33,15 @@ const style = {
 
 export default function Personalize() {
   const [activeStep, setActiveStep] = useState(0);
-  const term = useSelector((state) => state.term);
+  const [term, setTerm] = useState("");
+  const followed = useSelector((state) => state.followed);
   const results = useSelector((state) => state.search);
   const dispatch = useDispatch();
-
-  const email = useSelector((state) => state.email);
   const auth = getAuth();
-
-  const isBrowser = typeof window !== "undefined";
-  if (isBrowser && isSignInWithEmailLink(auth, window.location.href)) {
-    signInWithEmailLink(auth, email, window.location.href)
-      .then((result) => {
-        dispatch(deleteEmail());
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.code);
-      });
-  }
+  useSignInWithEmailLink();
 
   useEffect(() => {
-    dispatch(resetTerm());
+    setTerm("");
     dispatch(searchReset());
   }, [activeStep, dispatch]);
 
@@ -90,24 +59,27 @@ export default function Personalize() {
   }, [activeStep, dispatch, term]);
 
   const handleInput = (e) => {
-    dispatch(setTerm(e.target.value));
+    setTerm(e.target.value);
   };
 
   const handleNext = () => {
-    dispatch(resetTerm());
+    setTerm("");
     dispatch(searchReset());
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    dispatch(resetTerm());
+    setTerm("");
     dispatch(searchReset());
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleConfirm = () => {
-    dispatch(resetTerm());
+    setTerm("");
     dispatch(searchReset());
+    if (auth.currentUser) {
+      addFollowsToFirebase(followed, auth.currentUser.uid);
+    }
     navigate("/");
   };
 
@@ -155,36 +127,11 @@ export default function Personalize() {
             </Step>
           ))}
         </Stepper>
-        <Box
-          sx={{
-            border: "4px solid #2E3A59",
-            p: 1,
-            m: 1,
-            borderRadius: "16px",
-            width: "50%",
-          }}
-        >
-          <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
-            <Search />
-          </IconButton>
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder={
-              activeStep === steps.length - 1
-                ? "Search Competitions"
-                : "Search Teams"
-            }
-            inputProps={{
-              "aria-label":
-                activeStep === steps.length - 1
-                  ? "Search Competitions"
-                  : "Search Teams",
-            }}
-            autoFocus={true}
-            onChange={handleInput}
-            value={term}
-          />
-        </Box>
+        <SearchInput
+          handleInput={handleInput}
+          term={term}
+          type={activeStep ? "league" : "team"}
+        />
         <Box
           sx={
             results

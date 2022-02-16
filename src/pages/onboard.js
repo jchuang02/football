@@ -3,7 +3,6 @@ import MyForm from "../components/Onboarding/MyForm";
 import Layout from "../components/layout";
 import ValueProposition from "../components/Onboarding/ValueProposition";
 import { Container } from "@mui/material";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Box } from "@mui/material";
 import { Trophy, StatsSquareUp, AntennaSignal } from "iconoir-react";
 import theme from "../components/MaterialUI/Theme";
@@ -15,8 +14,7 @@ const style = {
   bgcolor: "background.paper",
   border: "4px solid #2E3A59",
   p: 4,
-  marginTop: "10rem",
-  marginBottom: 4,
+  marginBottom: 2,
   marginLeft: "auto",
   marginRight: "auto",
   borderRadius: "16px",

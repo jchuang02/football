@@ -5,6 +5,7 @@ import createStore from "./src/state/createStore";
 import { initializeApp } from "firebase/app";
 import theme from "./src/components/MaterialUI/Theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.GATSBY_APP_FIREBASE_API_KEY,
@@ -17,6 +18,8 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig);
+
+const db = getFirestore();
 export default ({ element }) => {
   // Instantiating store in `wrapRootElement` handler ensures:
   //  - there is fresh store for each SSR page

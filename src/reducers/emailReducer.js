@@ -4,7 +4,7 @@ export default (state = "", action) => {
     case "SET_EMAIL":
       return action.payload;
     case "DELETE_EMAIL":
-      return "";
+      return action.payload;
     default:
       return state;
   }

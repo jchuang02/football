@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchLeagues, updateLeagues } from "../actions/leagues";
 import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
 import { navigate } from "gatsby";
-import PersonalizationModal from "./Onboarding/PersonalizationModal";
+import AddLeagueModal from "./Onboarding/AddLeagueModal";
+import AddTeamModal from "./Onboarding/AddTeamModal";
 
 export default function Followed() {
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ export default function Followed() {
               );
             })
           : ""}
-        <PersonalizationModal />
+        <AddTeamModal />
       </Box>
 
       <Box
@@ -137,7 +138,7 @@ export default function Followed() {
               );
             })
           : ""}
-        <PersonalizationModal />
+        <AddLeagueModal />
       </Box>
     </>
   );

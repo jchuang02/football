@@ -193,8 +193,8 @@ export const setEmail = (email) => {
   return { type: "SET_EMAIL", payload: email };
 };
 
-export const deleteEmail = (email) => {
-  return { type: "DELETE_EMAIL", payload: email };
+export const deleteEmail = () => {
+  return { type: "DELETE_EMAIL", payload: "" };
 };
 
 export const searchLeagues = (search) => async (dispatch) => {
@@ -214,15 +214,7 @@ export const searchTeams = (search) => async (dispatch) => {
 };
 
 export const searchReset = () => {
-  return { type: "SEARCH_RESET", payload: "" };
-};
-
-export const setTerm = (term) => {
-  return { type: "SET_TERM", payload: term };
-};
-
-export const resetTerm = () => {
-  return { type: "RESET_TERM", payload: "" };
+  return { type: "SEARCH_RESET", payload: [] };
 };
 
 export const addFaveTeam = (id) => {
