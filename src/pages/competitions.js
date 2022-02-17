@@ -66,7 +66,7 @@ export default function Competitions() {
         dispatch(updateStandings(selectedLeague, current));
       }
     }
-  }, [dispatch, standings, selectedLeague]);
+  }, [dispatch, standings, selectedLeague, current]);
 
   useEffect(() => {
     if (!fixtures) {

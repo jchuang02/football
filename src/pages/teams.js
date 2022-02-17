@@ -21,13 +21,41 @@ import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
 import Live from "../components/Matches/Live";
 import Layout from "../components/layout";
+import { fetchTeamLeagues, updateTeamLeagues } from "../actions/teamLeagues";
 
 export default function Teams() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const teams = useSelector((state) => state.teams);
   const selectedTeam = useSelector((state) => state.selectedTeam);
+  const teamLeagues = useSelector((state) => state.teamLeagues);
   const fixtures = useSelector((state) => state.teamFixtures[selectedTeam]);
+  const now = new Date();
+
+  const current = useSelector((state) => {
+    if (teams && selectedTeam && teamLeagues[selectedTeam]) {
+      let currentSeasons = state.teamLeagues[selectedTeam].leagueInfo.map(
+        (league) => {
+          return league.seasons[0].year;
+        }
+      );
+      let currentYear = 0;
+      currentSeasons.forEach((season) => {
+        currentYear = Math.max(season, currentYear);
+      });
+      return currentYear;
+    } else {
+      return now.getFullYear();
+    }
+  });
+
+  useEffect(() => {
+    if (!teamLeagues[selectedTeam]) {
+      dispatch(fetchTeamLeagues(selectedTeam));
+    } else if (teamLeagues[selectedTeam].lastUpdated >= 86400000) {
+      dispatch(updateTeamLeagues(selectedTeam));
+    }
+  }, [selectedTeam]);
 
   useEffect(() => {
     setLoading(true);
@@ -42,10 +70,10 @@ export default function Teams() {
 
   useEffect(() => {
     if (!fixtures) {
-      dispatch(fetchTeamFixtures(selectedTeam, 2021));
+      dispatch(fetchTeamFixtures(selectedTeam, current));
       //If it's been more than 24 hours since fixtures have been updated.
     } else if (Date.now() - fixtures.lastUpdated >= 86400000) {
-      dispatch(updateTeamFixtures(selectedTeam, 2021));
+      dispatch(updateTeamFixtures(selectedTeam, current));
     }
   });
 
@@ -68,7 +96,7 @@ export default function Teams() {
             return fixture.status.short === "NS";
           }).length > 0
       ) {
-        dispatch(updateTeamFixtures(selectedTeam, 2021));
+        dispatch(updateTeamFixtures(selectedTeam, current));
       }
     }
   }, [selectedTeam, fixtures, dispatch]);
@@ -106,7 +134,7 @@ export default function Teams() {
       if (startUpdateTimes.length > 0 && !fixturesInProgress > 0) {
         startUpdateTimes.forEach((timeUntil) => {
           initializer = setTimeout(() => {
-            dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
+            dispatch(updateLiveTeamFixtures(selectedTeam, current));
           }, timeUntil);
         });
       }
@@ -124,7 +152,7 @@ export default function Teams() {
           fixturesBreak.length === fixturesInProgress.length
         ) {
           timer = setTimeout(() => {
-            dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
+            dispatch(updateLiveTeamFixtures(selectedTeam, current));
           }, 60000 * 5.1);
           //Replace arbitrary value
         } else {
@@ -136,13 +164,13 @@ export default function Teams() {
               fixturesEnding.forEach(({ fixture }) => {
                 dispatch(updateLiveTeamFixturesById(fixture.id));
               });
-              dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
+              dispatch(updateLiveTeamFixtures(selectedTeam, current));
             } else if (fixturesEnding.length > 0) {
               fixturesEnding.forEach(({ fixture }) => {
                 dispatch(updateLiveTeamFixturesById(fixture.id));
               });
             } else {
-              dispatch(updateLiveTeamFixtures(selectedTeam, 2021));
+              dispatch(updateLiveTeamFixtures(selectedTeam, current));
             }
           }, 60000);
         }
@@ -156,7 +184,7 @@ export default function Teams() {
       //     standings &&
       //     Date.now() - standings.lastUpdated >= 60000 * 60
       //   ) {
-      //     dispatch(updateStandings(selectedLeague, 2021));
+      //     dispatch(updateStandings(selectedLeague, current));
       //   }
       return () => {
         clearTimeout(timer);

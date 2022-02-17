@@ -44,7 +44,6 @@ export default function Nav(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const user = useAuth();
 
   const handleSignOut = () => {
     signOut(auth)
@@ -74,7 +73,7 @@ export default function Nav(props) {
           </Link>
           <Followed />
 
-          {user ? (
+          {auth.currentUser ? (
             <>
               <Button
                 onClick={handleMenu}
@@ -89,7 +88,7 @@ export default function Nav(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Typography>{user}</Typography>
+                  <Typography>{auth.currentUser.email}</Typography>
                   <ProfileCircled
                     color={theme.palette.primary.main}
                     width={"48px"}

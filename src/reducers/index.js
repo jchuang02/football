@@ -11,9 +11,11 @@ import searchReducer from "./searchReducer";
 import followedReducer from "./followedReducer";
 import teamFixturesReducer from "./teamFixturesReducer";
 import selectedTeamReducer from "./selectedTeamReducer";
+import teamLeaguesReducer from "./teamLeaguesReducer";
 
 export default combineReducers({
   leagues: leaguesReducer,
+  teamLeagues: teamLeaguesReducer,
   standings: standingsReducer,
   teams: teamsReducer,
   teamPlayers: playersReducer,
