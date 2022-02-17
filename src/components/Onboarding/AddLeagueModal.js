@@ -42,6 +42,7 @@ export default function PersonalizationModal() {
   const loading = useSelector((state) => state.search.loading);
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
+  const [hover, setHover] = useState(false);
   const dispatch = useDispatch();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -70,13 +71,49 @@ export default function PersonalizationModal() {
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
+      <Box
+        sx={
+          followed.leagues.length > 0
+            ? {}
+            : hover
+            ? {
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                "&:hover": {
+                  cursor: "pointer",
+                },
+                width: "100%",
+              }
+            : {
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }
+        }
+        onMouseOver={() => {
+          setHover(true);
+        }}
+        onMouseOut={() => {
+          setHover(false);
+        }}
+        onClick={handleOpen}
+      >
+        {!followed.leagues.length > 0 ? (
+          <Typography variant="h4" sx={{ fontWeight: 500, marginRight: 2 }}>
+            Add Competition
+          </Typography>
+        ) : (
+          ""
+        )}
         <AddSquare
           color={theme.palette.primary.main}
           width={"32px"}
           height={"32px"}
+          strokeWidth={hover ? 4 : 2}
         />
-      </IconButton>
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}
@@ -155,6 +192,7 @@ export default function PersonalizationModal() {
             )}
           </Box>
           <Button
+            sx={{ marginTop: 4 }}
             variant="contained"
             onClick={
               auth.currentUser

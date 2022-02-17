@@ -40,12 +40,18 @@ const theme = createTheme({
           },
           html  {
             -webkit-font-smoothing: auto;
+            -webkit-box-shadow: inset 0 0 12px rgba(0,0,0,0);
+          },
+          ::-webkit-scrollbar  {
+            width: 8px;
+            height: 8px;
           },
           ::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+            background-color: ${colors["color-primary-100"]};
+            border-radius: 16px;
           },
           ::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.1);
+            background-color: ${colors["color-primary-700"]};
           },
         `,
     },

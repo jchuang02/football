@@ -52,10 +52,13 @@ export default function Followed() {
 
   const choiceStyle = {
     border: "2px solid #2E3A59",
-    m: 2,
+    m: 1,
+    flex: "0 1 25%",
     borderRadius: "16px",
-    width: "64px",
-    height: "64px",
+    minWidth: "64px",
+    minHeight: "64px",
+    maxWidth: "64px",
+    maxHeight: "64px",
     textAlign: "center",
     backgroundSize: "80%",
     backgroundRepeat: "no-repeat",
@@ -92,6 +95,7 @@ export default function Followed() {
                     onClick={() => {
                       if (selectedTeam !== team) {
                         dispatch(selectTeam(team));
+                        dispatch(selectLeague(""));
                       }
                       if (window && window.location.pathname !== "/teams") {
                         navigate("/teams");
@@ -102,6 +106,10 @@ export default function Followed() {
                       backgroundImage: teams[team]
                         ? `url(${teams[team].teamInfo.team.logo})`
                         : "",
+                      border:
+                        selectedTeam === team
+                          ? "4px solid #2E3A59"
+                          : "2px solid #2E3A59",
                     }}
                   >
                     {teams[team] ? "" : ""}
@@ -137,6 +145,7 @@ export default function Followed() {
                     onClick={() => {
                       if (selectedLeague !== league) {
                         dispatch(selectLeague(league));
+                        dispatch(selectTeam(""));
                       }
                       if (
                         window &&
@@ -150,6 +159,10 @@ export default function Followed() {
                       backgroundImage: leagues[league]
                         ? `url(${leagues[league].leagueInfo.league.logo})`
                         : "",
+                      border:
+                        selectedLeague === league
+                          ? "4px solid #2E3A59"
+                          : "2px solid #2E3A59",
                     }}
                   >
                     {leagues[league] ? "" : ""}

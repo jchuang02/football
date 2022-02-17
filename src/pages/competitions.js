@@ -28,11 +28,23 @@ import Recent from "../components/Matches/Recent";
 
 export default function Competitions() {
   const dispatch = useDispatch();
+  const now = new Date();
   const [loading, setLoading] = useState(false);
   const leagues = useSelector((state) => state.leagues);
   const selectedLeague = useSelector((state) => state.selectedLeague);
   const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
-  const current = 2021;
+  const current = useSelector((state) => {
+    if (leagues && selectedLeague) {
+      let currentSeason = state.leagues[selectedLeague].leagueInfo.seasons.find(
+        (season) => {
+          return season.current;
+        }
+      );
+      return currentSeason.year;
+    } else {
+      return now.getFullYear();
+    }
+  });
   const standings = useSelector((state) => state.standings[selectedLeague]);
 
   useEffect(() => {
@@ -49,9 +61,9 @@ export default function Competitions() {
   useEffect(() => {
     if (selectedLeague) {
       if (standings === undefined) {
-        dispatch(fetchStandings(selectedLeague, 2021));
+        dispatch(fetchStandings(selectedLeague, current));
       } else if (Date.now() - standings.lastUpdated >= 86400000) {
-        dispatch(updateStandings(selectedLeague, 2021));
+        dispatch(updateStandings(selectedLeague, current));
       }
     }
   }, [dispatch, standings, selectedLeague]);
@@ -87,7 +99,7 @@ export default function Competitions() {
         dispatch(updateFixtures(current, selectedLeague));
       }
     }
-  }, [selectedLeague, dispatch, fixtures]);
+  }, [selectedLeague, dispatch, fixtures, current]);
 
   //For matches starting later today
   useEffect(() => {
@@ -236,6 +248,6 @@ export default function Competitions() {
       </Layout>
     );
   } else {
-    return <Typography>No Compeititions Selected</Typography>;
+    return <Typography>No Competitions Selected</Typography>;
   }
 }

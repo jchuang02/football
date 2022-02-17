@@ -55,8 +55,10 @@ export default function Cup({ standings }) {
             disableGutters={true}
             maxWidth={false}
             sx={{
-              width: "48%",
-              margin: "1%",
+              flex: "1 1 50%",
+              margin: 1,
+              marginTop: 8,
+              textAlign: "center",
             }}
             key={group[0].group}
           >

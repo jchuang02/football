@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import {
   fetchTeamFixtures,
   updateTeamFixtures,
@@ -24,9 +24,21 @@ import Layout from "../components/layout";
 
 export default function Teams() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const teams = useSelector((state) => state.teams);
   const selectedTeam = useSelector((state) => state.selectedTeam);
   const fixtures = useSelector((state) => state.teamFixtures[selectedTeam]);
+
+  useEffect(() => {
+    setLoading(true);
+    const pageLoading = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(pageLoading);
+    };
+  }, [fixtures]);
 
   useEffect(() => {
     if (!fixtures) {
@@ -166,20 +178,20 @@ export default function Teams() {
         ) : (
           ""
         )}
-        {selectedTeam ? (
+        {!loading ? (
           <>
-          <Box
+            <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-evenly",
               }}
             >
-            <Live
-              fixtures={fixturesInProgress(
-                fixtures ? fixtures.fixtureInfo : ""
-              )}
-            />
+              <Live
+                fixtures={fixturesInProgress(
+                  fixtures ? fixtures.fixtureInfo : ""
+                )}
+              />
             </Box>
 
             <Box
@@ -202,11 +214,11 @@ export default function Teams() {
             </Box>
           </>
         ) : (
-          ""
+          <LinearProgress />
         )}
       </Layout>
     );
   } else {
-    return <CircularProgress />;
+    return <Typography>No Team Selected</Typography>;
   }
 }

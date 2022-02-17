@@ -100,11 +100,11 @@ export default function FixtureCard({ fixture }) {
   `;
 
   const TeamCrest = styled(Box)`
-    width: 48px;
-    height: 48px;
+    max-width: 48px;
+    max-height: 48px;
     img {
-      max-width: 100%;
-      height: auto;
+      max-width: 48px;
+      max-height: 48px;
     }
     padding: 0.1rem;
   `;

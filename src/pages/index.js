@@ -50,22 +50,22 @@ export default function Home() {
       return league.fixtureInfo;
     });
 
-    let allFixtures = new Set();
+    let allFixtures = [];
     for (let i = 0; i < teamFixtures.length; i++) {
       fixturesUpcoming(teamFixtures[i])
         .splice(0, 5)
         .forEach((fixture) => {
-          allFixtures.add(fixture);
+          allFixtures.push(fixture);
         });
       fixturesInProgress(teamFixtures[i])
         .splice(0, 5)
         .forEach((fixture) => {
-          allFixtures.add(fixture);
+          allFixtures.push(fixture);
         });
       fixturesFinished(teamFixtures[i])
         .splice(0, 5)
         .forEach((fixture) => {
-          allFixtures.add(fixture);
+          allFixtures.push(fixture);
         });
     }
 
@@ -73,21 +73,28 @@ export default function Home() {
       fixturesUpcoming(leagueFixtures[i])
         .splice(0, 5)
         .forEach((fixture) => {
-          allFixtures.add(fixture);
+          allFixtures.push(fixture);
         });
       fixturesInProgress(leagueFixtures[i])
         .splice(0, 5)
         .forEach((fixture) => {
-          allFixtures.add(fixture);
+          allFixtures.push(fixture);
         });
       fixturesFinished(leagueFixtures[i])
         .splice(0, 5)
         .forEach((fixture) => {
-          allFixtures.add(fixture);
+          allFixtures.push(fixture);
         });
     }
 
-    return Array.from(allFixtures);
+    //Filters all unique fixture objects available
+    const allUniqFixtures = allFixtures.filter(
+      (fixture, index) =>
+        allFixtures.findIndex(
+          (obj) => obj.fixture.id === fixture.fixture.id
+        ) === index
+    );
+    return allUniqFixtures;
   });
 
   useSignInWithEmailLink();

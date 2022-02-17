@@ -3,16 +3,22 @@ import {
   useScrollTrigger,
   AppBar,
   Box,
+  Button,
   IconButton,
+  Menu,
+  MenuItem,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { Link } from "gatsby";
+import { Link, navigate } from "gatsby";
 import { Home } from "iconoir-react";
 import theme from "./MaterialUI/Theme";
 import { ProfileCircled } from "iconoir-react";
 import Followed from "../components/Followed";
 import useAuth from "../hooks/useAuth";
+import { useDispatch } from "react-redux";
+import { resetFollowed } from "../actions/index";
+import { getAuth, signOut } from "firebase/auth";
 
 function ElevationScroll(props) {
   const { children } = props;
@@ -28,11 +34,32 @@ function ElevationScroll(props) {
 }
 
 export default function Nav(props) {
+  const dispatch = useDispatch();
+  const auth = getAuth();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const user = useAuth();
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(resetFollowed());
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <ElevationScroll {...props}>
-      <AppBar>
+      <AppBar sx={{ height: "120px", justifyContent: "center" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Link to="/">
             <IconButton
@@ -48,37 +75,78 @@ export default function Nav(props) {
           <Followed />
 
           {user ? (
-            <Link to="/account">
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+            <>
+              <Button
+                onClick={handleMenu}
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
               >
-                <Typography>{user}</Typography>
-                <ProfileCircled
-                  color={theme.palette.primary.main}
-                  width={"48px"}
-                  height={"48px"}
-                  style={{ marginLeft: 8 }}
-                />
-              </Box>
-            </Link>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography>{user}</Typography>
+                  <ProfileCircled
+                    color={theme.palette.primary.main}
+                    width={"48px"}
+                    height={"48px"}
+                    style={{ marginLeft: 8 }}
+                  />
+                </Box>
+              </Button>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    navigate("/personalize");
+                  }}
+                >
+                  Personalize
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    handleSignOut();
+                  }}
+                >
+                  Sign Out
+                </MenuItem>
+              </Menu>
+            </>
           ) : (
             <Link
               style={{
-                fontSize: "24pt",
+                fontSize: "16pt",
                 fontWeight: "bold",
-                margin: 4,
-                padding: 4,
                 textDecoration: "none",
+                margin: 4,
+                textAlign: "center",
                 color: theme.palette.primary.main,
               }}
               activeStyle={{
                 color: "#FFF",
                 backgroundColor: theme.palette.primary.main,
                 borderRadius: "16px",
+                padding: 8,
+                margin: 2,
               }}
               to="/onboard"
             >

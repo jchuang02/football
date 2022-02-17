@@ -41,6 +41,7 @@ export default function AddTeamModal() {
   const loading = useSelector((state) => state.search.loading);
   const results = useSelector((state) => state.search.results);
   const [open, setOpen] = useState(false);
+  const [hover, setHover] = useState(false);
   const [term, setTerm] = useState("");
   const auth = getAuth();
   const dispatch = useDispatch();
@@ -70,13 +71,49 @@ export default function AddTeamModal() {
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
+      <Box
+        sx={
+          followed.teams.length > 0
+            ? {}
+            : hover
+            ? {
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                "&:hover": {
+                  cursor: "pointer",
+                },
+                width: "100%",
+              }
+            : {
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }
+        }
+        onClick={handleOpen}
+        onMouseOver={() => {
+          setHover(true);
+        }}
+        onMouseOut={() => {
+          setHover(false);
+        }}
+      >
+        {!followed.teams.length > 0 ? (
+          <Typography variant="h4" sx={{ fontWeight: 500, marginRight: 2 }}>
+            Add Team
+          </Typography>
+        ) : (
+          ""
+        )}
         <AddSquare
           color={theme.palette.primary.main}
           width={"32px"}
           height={"32px"}
+          strokeWidth={hover ? 4 : 2}
         />
-      </IconButton>
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}
@@ -154,6 +191,7 @@ export default function AddTeamModal() {
             )}
           </Box>
           <Button
+            sx={{ marginTop: 4 }}
             variant="contained"
             onClick={
               auth.currentUser

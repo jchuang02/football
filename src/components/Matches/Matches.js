@@ -5,7 +5,6 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 export default function Matches({ fixtures, children, axis = "x", direction }) {
-  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const maxSteps = Math.ceil(fixtures.length / 2);
   const styles = {
@@ -23,6 +22,12 @@ export default function Matches({ fixtures, children, axis = "x", direction }) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleSwitch = (index) => {
+    if (Number.isInteger(index)) {
+      setActiveStep(index);
+    }
+  };
+
   const showFixtures = () => {
     return (
       <Box sx={{ ...styles.root, marginRight: "1rem", marginLeft: "1rem" }}>
@@ -30,6 +35,10 @@ export default function Matches({ fixtures, children, axis = "x", direction }) {
           axis={axis}
           index={activeStep}
           children={children}
+          onSwitching={(index) => {
+            handleSwitch(index);
+          }}
+          enableMouseEvents
         ></SwipeableViews>
         <MobileStepper
           variant="text"

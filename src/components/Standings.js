@@ -30,7 +30,7 @@ export default function Standings({ selectedLeague = 0 }) {
   };
 
   return (
-    <Container sx={{ marginBottom: "4rem", marginTop: "4rem" }}>
+    <Container sx={{ marginBottom: "4rem" }}>
       {showStandings()}
     </Container>
   );
