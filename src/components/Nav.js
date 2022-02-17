@@ -61,7 +61,7 @@ export default function Nav(props) {
                   color={theme.palette.primary.main}
                   width={"48px"}
                   height={"48px"}
-                  style={{ marginLeft: "1rem" }}
+                  style={{ marginLeft: 8 }}
                 />
               </Box>
             </Link>
@@ -70,8 +70,8 @@ export default function Nav(props) {
               style={{
                 fontSize: "24pt",
                 fontWeight: "bold",
-                margin: "1rem",
-                padding: "1rem",
+                margin: 4,
+                padding: 4,
                 textDecoration: "none",
                 color: theme.palette.primary.main,
               }}

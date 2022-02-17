@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Modal,
+  Typography,
+} from "@mui/material";
 import { searchTeams, searchReset } from "../../actions";
 import SearchInput from "../SearchInput";
 import { AddSquare, Group } from "iconoir-react";
@@ -31,7 +38,8 @@ const style = {
 
 export default function AddTeamModal() {
   const followed = useSelector((state) => state.followed);
-  const results = useSelector((state) => state.search);
+  const loading = useSelector((state) => state.search.loading);
+  const results = useSelector((state) => state.search.results);
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
   const auth = getAuth();
@@ -51,6 +59,8 @@ export default function AddTeamModal() {
     const debouncedSearch = setTimeout(() => {
       if (term.length >= 3) {
         dispatch(searchTeams(term));
+      } else {
+        dispatch(searchReset());
       }
     }, 500);
     return () => {
@@ -83,17 +93,31 @@ export default function AddTeamModal() {
           <SearchInput handleInput={handleInput} term={term} type={"team"} />
           <Box
             sx={
-              results
-                ? {
-                    border: "4px solid #2E3A59",
-                    borderRadius: "8px",
-                    width: "100%",
-                    height: "100%",
-                    overflowY: "auto",
-                    display: "flex",
-                    flexWrap: "wrap",
-                    boxSizing: "border-box",
-                  }
+              term.length >= 3
+                ? !loading
+                  ? {
+                      border: "4px solid #2E3A59",
+                      borderRadius: "8px",
+                      width: "100%",
+                      height: "100%",
+                      overflowY: "auto",
+                      display: "flex",
+                      flexFlow: "row wrap",
+                      boxSizing: "border-box",
+                      alignItems: "flex-start",
+                    }
+                  : {
+                      border: "4px solid #2E3A59",
+                      borderRadius: "8px",
+                      width: "100%",
+                      height: "100%",
+                      overflowY: "auto",
+                      display: "flex",
+                      justifyContent: "center",
+                      flexFlow: "row wrap",
+                      boxSizing: "border-box",
+                      alignItems: "center",
+                    }
                 : {
                     display: "flex",
                     justifyContent: "center",
@@ -102,16 +126,20 @@ export default function AddTeamModal() {
                   }
             }
           >
-            {results.length > 0 ? (
-              results.map((result) => {
-                return (
-                  <Option
-                    step={0}
-                    result={result}
-                    key={result.team ? result.team.id : result.league.id}
-                  />
-                );
-              })
+            {term.length >= 3 ? (
+              !loading ? (
+                results.map((result) => {
+                  return (
+                    <Option
+                      step={0}
+                      result={result}
+                      key={result.team ? result.team.id : result.league.id}
+                    />
+                  );
+                })
+              ) : (
+                <CircularProgress />
+              )
             ) : (
               <Box
                 sx={{

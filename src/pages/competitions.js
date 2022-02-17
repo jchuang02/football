@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import Standings from "../components/Standings";
 import Layout from "../components/layout";
 import {
@@ -28,11 +28,23 @@ import Recent from "../components/Matches/Recent";
 
 export default function Competitions() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const leagues = useSelector((state) => state.leagues);
   const selectedLeague = useSelector((state) => state.selectedLeague);
   const fixtures = useSelector((state) => state.fixtures[selectedLeague]);
   const current = 2021;
   const standings = useSelector((state) => state.standings[selectedLeague]);
+
+  useEffect(() => {
+    setLoading(true);
+    const pageLoading = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(pageLoading);
+    };
+  }, [fixtures, standings]);
 
   useEffect(() => {
     if (selectedLeague) {
@@ -181,7 +193,7 @@ export default function Competitions() {
         ) : (
           ""
         )}
-        {selectedLeague ? (
+        {!loading ? (
           <>
             <Box
               sx={{
@@ -219,11 +231,11 @@ export default function Competitions() {
             <Standings selectedLeague={selectedLeague} />
           </>
         ) : (
-          ""
+          <LinearProgress />
         )}
       </Layout>
     );
   } else {
-    return <CircularProgress />;
+    return <Typography>No Compeititions Selected</Typography>;
   }
 }

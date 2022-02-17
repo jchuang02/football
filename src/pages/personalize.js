@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
-import { Box, Button, Step, StepLabel, Stepper, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Step,
+  StepLabel,
+  Stepper,
+  styled,
+} from "@mui/material";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
@@ -35,7 +43,9 @@ export default function Personalize() {
   const [activeStep, setActiveStep] = useState(0);
   const [term, setTerm] = useState("");
   const followed = useSelector((state) => state.followed);
-  const results = useSelector((state) => state.search);
+  const results = useSelector((state) => state.search.results);
+  const loading = useSelector((state) => state.search.loading);
+
   const dispatch = useDispatch();
   const auth = getAuth();
   useSignInWithEmailLink();
@@ -134,17 +144,31 @@ export default function Personalize() {
         />
         <Box
           sx={
-            results
-              ? {
-                  border: "4px solid #2E3A59",
-                  borderRadius: "16px",
-                  width: "100%",
-                  height: "100%",
-                  overflowY: "auto",
-                  display: "flex",
-                  flexWrap: "wrap",
-                  boxSizing: "border-box",
-                }
+            term.length >= 3
+              ? !loading
+                ? {
+                    border: "4px solid #2E3A59",
+                    borderRadius: "8px",
+                    width: "100%",
+                    height: "100%",
+                    overflowY: "auto",
+                    display: "flex",
+                    flexFlow: "row wrap",
+                    boxSizing: "border-box",
+                    alignItems: "flex-start",
+                  }
+                : {
+                    border: "4px solid #2E3A59",
+                    borderRadius: "8px",
+                    width: "100%",
+                    height: "100%",
+                    overflowY: "auto",
+                    display: "flex",
+                    justifyContent: "center",
+                    flexFlow: "row wrap",
+                    boxSizing: "border-box",
+                    alignItems: "center",
+                  }
               : {
                   display: "flex",
                   justifyContent: "center",
@@ -153,16 +177,20 @@ export default function Personalize() {
                 }
           }
         >
-          {results.length > 0 ? (
-            results.map((result) => {
-              return (
-                <Option
-                  step={activeStep}
-                  result={result}
-                  key={result.team ? result.team.id : result.league.id}
-                />
-              );
-            })
+          {term.length >= 3 ? (
+            !loading ? (
+              results.map((result) => {
+                return (
+                  <Option
+                    step={activeStep}
+                    result={result}
+                    key={result.team ? result.team.id : result.league.id}
+                  />
+                );
+              })
+            ) : (
+              <CircularProgress />
+            )
           ) : (
             <Box
               sx={{

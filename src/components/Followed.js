@@ -75,31 +75,41 @@ export default function Followed() {
           alignItems: "center",
         }}
       >
-        {leagues
-          ? followedTeams.map((team) => {
-              return (
-                <Box
-                  key={team}
-                  onClick={() => {
-                    if (selectedTeam !== team) {
-                      dispatch(selectTeam(team));
-                    }
-                    if (window && window.location.pathname !== "/teams") {
-                      navigate("/teams");
-                    }
-                  }}
-                  sx={{
-                    ...choiceStyle,
-                    backgroundImage: teams[team]
-                      ? `url(${teams[team].teamInfo.team.logo})`
-                      : "",
-                  }}
-                >
-                  {teams[team] ? "" : ""}
-                </Box>
-              );
-            })
-          : ""}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "30vw",
+            overflowX: "auto",
+          }}
+        >
+          {leagues
+            ? followedTeams.map((team) => {
+                return (
+                  <Box
+                    key={team}
+                    onClick={() => {
+                      if (selectedTeam !== team) {
+                        dispatch(selectTeam(team));
+                      }
+                      if (window && window.location.pathname !== "/teams") {
+                        navigate("/teams");
+                      }
+                    }}
+                    sx={{
+                      ...choiceStyle,
+                      backgroundImage: teams[team]
+                        ? `url(${teams[team].teamInfo.team.logo})`
+                        : "",
+                    }}
+                  >
+                    {teams[team] ? "" : ""}
+                  </Box>
+                );
+              })
+            : ""}
+        </Box>
         <AddTeamModal />
       </Box>
 
@@ -110,34 +120,44 @@ export default function Followed() {
           alignItems: "center",
         }}
       >
-        {leagues
-          ? followedLeagues.map((league) => {
-              return (
-                <Box
-                  key={league}
-                  onClick={() => {
-                    if (selectedLeague !== league) {
-                      dispatch(selectLeague(league));
-                    }
-                    if (
-                      window &&
-                      window.location.pathname !== "/competitions"
-                    ) {
-                      navigate("/competitions");
-                    }
-                  }}
-                  sx={{
-                    ...choiceStyle,
-                    backgroundImage: leagues[league]
-                      ? `url(${leagues[league].leagueInfo.league.logo})`
-                      : "",
-                  }}
-                >
-                  {leagues[league] ? "" : ""}
-                </Box>
-              );
-            })
-          : ""}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "30vw",
+            overflowX: "auto",
+          }}
+        >
+          {leagues
+            ? followedLeagues.map((league) => {
+                return (
+                  <Box
+                    key={league}
+                    onClick={() => {
+                      if (selectedLeague !== league) {
+                        dispatch(selectLeague(league));
+                      }
+                      if (
+                        window &&
+                        window.location.pathname !== "/competitions"
+                      ) {
+                        navigate("/competitions");
+                      }
+                    }}
+                    sx={{
+                      ...choiceStyle,
+                      backgroundImage: leagues[league]
+                        ? `url(${leagues[league].leagueInfo.league.logo})`
+                        : "",
+                    }}
+                  >
+                    {leagues[league] ? "" : ""}
+                  </Box>
+                );
+              })
+            : ""}
+        </Box>
         <AddLeagueModal />
       </Box>
     </>

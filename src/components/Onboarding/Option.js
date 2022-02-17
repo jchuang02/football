@@ -31,11 +31,9 @@ export default function Option({ step, result }) {
 
   const checkedBox = {
     border: "4px solid #2E3A59",
-    m: "1%",
-    p: 2,
     borderRadius: "16px",
-    width: "23%",
-    flexBasis: "23%",
+    m: 1,
+    p: 1,
     textAlign: "center",
     background: "url('../../images/source_icons_check.svg')",
     backgroundColor: "rgba(0,0,0,0.2);",
@@ -44,13 +42,18 @@ export default function Option({ step, result }) {
     },
   };
 
+  const contentBox = {
+    display: "flex",
+    flex: "0  1 25%",
+    flexFlow: "column nowrap",
+    marginBottom: 4,
+  };
+
   const uncheckedBox = {
     border: "4px solid #2E3A59",
-    m: "1%",
-    p: 2,
     borderRadius: "16px",
-    width: "23%",
-    flexBasis: "23%",
+    m: 1,
+    p: 1,
     textAlign: "center",
     "&:hover": {
       cursor: "pointer",
@@ -60,14 +63,21 @@ export default function Option({ step, result }) {
   const label = { inputProps: { "aria-label": "Checkbox option" } };
 
   return (
-    <Box onClick={handleChange} sx={checked ? checkedBox : uncheckedBox}>
-      <img
-        src={step ? result.league.logo : result.team.logo}
-        alt={step ? result.league.name : result.team.name}
-        style={{ height: "80px", width: "80px" }}
-      ></img>
-      <Typography>{step ? result.league.name : result.team.name}</Typography>
-      <Checkbox {...label} checked={checked} />
+    <Box onClick={handleChange} sx={contentBox}>
+      <Box sx={checked ? checkedBox : uncheckedBox}>
+        <img
+          src={step ? result.league.logo : result.team.logo}
+          alt={step ? result.league.name : result.team.name}
+          style={{ height: "80px", width: "80px" }}
+        ></img>
+        <Typography>
+          {step ? `${result.league.name}, ` : `${result.team.name}, `}
+        </Typography>
+        <Typography>
+          {step ? `${result.country.name}` : ` ${result.team.country}`}
+        </Typography>
+      </Box>
+      <Checkbox {...label} checked={checked} disableRipple />
     </Box>
   );
 }
