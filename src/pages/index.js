@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
-import { deleteEmail } from "../actions";
+import { useSelector } from "react-redux";
 import Layout from "../components/layout";
 import { Box, Typography } from "@mui/material";
 import Live from "../components/Matches/Live";
@@ -19,9 +13,9 @@ import {
 import Standings from "../components/Standings";
 import Selector from "../components/Selector";
 import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
+import useGetData from "../hooks/useGetData";
 
 export default function Home() {
-  const dispatch = useDispatch();
   const leagues = useSelector((state) => state.leagues);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
@@ -41,62 +35,7 @@ export default function Home() {
   const [selected, setSelected] = useState(
     selectorItems[0] ? selectorItems[0].id : 0
   );
-
-  const fixtures = useSelector((state) => {
-    const teamFixtures = Object.values(state.teamFixtures).map((team) => {
-      return team.fixtureInfo;
-    });
-    const leagueFixtures = Object.values(state.fixtures).map((league) => {
-      return league.fixtureInfo;
-    });
-
-    let allFixtures = [];
-    for (let i = 0; i < teamFixtures.length; i++) {
-      fixturesUpcoming(teamFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          allFixtures.push(fixture);
-        });
-      fixturesInProgress(teamFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          allFixtures.push(fixture);
-        });
-      fixturesFinished(teamFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          allFixtures.push(fixture);
-        });
-    }
-
-    for (let i = 0; i < leagueFixtures.length; i++) {
-      fixturesUpcoming(leagueFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          allFixtures.push(fixture);
-        });
-      fixturesInProgress(leagueFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          allFixtures.push(fixture);
-        });
-      fixturesFinished(leagueFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          allFixtures.push(fixture);
-        });
-    }
-
-    //Filters all unique fixture objects available
-    const allUniqFixtures = allFixtures.filter(
-      (fixture, index) =>
-        allFixtures.findIndex(
-          (obj) => obj.fixture.id === fixture.fixture.id
-        ) === index
-    );
-    return allUniqFixtures;
-  });
-
+  const { allFixtures } = useGetData();
   useSignInWithEmailLink();
 
   if (!followedLeagues.length > 0 && !followedTeams.length > 0) {
@@ -115,7 +54,9 @@ export default function Home() {
             justifyContent: "space-evenly",
           }}
         >
-          <Live fixtures={fixturesInProgress(fixtures ? fixtures : "")} />
+          <Live
+            fixtures={fixturesInProgress(allFixtures.length ? allFixtures : "")}
+          />
         </Box>
         <Box
           sx={{
@@ -124,8 +65,12 @@ export default function Home() {
             justifyContent: "space-evenly",
           }}
         >
-          <Recent fixtures={fixturesFinished(fixtures ? fixtures : "")} />
-          <Upcoming fixtures={fixturesUpcoming(fixtures ? fixtures : "")} />
+          <Recent
+            fixtures={fixturesFinished(allFixtures.length ? allFixtures : "")}
+          />
+          <Upcoming
+            fixtures={fixturesUpcoming(allFixtures.length ? allFixtures : "")}
+          />
         </Box>
         {leagues ? (
           <>

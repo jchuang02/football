@@ -5,7 +5,11 @@ export const fetchTeams = (id) => async (dispatch) => {
     params: { id },
   });
 
-  const theData = { teamInfo: data.response[0], lastUpdated: Date.now() };
+  const theData = {
+    team: id,
+    teamInfo: data.response[0],
+    lastUpdated: Date.now(),
+  };
   dispatch({ type: "FETCH_TEAMS", payload: theData });
 };
 
@@ -14,7 +18,11 @@ export const updateTeams = (id) => async (dispatch) => {
     params: { id },
   });
 
-  const theData = { teamInfo: data.response[0], lastUpdated: Date.now() };
+  const theData = {
+    team: id,
+    teamInfo: data.response[0],
+    lastUpdated: Date.now(),
+  };
   dispatch({ type: "UPDATE_TEAMS", payload: theData });
 };
 
@@ -296,12 +304,16 @@ export const updateLiveTeamFixtures =
     dispatch({ type: "UPDATE_LIVE_TEAM_FIXTURES", payload: theData });
   };
 
-export const updateLiveTeamFixturesById = (id) => async (dispatch) => {
+export const updateLiveTeamFixturesById = (id, team) => async (dispatch) => {
   const { data } = await football.get("/fixtures", {
     params: { id },
   });
 
-  const theData = { fixtureInfo: data.response, lastUpdated: Date.now() };
+  const theData = {
+    team: team,
+    fixtureInfo: data.response,
+    lastUpdated: Date.now(),
+  };
 
   dispatch({ type: "UPDATE_LIVE_TEAM_FIXTURES_BY_ID", payload: theData });
 };

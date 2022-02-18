@@ -19,7 +19,7 @@ export const separateFixtures = (fixtures) => {
 };
 
 export const fixturesInProgress = (fixtures) => {
-  if (fixtures) {
+  if (fixtures.length) {
     return fixtures
       .filter(({ fixture }) => {
         return fixtureInProgress(fixture.status.short);
@@ -32,7 +32,7 @@ export const fixturesInProgress = (fixtures) => {
 };
 
 export const fixturesFinished = (fixtures) => {
-  if (fixtures) {
+  if (fixtures.length) {
     return fixtures
       .filter(({ fixture }) => {
         return fixtureFinished(fixture.status.short);
@@ -45,7 +45,7 @@ export const fixturesFinished = (fixtures) => {
 };
 
 export const fixturesUpcoming = (fixtures) => {
-  if (fixtures) {
+  if (fixtures.length) {
     return fixtures
       .filter((fixture) => {
         return (

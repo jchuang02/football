@@ -70,12 +70,14 @@ export default function Competitions() {
 
   useEffect(() => {
     if (!fixtures) {
-      dispatch(fetchFixtures(current, selectedLeague));
-      //If it's been more than 24 hours since fixtures have been updated.
-    } else if (Date.now() - fixtures.lastUpdated >= 86400000) {
-      dispatch(fetchFixtures(current, selectedLeague));
+      if (selectedLeague) {
+        dispatch(fetchFixtures(current, selectedLeague));
+        //If it's been more than 24 hours since fixtures have been updated.
+      } else if (fixtures && Date.now() - fixtures.lastUpdated >= 86400000) {
+        dispatch(updateFixtures(current, selectedLeague));
+      }
     }
-  });
+  }, [dispatch, current, fixtures, selectedLeague]);
 
   //If live fixtures are present in fixtures, update them.
   useEffect(() => {

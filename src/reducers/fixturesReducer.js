@@ -20,7 +20,7 @@ export default (state = {}, action) => {
       };
     case "UPDATE_FIXTURES":
       const currentFixturesWithEvents = state[
-        action.payload.fixtureInfo[0].league.id
+        action.payload.league
       ].fixtureInfo.filter((fixture) => {
         return fixture.events;
       });
@@ -44,7 +44,7 @@ export default (state = {}, action) => {
         });
         return {
           ...state,
-          [action.payload.fixtureInfo[0].league.id]: {
+          [action.payload.league]: {
             fixtureInfo: newFixturesArray,
             lastUpdated: action.payload.lastUpdated,
           },

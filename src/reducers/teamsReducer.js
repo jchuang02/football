@@ -4,12 +4,12 @@ export default (state = {}, action) => {
     case "FETCH_TEAMS":
       return {
         ...state,
-        [action.payload.teamInfo.team.id]: action.payload,
+        [action.payload.team]: action.payload,
       };
     case "UPDATE_TEAMS":
       return {
         ...state,
-        [action.payload.teamInfo.team.id]: {
+        [action.payload.team]: {
           teamInfo: action.payload.teamInfo,
           lastUpdated: action.payload.lastUpdated,
         },

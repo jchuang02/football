@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLeagues, updateLeagues } from "../actions/leagues";
 import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
+import { fetchTeamLeagues, updateTeamLeagues } from "../actions/teamLeagues";
 import { navigate } from "gatsby";
 import AddLeagueModal from "./Onboarding/AddLeagueModal";
 import AddTeamModal from "./Onboarding/AddTeamModal";
@@ -14,41 +15,38 @@ export default function Followed() {
   const selectedLeague = useSelector((state) => state.selectedLeague);
   const selectedTeam = useSelector((state) => state.selectedTeam);
   const leagues = useSelector((state) => state.leagues);
+  const teamLeagues = useSelector((state) => state.teamLeagues);
   const teams = useSelector((state) => state.teams);
 
   useEffect(() => {
-    const leagueIds = Object.keys(leagues).map((league) => {
-      return Number(league);
-    });
-
-    for (let i = 0; i < followedLeagues.length; i++) {
-      if (!leagueIds.includes(followedLeagues[i])) {
-        dispatch(fetchLeagues(followedLeagues[i]));
-      }
-    }
-
-    Object.values(leagues).forEach((league) => {
-      if (Date.now() - league.lastUpdated >= 86400000) {
-        dispatch(updateLeagues(league.leagueInfo.league.id));
+    followedTeams.forEach((team) => {
+      if (!teams[team]) {
+        dispatch(fetchTeams(team));
+      } else if (Date.now() - teams[team].lastUpdated >= 86400000) {
+        dispatch(updateTeams(team));
       }
     });
+  }, [followedTeams]);
 
-    const teamIds = Object.keys(teams).map((team) => {
-      return Number(team);
-    });
-
-    for (let i = 0; i < followedTeams.length; i++) {
-      if (!teamIds.includes(followedTeams[i])) {
-        dispatch(fetchTeams(followedTeams[i]));
-      }
-    }
-
-    Object.values(teams).forEach((team) => {
-      if (Date.now() - team.lastUpdated >= 86400000) {
-        dispatch(updateTeams(team.teamInfo.team.id));
+  useEffect(() => {
+    followedLeagues.forEach((league) => {
+      if (!leagues[league]) {
+        dispatch(fetchLeagues(league));
+      } else if (Date.now() - leagues[league].lastUpdated >= 86400000) {
+        dispatch(updateLeagues(league));
       }
     });
-  }, [followedLeagues, followedTeams, dispatch, leagues, teams]);
+  }, [followedLeagues]);
+
+  useEffect(() => {
+    followedTeams.forEach((team) => {
+      if (!teamLeagues[team]) {
+        dispatch(fetchTeamLeagues(team));
+      } else if (Date.now() - teamLeagues[team].lastUpdated >= 86400000) {
+        dispatch(updateTeamLeagues(team));
+      }
+    });
+  }, [followedTeams]);
 
   const choiceStyle = {
     border: "2px solid #2E3A59",

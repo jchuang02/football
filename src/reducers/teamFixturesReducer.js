@@ -32,7 +32,7 @@ export default (state = {}, action) => {
         });
         return {
           ...state,
-          [action.payload.fixtureInfo[0].team.id]: {
+          [action.payload.team]: {
             fixtureInfo: newFixturesArray,
             lastUpdated: action.payload.lastUpdated,
           },
@@ -64,7 +64,7 @@ export default (state = {}, action) => {
       }
     case "UPDATE_LIVE_TEAM_FIXTURES_BY_ID":
       const updatedFixturesArrayById = state[
-        action.payload.fixtureInfo[0].team.id
+        action.payload.team
       ].fixtureInfo.map((fixture) => {
         if (fixture.fixture.id === action.payload.fixtureInfo[0].fixture.id) {
           return action.payload.fixtureInfo[0];
@@ -73,7 +73,7 @@ export default (state = {}, action) => {
       });
       return {
         ...state,
-        [action.payload.fixtureInfo[0].team.id]: {
+        [action.payload.team]: {
           fixtureInfo: updatedFixturesArrayById,
           lastUpdated: action.payload.lastUpdated,
         },

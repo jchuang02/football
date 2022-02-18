@@ -4,13 +4,12 @@ export default (state = {}, action) => {
     case "FETCH_LEAGUES":
       return {
         ...state,
-        [action.payload.leagueInfo.league.id]: action.payload,
+        [action.payload.league]: action.payload,
       };
     case "UPDATE_LEAGUES":
-      const id = action.payload.leagueInfo.league.id;
       return {
         ...state,
-        [id]: {
+        [action.payload.league]: {
           leagueInfo: action.payload.leagueInfo,
           lastUpdated: action.payload.lastUpdated,
         },
