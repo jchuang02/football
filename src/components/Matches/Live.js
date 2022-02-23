@@ -5,8 +5,9 @@ import { separateFixtures } from "../../helpers/fixturesHelper";
 import Matches from "./Matches";
 
 export default function Live({ fixtures }) {
+  console.log(fixtures);
   if (fixtures) {
-    const fixtureCards = separateFixtures(fixtures);
+    const fixtureCards = separateFixtures(fixtures, 4);
     return (
       <Box sx={!fixtures.length > 0 ? { display: "none" } : {}}>
         <Box

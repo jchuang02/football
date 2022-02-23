@@ -6,7 +6,7 @@ import {
   addFaveLeague,
   deleteFaveTeam,
   deleteFaveLeague,
-} from "../../actions";
+} from "../../actions/favorites";
 
 export default function Option({ step, result }) {
   const followed = useSelector((state) => state.followed);

@@ -6,7 +6,7 @@ import {
   updateTeamFixtures,
   updateLiveTeamFixtures,
   updateLiveTeamFixturesById,
-} from "../actions";
+} from "../actions/fixtures";
 import {
   fixtureInProgress,
   fixtureEnding,
@@ -72,7 +72,10 @@ export default function Teams() {
     if (!teamFixtures && selectedTeam) {
       dispatch(fetchTeamFixtures(selectedTeam, current));
       //If it's been more than 24 hours since fixtures have been updated.
-    } else if (teamFixtures && Date.now() - teamFixtures.lastUpdated >= 86400000) {
+    } else if (
+      teamFixtures &&
+      Date.now() - teamFixtures.lastUpdated >= 86400000
+    ) {
       dispatch(updateTeamFixtures(selectedTeam, current));
     }
   }, [dispatch, current, teamFixtures, selectedTeam]);

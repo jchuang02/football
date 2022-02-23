@@ -3,7 +3,7 @@ import { getAuth, signOut } from "firebase/auth";
 import Layout from "../components/layout";
 import { Button } from "@mui/material";
 import { Link, navigate } from "gatsby";
-import { resetFollowed } from "../actions";
+import { resetFollowed } from "../actions/favorites";
 import { useDispatch } from "react-redux";
 
 export default function Account() {

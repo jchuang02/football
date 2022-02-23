@@ -1,7 +1,6 @@
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
-import { useDispatch, useSelector } from "react-redux";
-import { addFaveLeague, addFaveTeam } from "../actions";
+import { addFaveLeague, addFaveTeam } from "../actions/favorites";
 
 const db = getFirestore();
 export function addFollowsToFirebase(followed, userId) {

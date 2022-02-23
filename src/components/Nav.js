@@ -17,7 +17,8 @@ import { ProfileCircled } from "iconoir-react";
 import Followed from "../components/Followed";
 import useAuth from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { resetFollowed } from "../actions/index";
+import { resetFollowed } from "../actions/favorites";
+import { selectLeague, selectTeam } from "../actions/index";
 import { getAuth, signOut } from "firebase/auth";
 
 function ElevationScroll(props) {
@@ -36,6 +37,7 @@ function ElevationScroll(props) {
 export default function Nav(props) {
   const dispatch = useDispatch();
   const auth = getAuth();
+  const user = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -62,6 +64,10 @@ export default function Nav(props) {
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Link to="/">
             <IconButton
+              onClick={() => {
+                dispatch(selectLeague(""));
+                dispatch(selectTeam(""));
+              }}
               size="large"
               edge="start"
               color="primary"
@@ -88,7 +94,7 @@ export default function Nav(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Typography>{auth.currentUser.email}</Typography>
+                  <Typography>{user}</Typography>
                   <ProfileCircled
                     color={theme.palette.primary.main}
                     width={"48px"}

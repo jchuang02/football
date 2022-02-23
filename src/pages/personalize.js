@@ -15,7 +15,7 @@ import StepConnector, {
 import Layout from "../components/layout";
 import SearchInput from "../components/SearchInput";
 import { Trophy, Group } from "iconoir-react";
-import { searchTeams, searchLeagues, searchReset } from "../actions";
+import { searchTeams, searchLeagues, searchReset } from "../actions/search";
 import { useSelector, useDispatch } from "react-redux";
 import Option from "../components/Onboarding/Option";
 import { navigate } from "gatsby";

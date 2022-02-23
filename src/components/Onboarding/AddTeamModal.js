@@ -4,11 +4,10 @@ import {
   Box,
   Button,
   CircularProgress,
-  IconButton,
   Modal,
   Typography,
 } from "@mui/material";
-import { searchTeams, searchReset } from "../../actions";
+import { searchTeams, searchReset } from "../../actions/search";
 import SearchInput from "../SearchInput";
 import { AddSquare, Group } from "iconoir-react";
 import theme from "../MaterialUI/Theme";

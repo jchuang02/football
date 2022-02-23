@@ -1,18 +1,22 @@
 import { fixtureInProgress, fixtureFinished } from "./fixtureStatusHelper";
 
-export const separateFixtures = (fixtures) => {
+export const separateFixtures = (fixtures, separatedBy = 2) => {
   let separatedFixtures = [];
 
-  for (let i = 0; i < fixtures.length; i += 2) {
-    if (fixtures[i] && fixtures[i + 1]) {
-      const first = fixtures[i];
-      const second = fixtures[i + 1];
-      separatedFixtures.push([first, second]);
-    } else if (i > 0) {
-      separatedFixtures.push([fixtures[i - 1]]);
-    } else {
-      separatedFixtures.push([fixtures[i]]);
+  for (let i = 0; i < fixtures.length; i += separatedBy) {
+    const temp = fixtures.slice(i, i + separatedBy);
+    if (temp.length) {
+      separatedFixtures.push(temp);
     }
+    // if (fixtures[i] && fixtures[i + 1]) {
+    //   const first = fixtures[i];
+    //   const second = fixtures[i + 1];
+    //   separatedFixtures.push([first, second]);
+    // } else if (i % 2 !== 0) {
+    //   separatedFixtures.push([fixtures[i - 1]]);
+    // } else {
+    //   separatedFixtures.push([fixtures[i]]);
+    // }
   }
 
   return separatedFixtures;

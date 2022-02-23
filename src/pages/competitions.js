@@ -6,11 +6,11 @@ import Layout from "../components/layout";
 import {
   updateLiveFixtures,
   updateLiveFixturesById,
-  updateStandings,
-  updateFixtures,
   fetchFixtures,
-  fetchStandings,
-} from "../actions";
+  updateFixtures,
+} from "../actions/fixtures";
+import { fetchStandings, updateStandings } from "../actions/standings";
+
 import {
   fixturesInProgress,
   fixturesFinished,

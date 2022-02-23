@@ -36,6 +36,7 @@ export default function Home() {
     selectorItems[0] ? selectorItems[0].id : 0
   );
   const { allFixtures } = useGetData();
+  console.log(allFixtures);
   useSignInWithEmailLink();
 
   if (!followedLeagues.length > 0 && !followedTeams.length > 0) {

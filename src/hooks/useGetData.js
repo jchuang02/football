@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchStandings,
-  updateStandings,
   fetchFixtures,
   updateFixtures,
   updateLiveFixtures,
@@ -11,7 +9,8 @@ import {
   updateLiveTeamFixturesById,
   fetchTeamFixtures,
   updateTeamFixtures,
-} from "../actions";
+} from "../actions/fixtures";
+import { fetchStandings, updateStandings } from "../actions/standings";
 import {
   fixtureInProgress,
   fixtureOnBreak,
@@ -276,7 +275,7 @@ export default function useGetData() {
           }
         );
 
-        //Identifies fixtures happening today.
+        //Identifies fixtures happening today and starts a timer to update when those fixtures begin.
         const todaysFixtures = fixtures[league].fixtureInfo.filter(
           ({ fixture }) => {
             return fixture.timestamp * 1000 - Date.now() <= 60000 * 60 * 24;
@@ -325,7 +324,7 @@ export default function useGetData() {
             timer = setTimeout(() => {
               dispatch(updateLiveFixtures(currentSeason, league));
             }, 60000 * 5.1);
-            //Replace arbitrary value
+            //TODO:Replace arbitrary value
           } else {
             timer = setTimeout(() => {
               if (
@@ -364,7 +363,7 @@ export default function useGetData() {
     });
   }, [dispatch, fixtures, followedLeagues, leagues, standings]);
 
-  //Rebuilds all fixtures state whenever team fixtures or league fixtures change.
+  //Rebuilds all fixtures whenever team fixtures or league fixtures change.
   useEffect(() => {
     const theTeamFixtures = Object.values(teamFixtures).map((team) => {
       return team.fixtureInfo;
