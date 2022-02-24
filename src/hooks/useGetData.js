@@ -28,11 +28,67 @@ export default function useGetData() {
   const [allFixtures, setAllFixtures] = useState([]);
   const leagues = useSelector((state) => state.leagues);
   const teamLeagues = useSelector((state) => state.teamLeagues);
+  const teams = useSelector((state) => state.teams);
   const fixtures = useSelector((state) => state.fixtures);
   const teamFixtures = useSelector((state) => state.teamFixtures);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
   const standings = useSelector((state) => state.standings);
+
+  //Rebuilds all fixtures whenever team fixtures or league fixtures change.
+  useEffect(() => {
+    const theTeamFixtures = Object.values(teamFixtures).map((team) => {
+      return team.fixtureInfo;
+    });
+    const leagueFixtures = Object.values(fixtures).map((league) => {
+      return league.fixtureInfo;
+    });
+    let tempFixtures = [];
+    for (let i = 0; i < theTeamFixtures.length; i++) {
+      fixturesUpcoming(theTeamFixtures[i])
+        .splice(0, 5)
+        .forEach((fixture) => {
+          tempFixtures.push(fixture);
+        });
+      fixturesInProgress(theTeamFixtures[i])
+        .splice(0, 5)
+        .forEach((fixture) => {
+          tempFixtures.push(fixture);
+        });
+      fixturesFinished(theTeamFixtures[i])
+        .splice(0, 5)
+        .forEach((fixture) => {
+          tempFixtures.push(fixture);
+        });
+    }
+
+    for (let i = 0; i < leagueFixtures.length; i++) {
+      fixturesUpcoming(leagueFixtures[i])
+        .splice(0, 5)
+        .forEach((fixture) => {
+          tempFixtures.push(fixture);
+        });
+      fixturesInProgress(leagueFixtures[i])
+        .splice(0, 5)
+        .forEach((fixture) => {
+          tempFixtures.push(fixture);
+        });
+      fixturesFinished(leagueFixtures[i])
+        .splice(0, 5)
+        .forEach((fixture) => {
+          tempFixtures.push(fixture);
+        });
+    }
+
+    //Filters all unique fixture objects available
+    const allUniqFixtures = tempFixtures.filter(
+      (fixture, index) =>
+        tempFixtures.findIndex(
+          (obj) => obj.fixture.id === fixture.fixture.id
+        ) === index
+    );
+    setAllFixtures(allUniqFixtures);
+  }, [teamFixtures, fixtures]);
 
   //get standings info
   useEffect(() => {
@@ -50,7 +106,7 @@ export default function useGetData() {
         }
       }
     });
-  }, []);
+  }, [followedLeagues, dispatch, leagues, standings]);
 
   //get team fixture info.
   useEffect(() => {
@@ -70,7 +126,7 @@ export default function useGetData() {
         }
       }
     });
-  }, []);
+  }, [followedTeams, dispatch, teamFixtures, teamLeagues]);
 
   //get league fixtures info.
   useEffect(() => {
@@ -89,7 +145,7 @@ export default function useGetData() {
         }
       }
     });
-  }, []);
+  }, [followedLeagues, dispatch, fixtures, leagues]);
 
   //If live team fixtures are present, update them.
   useEffect(() => {
@@ -122,7 +178,7 @@ export default function useGetData() {
         }
       }
     });
-  }, [dispatch, teamFixtures, followedTeams, teamLeagues]);
+  }, [dispatch, teamFixtures, teamLeagues, standings, followedTeams]);
 
   //If live league fixtures are present, update them.
   useEffect(() => {
@@ -140,7 +196,7 @@ export default function useGetData() {
               !fixtureOnBreak(fixture.status.short)
             );
           }).length > 0 &&
-            Date.now() - fixtures.lastUpdated >= 60000) ||
+            Date.now() - fixtures[league].lastUpdated >= 60000) ||
           fixtures[league].fixtureInfo
             .filter(({ fixture }) => {
               return fixture.timestamp * 1000 - Date.now() < 0;
@@ -153,11 +209,11 @@ export default function useGetData() {
         }
       }
     });
-  }, [dispatch, fixtures, followedLeagues, leagues]);
+  }, [dispatch, fixtures, leagues, standings, followedLeagues]);
 
   //For team fixtures starting later today
   useEffect(() => {
-    followedTeams.forEach((team) => {
+    Object.keys(teams).forEach((team) => {
       if (teamLeagues[team] && teamFixtures[team]) {
         let currentSeasons = teamLeagues[team].leagueInfo.map((league) => {
           return league.seasons[0].year;
@@ -253,11 +309,11 @@ export default function useGetData() {
         };
       }
     });
-  }, [dispatch, teamFixtures, followedTeams, teamLeagues]);
+  }, [dispatch, teamFixtures, teamLeagues, standings, teams]);
 
-  //For league fixtures starting later today
+  // For league fixtures starting later today
   useEffect(() => {
-    followedLeagues.forEach((league) => {
+    Object.keys(leagues).forEach((league) => {
       if (leagues[league] && fixtures[league]) {
         const now = new Date();
         const currentSeason =
@@ -305,8 +361,6 @@ export default function useGetData() {
           });
         }
 
-        //Updates live fixtures every minute until all live fixtures are finished.
-
         //Checks if any fixtures are live or starting.
         if (fixturesInProgress.length > 0 || continueUpdates.length > 0) {
           //Fixtures in the halftime break
@@ -317,6 +371,7 @@ export default function useGetData() {
               );
             }
           );
+          //If all fixtures are at halftime break, update every ~5 minutes
           if (
             fixturesBreak.length > 0 &&
             fixturesBreak.length === fixturesInProgress.length
@@ -332,12 +387,15 @@ export default function useGetData() {
                 fixturesEnding.length < fixturesInProgress.length
               ) {
                 fixturesEnding.forEach(({ fixture }) => {
-                  dispatch(updateLiveFixturesById(fixture.id));
+                  dispatch(updateLiveFixturesById(fixture.id, league));
                 });
                 dispatch(updateLiveFixtures(currentSeason, league));
-              } else if (fixturesEnding.length > 0) {
+              } else if (
+                fixturesEnding.length > 0 &&
+                fixturesEnding.length === fixturesInProgress.length
+              ) {
                 fixturesEnding.forEach(({ fixture }) => {
-                  dispatch(updateLiveFixturesById(fixture.id));
+                  dispatch(updateLiveFixturesById(fixture.id, league));
                 });
               } else {
                 dispatch(updateLiveFixtures(currentSeason, league));
@@ -361,62 +419,7 @@ export default function useGetData() {
         };
       }
     });
-  }, [dispatch, fixtures, followedLeagues, leagues, standings]);
-
-  //Rebuilds all fixtures whenever team fixtures or league fixtures change.
-  useEffect(() => {
-    const theTeamFixtures = Object.values(teamFixtures).map((team) => {
-      return team.fixtureInfo;
-    });
-    const leagueFixtures = Object.values(fixtures).map((league) => {
-      return league.fixtureInfo;
-    });
-    let tempFixtures = [];
-    for (let i = 0; i < theTeamFixtures.length; i++) {
-      fixturesUpcoming(theTeamFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          tempFixtures.push(fixture);
-        });
-      fixturesInProgress(theTeamFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          tempFixtures.push(fixture);
-        });
-      fixturesFinished(theTeamFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          tempFixtures.push(fixture);
-        });
-    }
-
-    for (let i = 0; i < leagueFixtures.length; i++) {
-      fixturesUpcoming(leagueFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          tempFixtures.push(fixture);
-        });
-      fixturesInProgress(leagueFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          tempFixtures.push(fixture);
-        });
-      fixturesFinished(leagueFixtures[i])
-        .splice(0, 5)
-        .forEach((fixture) => {
-          tempFixtures.push(fixture);
-        });
-    }
-
-    //Filters all unique fixture objects available
-    const allUniqFixtures = tempFixtures.filter(
-      (fixture, index) =>
-        tempFixtures.findIndex(
-          (obj) => obj.fixture.id === fixture.fixture.id
-        ) === index
-    );
-    setAllFixtures(allUniqFixtures);
-  }, [teamFixtures, fixtures]);
+  }, [dispatch, fixtures, leagues, standings]);
 
   return { allFixtures };
 }

@@ -164,12 +164,12 @@ export default function Competitions() {
               fixturesEnding.length < fixturesInProgress.length
             ) {
               fixturesEnding.forEach(({ fixture }) => {
-                dispatch(updateLiveFixturesById(fixture.id));
+                dispatch(updateLiveFixturesById(fixture.id, selectedLeague));
               });
               dispatch(updateLiveFixtures(current, selectedLeague));
             } else if (fixturesEnding.length > 0) {
               fixturesEnding.forEach(({ fixture }) => {
-                dispatch(updateLiveFixturesById(fixture.id));
+                dispatch(updateLiveFixturesById(fixture.id, selectedLeague));
               });
             } else {
               dispatch(updateLiveFixtures(current, selectedLeague));

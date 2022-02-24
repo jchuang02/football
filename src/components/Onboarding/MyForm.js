@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Button,
+  Container,
+  Typography,
+} from "@mui/material";
 import { ProfileCircled } from "iconoir-react";
 import { TextField } from "mui-rff";
 import { Form } from "react-final-form";
@@ -24,6 +31,9 @@ export default function MyForm() {
   const followed = useSelector((state) => state.followed);
   const email = useSelector((state) => state.email);
   const auth = getAuth();
+  const ErrorAlert = (props) => (
+    <Alert {...props} severity="error" sx={{ marginTop: 4 }} />
+  );
 
   const actionCodeSettings = {
     // URL you want to redirect back to. The domain (www.example.com) for this
@@ -45,17 +55,25 @@ export default function MyForm() {
         console.error(errorCode, errorMessage);
       });
   };
+
   const emailRegex =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const validate = async (values) => {
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const debounce = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  async function validate(values) {
+    await debounce(500);
     const errors = {};
-    if (!values.email) {
-      errors.email = "This field is required.";
-    } else if (!values.email.match(emailRegex)) {
-      errors.email = "This email is not valid.";
+    if (Object.keys(values).length > 0) {
+      if (!values.email) {
+        errors.email = "This field is required.";
+      } else if (!values.email.match(emailRegex)) {
+        errors.email = "This email is not valid.";
+      }
+      return errors;
     }
-    return errors;
-  };
+    return;
+  }
 
   return (
     <Form
@@ -90,14 +108,17 @@ export default function MyForm() {
                 label="Email"
                 type="email"
                 required={true}
-                variant="outlined"
+                FormHelperTextProps={{
+                  component: ErrorAlert,
+                  children: " ",
+                }}
               />
             </Box>
             {email ? (
-              <Typography>
-                {" "}
-                {`A login email has been sent to ${email}!`}
-              </Typography>
+              <Alert severity="success" sx={{ margin: 2 }}>
+                <AlertTitle>Email Sent</AlertTitle>
+                <Typography>{`A login email has been sent to ${email}!`}</Typography>
+              </Alert>
             ) : (
               ""
             )}

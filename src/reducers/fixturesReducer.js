@@ -6,18 +6,6 @@ export default (state = {}, action) => {
         ...state,
         [action.payload.league]: action.payload,
       };
-
-    case "FETCH_PREVIOUS_FIXTURES":
-      return {
-        ...state,
-        [action.payload.league]: action.payload,
-      };
-
-    case "FETCH_UPCOMING_FIXTURES":
-      return {
-        ...state,
-        [action.payload.league]: action.payload,
-      };
     case "UPDATE_FIXTURES":
       const currentFixturesWithEvents = state[
         action.payload.league

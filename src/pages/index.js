@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/layout";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import Live from "../components/Matches/Live";
 import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
@@ -36,13 +36,17 @@ export default function Home() {
     selectorItems[0] ? selectorItems[0].id : 0
   );
   const { allFixtures } = useGetData();
-  console.log(allFixtures);
+
   useSignInWithEmailLink();
 
   if (!followedLeagues.length > 0 && !followedTeams.length > 0) {
     return (
       <Layout>
-        <Typography variant="h1">Welcome to dashboard.football</Typography>
+        <Container>
+          <Typography variant="h1" align="center">
+            Welcome to dashboard.football
+          </Typography>
+        </Container>
       </Layout>
     );
   } else {
