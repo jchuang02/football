@@ -49,7 +49,7 @@ export const fixturesFinished = (fixtures) => {
 };
 
 export const fixturesUpcoming = (fixtures) => {
-  if (fixtures.length) {
+  if (fixtures) {
     return fixtures
       .filter((fixture) => {
         return (

@@ -9,7 +9,6 @@ module.exports = {
     `gatsby-transformer-sharp`,
     `gatsby-plugin-material-ui`,
     `gatsby-plugin-gatsby-cloud`,
-
     {
       resolve: `gatsby-plugin-react-redux`,
       options: {

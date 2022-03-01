@@ -15,9 +15,13 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { fixtureFinished, fixtureInProgress } from "../helpers/fixtureStatusHelper";
+import {
+  fixtureFinished,
+  fixtureInProgress,
+} from "../helpers/fixtureStatusHelper";
 import { keyframes } from "@mui/styled-engine";
 import LazyLoad from "react-lazyload";
+import { Modal } from "@mui/material";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -32,6 +36,7 @@ const ExpandMore = styled((props) => {
 
 export default function FixtureCard({ fixture }) {
   const [expanded, setExpanded] = useState(false);
+  const [showFixture, setShowFixture] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -90,6 +95,15 @@ export default function FixtureCard({ fixture }) {
     }
   };
 
+  const handleOnClick = (event) => {
+    setShowFixture(!showFixture);
+    console.log(event);
+  };
+
+  const handleClose = () => {
+    setShowFixture(false);
+  };
+
   const TeamInfo = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -129,6 +143,20 @@ export default function FixtureCard({ fixture }) {
     animation: `${pulse} 2s infinite ease`,
   }));
 
+  const fixtureStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "60vw",
+    height: "80vh",
+    bgcolor: "background.paper",
+    border: "2px solid #2E3A59",
+    borderRadius: "16px",
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
     <Card
       key={fixture.fixture.id}
@@ -142,7 +170,21 @@ export default function FixtureCard({ fixture }) {
       }}
     >
       <CardContent>
-        <CardActionArea sx={{ borderRadius: "8px" }}>
+        {showFixture ? (
+          <Modal onClose={handleClose} open={showFixture}>
+            <Box sx={fixtureStyle}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                {fixture.fixture.id}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+              </Typography>
+            </Box>
+          </Modal>
+        ) : (
+          ""
+        )}
+        <CardActionArea sx={{ borderRadius: "8px" }} onClick={handleOnClick}>
           <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
             {fixture.league.name}
           </Typography>
@@ -261,7 +303,7 @@ export default function FixtureCard({ fixture }) {
               : ""}
           </Typography>
         </CardActionArea>
-        {/* {showEvents()} */}
+        {showEvents()}
       </CardContent>
     </Card>
   );

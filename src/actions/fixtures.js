@@ -78,7 +78,10 @@ export const updateLiveFixturesById =
 
 export const fetchTeamFixtures =
   (team, season) => async (dispatch, getState) => {
-    if (Date.now() - getState().teamFixtures[team].lastUpdated >= 60000) {
+    if (
+      !getState().teamFixtures[team] ||
+      Date.now() - getState().teamFixtures[team].lastUpdated >= 60000
+    ) {
       const { data } = await football.get("/fixtures", {
         params: { team, season },
       });
