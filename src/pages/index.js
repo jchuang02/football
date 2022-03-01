@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/layout";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, useMediaQuery } from "@mui/material";
 import Live from "../components/Matches/Live";
 import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
@@ -17,6 +17,7 @@ import useGetData from "../hooks/useGetData";
 
 export default function Home() {
   const leagues = useSelector((state) => state.leagues);
+  const desktop = useMediaQuery("(min-width: 1600px");
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
   const selectorItems = followedLeagues
@@ -64,17 +65,47 @@ export default function Home() {
           />
         </Box>
         <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-          }}
+          sx={
+            desktop
+              ? {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                }
+              : {}
+          }
         >
           <Recent
-            fixtures={fixturesFinished(allFixtures.length ? allFixtures : "")}
+            fixtures={fixturesFinished(
+              allFixtures.length
+                ? allFixtures.sort((fixture) => {
+                    if (
+                      followedTeams.includes(fixture.teams.home.id) ||
+                      followedTeams.includes(fixture.teams.away.id)
+                    ) {
+                      return 1;
+                    } else {
+                      return undefined;
+                    }
+                  })
+                : ""
+            )}
           />
           <Upcoming
-            fixtures={fixturesUpcoming(allFixtures.length ? allFixtures : "")}
+            fixtures={fixturesUpcoming(
+              allFixtures.length
+                ? fixturesUpcoming(allFixtures).sort((fixture) => {
+                    if (
+                      followedTeams.includes(fixture.teams.home.id) ||
+                      followedTeams.includes(fixture.teams.away.id)
+                    ) {
+                      return 1;
+                    } else {
+                      return undefined;
+                    }
+                  })
+                : ""
+            )}
           />
         </Box>
         {leagues ? (

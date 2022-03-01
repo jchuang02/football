@@ -1,25 +1,47 @@
 import React from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import FixtureCard from "../FixtureCard";
 import { separateFixtures } from "../../helpers/fixturesHelper";
 import Matches from "./Matches";
 
 export default function Recent({ fixtures }) {
+  const desktop = useMediaQuery("(min-width: 1600px");
+  const laptop = useMediaQuery("(min-width: 1400px");
+  const tablet = useMediaQuery("(min-width: 1050px");
+  const phone = useMediaQuery("(min-width: 700px");
+
   if (fixtures) {
     const sortedFixtures = fixtures.sort((fixtureOne, fixtureTwo) => {
       return fixtureTwo.fixture.timestamp - fixtureOne.fixture.timestamp;
     });
 
-    const fixtureCards = separateFixtures(sortedFixtures);
+    const fixtureCards = separateFixtures(
+      sortedFixtures,
+      desktop ? 2 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1
+    );
     return (
       <Box
-        sx={{
-          width: "45%",
-          marginLeft: "0.5rem",
-          textAlign: "right",
-        }}
+        sx={
+          desktop
+            ? {
+                width: "45%",
+                marginLeft: "0.5rem",
+                textAlign: "right",
+              }
+            : {
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                textAlign: "center",
+              }
+        }
       >
-        <Typography variant="h5">Past</Typography>
+        <Typography variant="h5">Recent</Typography>
         <Box
           sx={{
             textAlign: "center",

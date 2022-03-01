@@ -106,12 +106,36 @@ export default function AddTeamModal() {
         ) : (
           ""
         )}
-        <AddSquare
-          color={theme.palette.primary.main}
-          width={"32px"}
-          height={"32px"}
-          strokeWidth={hover ? 4 : 2}
-        />
+        <Box
+          sx={
+            hover
+              ? {
+                  alignItems: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                  width: "100%",
+                }
+              : {
+                  alignItems: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }
+          }
+        >
+          <AddSquare
+            color={theme.palette.primary.main}
+            width={"32px"}
+            height={"32px"}
+            strokeWidth={hover ? 4 : 2}
+          />
+        </Box>
       </Box>
       <Modal
         open={open}

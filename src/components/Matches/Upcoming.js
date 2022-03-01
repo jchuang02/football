@@ -1,14 +1,38 @@
 import React from "react";
 import { separateFixtures } from "../../helpers/fixturesHelper";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import FixtureCard from "../FixtureCard";
 import Matches from "./Matches";
 
 export default function Upcoming({ fixtures }) {
+  const desktop = useMediaQuery("(min-width: 1600px");
+  const laptop = useMediaQuery("(min-width: 1400px");
+  const tablet = useMediaQuery("(min-width: 1050px");
+  const phone = useMediaQuery("(min-width: 700px");
+
   if (fixtures) {
-    const fixtureCards = separateFixtures(fixtures);
+    const fixtureCards = separateFixtures(
+      fixtures,
+      desktop ? 2 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1
+    );
     return (
-      <Box sx={{ width: "45%", marginRight: "0.5rem" }}>
+      <Box
+        sx={
+          desktop
+            ? { width: "45%", marginRight: "0.5rem" }
+            : {
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                textAlign: "center",
+              }
+        }
+      >
         <Typography variant="h5">Upcoming</Typography>
         <Box
           sx={{
