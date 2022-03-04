@@ -20,7 +20,6 @@ export default combineReducers({
   teams: teamsReducer,
   teamPlayers: playersReducer,
   fixtures: fixturesReducer,
-  teamFixtures: teamFixturesReducer,
   fixture: fixtureReducer,
   selectedLeague: selectedLeagueReducer,
   selectedTeam: selectedTeamReducer,

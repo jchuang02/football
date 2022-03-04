@@ -33,15 +33,26 @@ export default function Recent({ fixtures }) {
                 marginLeft: "0.5rem",
                 textAlign: "right",
               }
-            : {
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
+            : laptop
+            ? {
                 textAlign: "center",
+                display: "flex",
+                overflowX: "auto",
+                flexFlow: "column nowrap",
+                justifyContent: "space-evenly",
+              }
+            : {
+                textAlign: "center",
+                display: "flex",
+                overflowX: "auto",
+                flexFlow: "column nowrap",
+                justifyContent: "space-evenly",
               }
         }
       >
-        <Typography variant="h5">Recent</Typography>
+        <Typography variant="h5" align="center">
+          Recent
+        </Typography>
         <Box
           sx={{
             textAlign: "center",
@@ -49,7 +60,12 @@ export default function Recent({ fixtures }) {
           }}
         >
           {sortedFixtures.length > 0 ? (
-            <Matches fixtures={sortedFixtures} axis="x-reverse" direction="rtl">
+            <Matches
+              fixtures={sortedFixtures}
+              groupedBy={desktop ? 2 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1}
+              axis="x-reverse"
+              direction="rtl"
+            >
               {fixtureCards.map((section, index) => {
                 return (
                   <Box key={index} sx={{ display: "flex" }}>

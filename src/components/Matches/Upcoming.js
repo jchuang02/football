@@ -41,7 +41,11 @@ export default function Upcoming({ fixtures }) {
           }}
         >
           {fixtures.length > 0 ? (
-            <Matches fixtures={fixtures} direction="ltr">
+            <Matches
+              fixtures={fixtures}
+              groupedBy={desktop ? 2 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1}
+              direction="ltr"
+            >
               {fixtureCards.map((section, index) => {
                 return (
                   <Box key={index} sx={{ display: "flex" }}>

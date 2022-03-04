@@ -1,116 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, LinearProgress, Typography } from "@mui/material";
-import Standings from "../components/Standings";
-import Layout from "../components/layout";
 import {
-  updateLiveFixtures,
   updateAllLiveFixtures,
   updateLiveFixturesById,
-  fetchFixtures,
-  updateFixtures,
 } from "../actions/fixtures";
-import { fetchStandings, updateStandings } from "../actions/standings";
+import { updateStandings } from "../actions/standings";
+import { fixtureEnding, fixtureFinished } from "../helpers/fixtureStatusHelper";
+import { fixturesInProgress, fixturesToday } from "../helpers/fixturesHelper";
 
-import {
-  fixturesInProgress,
-  fixturesFinished,
-  fixturesUpcoming,
-  fixturesToday,
-} from "../helpers/fixturesHelper";
-import {
-  fixtureInProgress,
-  fixtureFinished,
-  fixtureEnding,
-  fixtureOnBreak,
-} from "../helpers/fixtureStatusHelper";
-import Live from "../components/Matches/Live";
-import Upcoming from "../components/Matches/Upcoming";
-import Recent from "../components/Matches/Recent";
 import _ from "lodash";
 import useInterval from "../hooks/useInterval";
-
-export default function Competitions() {
+export default function useLiveUpdates() {
   const dispatch = useDispatch();
-  const now = new Date();
-  const [loading, setLoading] = useState(false);
   const leagues = useSelector((state) => state.leagues);
-  const followedLeagues = useSelector((state) => state.followed.leagues);
-  const selectedLeague = useSelector((state) => state.selectedLeague);
   const fixtures = useSelector((state) => state.fixtures);
-  const current = useSelector((state) => {
-    if (leagues && selectedLeague) {
-      let currentSeason = state.leagues[selectedLeague].leagueInfo.seasons.find(
-        (season) => {
-          return season.current;
-        }
-      );
-      return currentSeason.year;
-    } else {
-      return now.getFullYear();
-    }
-  });
-  const standings = useSelector((state) => state.standings[selectedLeague]);
-
-  useEffect(() => {
-    setLoading(true);
-    const pageLoading = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-
-    return () => {
-      clearTimeout(pageLoading);
-    };
-  }, []);
-
-  //If
-  useEffect(() => {
-    if (selectedLeague) {
-      if (standings === undefined) {
-        dispatch(fetchStandings(selectedLeague, current));
-      } else if (Date.now() - standings.lastUpdated >= 86400000) {
-        dispatch(updateStandings(selectedLeague, current));
-      }
-    }
-  }, []);
-
-  //If no fixtures present for the selected competition, fetch them.
-  useEffect(() => {
-    const competitionFixtures = Object.values(fixtures).filter((match) => {
-      return match.league.id === selectedLeague;
-    });
-    if (!competitionFixtures && selectedLeague) {
-      dispatch(fetchFixtures(current, selectedLeague));
-      //If it's been more than 24 hours since fixtures have been updated.
-    }
-  }, []);
-
-  //If live fixtures are present in fixtures, update them.
-  useEffect(() => {
-    const competitionFixtures = Object.values(fixtures).filter((match) => {
-      return match.league.id === selectedLeague;
-    });
-    if (competitionFixtures.length) {
-      if (
-        competitionFixtures.filter((match) => {
-          return (
-            fixtureInProgress(match.fixture.status.short) &&
-            !fixtureOnBreak(match.fixture.status.short) &&
-            Date.now() - match.lastUpdated >= 60000
-          );
-        }).length > 0 ||
-        competitionFixtures.filter((match) => {
-          return (
-            match.fixture.timestamp * 1000 - Date.now() < 0 &&
-            match.fixture.status.short === "NS" &&
-            Date.now() - match.lastUpdated >= 60000
-          );
-        }).length > 0
-      ) {
-        dispatch(updateFixtures(current, selectedLeague));
-      }
-    }
-  }, []);
+  const followedLeagues = useSelector((state) => state.followed.leagues);
+  const standings = useSelector((state) => state.standings);
 
   // For matches starting later today
   useEffect(() => {
@@ -252,57 +157,4 @@ export default function Competitions() {
       }
     }
   }, breakDelay);
-
-  const competitionFixtures = Object.values(fixtures).filter((match) => {
-    return match.league.id === selectedLeague;
-  });
-
-  if (leagues) {
-    return (
-      <Layout>
-        {!loading ? (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <Live
-                fixtures={fixturesInProgress(
-                  competitionFixtures ? competitionFixtures : ""
-                )}
-              />
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <Recent
-                fixtures={fixturesFinished(
-                  competitionFixtures ? competitionFixtures : ""
-                )}
-              />
-              <Upcoming
-                fixtures={fixturesUpcoming(
-                  competitionFixtures ? competitionFixtures : ""
-                )}
-              />
-            </Box>
-
-            <Standings selectedLeague={selectedLeague} />
-          </>
-        ) : (
-          <LinearProgress />
-        )}
-      </Layout>
-    );
-  } else {
-    return <Typography>No Competitions Selected</Typography>;
-  }
 }

@@ -53,17 +53,9 @@ export default function Home() {
   } else {
     return (
       <Layout>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <Live
-            fixtures={fixturesInProgress(allFixtures.length ? allFixtures : "")}
-          />
-        </Box>
+        <Live
+          fixtures={fixturesInProgress(allFixtures.length ? allFixtures : "")}
+        />
         <Box
           sx={
             desktop

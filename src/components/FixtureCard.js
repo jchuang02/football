@@ -13,6 +13,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -34,7 +35,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function FixtureCard({ fixture }) {
+export default function FixtureCard({ fixture, loading }) {
   const [expanded, setExpanded] = useState(false);
   const [showFixture, setShowFixture] = useState(false);
 
@@ -169,142 +170,151 @@ export default function FixtureCard({ fixture }) {
         borderRadius: "16px",
       }}
     >
-      <CardContent>
-        {showFixture ? (
-          <Modal onClose={handleClose} open={showFixture}>
-            <Box sx={fixtureStyle}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                {fixture.fixture.id}
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-              </Typography>
-            </Box>
-          </Modal>
-        ) : (
-          ""
-        )}
-        <CardActionArea sx={{ borderRadius: "8px" }} onClick={handleOnClick}>
-          <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
-            {fixture.league.name}
-          </Typography>
-          <Typography sx={{ fontSize: "12px", color: "#707070" }}>
-            {fixture.league.round}
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "start",
-              paddingTop: "1rem",
-              paddingBottom: "1rem",
-            }}
-          >
-            <TeamInfo>
-              {fixture.goals.home !== null ? (
-                <Typography
-                  sx={
-                    fixture.teams.home.winner
-                      ? { fontSize: "18pt", fontWeight: "700" }
-                      : { fontSize: "18pt", fontWeight: "regular" }
-                  }
-                >
-                  {fixture.goals.home}
+      {!loading ? (
+        <CardContent>
+          {showFixture ? (
+            <Modal onClose={handleClose} open={showFixture}>
+              <Box sx={fixtureStyle}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  {fixture.fixture.id}
                 </Typography>
-              ) : (
-                ""
-              )}
-              <TeamCrest>
-                <LazyLoad height={80}>
-                  <img
-                    src={fixture.teams.home.logo}
-                    alt={`${fixture.teams.home.name} Logo`}
-                  ></img>
-                </LazyLoad>
-              </TeamCrest>
-              <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-                {fixture.teams.home.name}
-              </Typography>
-            </TeamInfo>
-            <Typography
-              sx={{ alignSelf: "center", fontSize: "18pt", fontWeight: "500" }}
-            >
-              vs.
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Duis mollis, est non commodo luctus, nisi erat porttitor
+                  ligula.
+                </Typography>
+              </Box>
+            </Modal>
+          ) : (
+            ""
+          )}
+          <CardActionArea sx={{ borderRadius: "8px" }} onClick={handleOnClick}>
+            <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
+              {fixture.league.name}
             </Typography>
-            <TeamInfo>
-              {fixture.goals.away !== null ? (
-                <Typography
-                  sx={
-                    fixture.teams.away.winner
-                      ? { fontSize: "18pt", fontWeight: "700" }
-                      : { fontSize: "18pt", fontWeight: "regular" }
-                  }
-                >
-                  {fixture.goals.away}
-                </Typography>
-              ) : (
-                ""
-              )}
-              <TeamCrest>
-                <LazyLoad height={80}>
-                  <img
-                    src={fixture.teams.away.logo}
-                    alt={`${fixture.teams.away.name} Logo`}
-                  ></img>
-                </LazyLoad>
-              </TeamCrest>
-              <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-                {fixture.teams.away.name}
-              </Typography>
-            </TeamInfo>
-          </Box>
-          <Divider variant="middle" />
-          <Box sx={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
+            <Typography sx={{ fontSize: "12px", color: "#707070" }}>
+              {fixture.league.round}
+            </Typography>
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                alignItems: "start",
+                paddingTop: "1rem",
+                paddingBottom: "1rem",
               }}
             >
-              <Typography>
-                {!fixtureFinished(fixture.fixture.status.short) &&
-                fixture.fixture.status.elapsed !== null
-                  ? `${fixture.fixture.status.elapsed}'`
+              <TeamInfo>
+                {fixture.goals.home !== null ? (
+                  <Typography
+                    sx={
+                      fixture.teams.home.winner
+                        ? { fontSize: "18pt", fontWeight: "700" }
+                        : { fontSize: "18pt", fontWeight: "regular" }
+                    }
+                  >
+                    {fixture.goals.home}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+                <TeamCrest>
+                  <LazyLoad height={80}>
+                    <img
+                      src={fixture.teams.home.logo}
+                      alt={`${fixture.teams.home.name} Logo`}
+                    ></img>
+                  </LazyLoad>
+                </TeamCrest>
+                <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
+                  {fixture.teams.home.name}
+                </Typography>
+              </TeamInfo>
+              <Typography
+                sx={{
+                  alignSelf: "center",
+                  fontSize: "18pt",
+                  fontWeight: "500",
+                }}
+              >
+                vs.
+              </Typography>
+              <TeamInfo>
+                {fixture.goals.away !== null ? (
+                  <Typography
+                    sx={
+                      fixture.teams.away.winner
+                        ? { fontSize: "18pt", fontWeight: "700" }
+                        : { fontSize: "18pt", fontWeight: "regular" }
+                    }
+                  >
+                    {fixture.goals.away}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+                <TeamCrest>
+                  <LazyLoad height={80}>
+                    <img
+                      src={fixture.teams.away.logo}
+                      alt={`${fixture.teams.away.name} Logo`}
+                    ></img>
+                  </LazyLoad>
+                </TeamCrest>
+                <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
+                  {fixture.teams.away.name}
+                </Typography>
+              </TeamInfo>
+            </Box>
+            <Divider variant="middle" />
+            <Box sx={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography>
+                  {!fixtureFinished(fixture.fixture.status.short) &&
+                  fixture.fixture.status.elapsed !== null
+                    ? `${fixture.fixture.status.elapsed}'`
+                    : ""}
+                </Typography>
+                {fixtureInProgress(fixture.fixture.status.short) ? (
+                  <LiveIndicator />
+                ) : (
+                  ""
+                )}
+              </Box>
+
+              <Typography sx={{ fontWeight: "600", fontSize: "14pt" }}>
+                {fixture.fixture.status.elapsed === null
+                  ? new Date(fixture.fixture.date).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: "true",
+                    })
                   : ""}
               </Typography>
-              {fixtureInProgress(fixture.fixture.status.short) ? (
-                <LiveIndicator />
-              ) : (
-                ""
-              )}
             </Box>
-
-            <Typography sx={{ fontWeight: "600", fontSize: "14pt" }}>
-              {fixture.fixture.status.elapsed === null
-                ? new Date(fixture.fixture.date).toLocaleTimeString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: "true",
-                  })
+            <Typography sx={{ fontSize: "14px" }}>
+              {fixture.fixture.date !== null
+                ? new Date(fixture.fixture.timestamp * 1000).toLocaleDateString(
+                    "en-US",
+                    {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )
                 : ""}
             </Typography>
-          </Box>
-          <Typography sx={{ fontSize: "14px" }}>
-            {fixture.fixture.date !== null
-              ? new Date(fixture.fixture.timestamp * 1000).toLocaleDateString(
-                  "en-US",
-                  {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )
-              : ""}
-          </Typography>
-        </CardActionArea>
-        {showEvents()}
-      </CardContent>
+          </CardActionArea>
+          {showEvents()}
+        </CardContent>
+      ) : (
+        <CircularProgress sx={{ display: "flex", justifyContent: "center" }} />
+      )}
     </Card>
   );
 }

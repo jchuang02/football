@@ -8,18 +8,22 @@ export const separateFixtures = (fixtures, separatedBy = 2) => {
     if (temp.length) {
       separatedFixtures.push(temp);
     }
-    // if (fixtures[i] && fixtures[i + 1]) {
-    //   const first = fixtures[i];
-    //   const second = fixtures[i + 1];
-    //   separatedFixtures.push([first, second]);
-    // } else if (i % 2 !== 0) {
-    //   separatedFixtures.push([fixtures[i - 1]]);
-    // } else {
-    //   separatedFixtures.push([fixtures[i]]);
-    // }
   }
 
   return separatedFixtures;
+};
+
+export const fixturesToday = (fixtures) => {
+  if (fixtures.length) {
+    return fixtures
+      .filter(({ fixture }) => {
+        return fixture.timestamp * 1000 - Date.now() <= 60000 * 60 * 24;
+      })
+      .sort((fixtureOne, fixtureTwo) => {
+        return fixtureOne.fixture.timestamp - fixtureTwo.fixture.timestamp;
+      });
+  }
+  return "";
 };
 
 export const fixturesInProgress = (fixtures) => {
@@ -49,13 +53,13 @@ export const fixturesFinished = (fixtures) => {
 };
 
 export const fixturesUpcoming = (fixtures) => {
-  if (fixtures) {
+  if (fixtures.length) {
     return fixtures
-      .filter((fixture) => {
+      .filter((match) => {
         return (
-          !fixtureInProgress(fixture.fixture.status.short) &&
-          !fixtureFinished(fixture.fixture.status.short) &&
-          fixture.fixture.timestamp * 1000 - Date.now() > 0
+          !fixtureInProgress(match.fixture.status.short) &&
+          !fixtureFinished(match.fixture.status.short) &&
+          match.fixture.timestamp * 1000 - Date.now() > 0
         );
       })
       .sort((fixtureOne, fixtureTwo) => {

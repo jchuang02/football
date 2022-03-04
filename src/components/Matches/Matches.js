@@ -1,12 +1,29 @@
-import { Box, MobileStepper, Button, useTheme } from "@mui/material";
-import React, { useState } from "react";
+import { Box, MobileStepper, Button, useMediaQuery } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
-export default function Matches({ fixtures, children, axis = "x", direction }) {
+export default function Matches({
+  fixtures,
+  groupedBy = 2,
+  children,
+  axis = "x",
+  direction,
+}) {
+  const desktop = useMediaQuery("(min-width: 1600px");
+  const laptop = useMediaQuery("(min-width: 1400px");
+  const tablet = useMediaQuery("(min-width: 1050px");
+  const phone = useMediaQuery("(min-width: 700px");
+
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = Math.ceil(fixtures.length / 2);
+  const maxSteps = Math.ceil(fixtures.length / groupedBy);
+
+  useEffect(() => {
+    if (activeStep > maxSteps) {
+      setActiveStep(maxSteps - 1);
+    }
+  }, [activeStep, maxSteps]);
   const styles = {
     root: {
       // Simulates a global right-to-left direction.
@@ -30,7 +47,13 @@ export default function Matches({ fixtures, children, axis = "x", direction }) {
 
   const showFixtures = () => {
     return (
-      <Box sx={{ ...styles.root, marginRight: "1rem", marginLeft: "1rem" }}>
+      <Box
+        sx={{
+          ...styles.root,
+          marginRight: "1rem",
+          marginLeft: "1rem",
+        }}
+      >
         <SwipeableViews
           axis={axis}
           index={activeStep}
@@ -41,6 +64,10 @@ export default function Matches({ fixtures, children, axis = "x", direction }) {
           enableMouseEvents
         ></SwipeableViews>
         <MobileStepper
+          sx={{
+            width: "100%",
+            justifyContent: "center",
+          }}
           variant="text"
           steps={maxSteps}
           position="static"
