@@ -77,7 +77,7 @@ export default function Competitions() {
   //If no matches present for the selected competition, fetch them.
   useEffect(() => {
     const competitionFixtures = Object.values(fixtures).filter((match) => {
-      return match.league.id === selectedLeague;
+      return Number(match.league.id) === selectedLeague;
     });
     if (!competitionFixtures && selectedLeague) {
       dispatch(fetchFixtures(current, selectedLeague));

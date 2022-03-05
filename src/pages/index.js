@@ -44,8 +44,11 @@ export default function Home() {
     return (
       <Layout>
         <Container>
-          <Typography variant="h1" align="center">
+          <Typography variant="h1" align="center" sx={{ marginTop: "16rem" }}>
             Welcome to dashboard.football
+          </Typography>
+          <Typography variant="h5" align="center">
+            To start, add the teams and competitions you'd like to follow above!
           </Typography>
         </Container>
       </Layout>

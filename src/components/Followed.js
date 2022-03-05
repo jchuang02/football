@@ -68,7 +68,14 @@ export default function Followed() {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        width: "100%",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -81,7 +88,6 @@ export default function Followed() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            width: "30vw",
             overflowX: "auto",
           }}
         >
@@ -131,7 +137,6 @@ export default function Followed() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            width: "30vw",
             overflowX: "auto",
           }}
         >
@@ -171,6 +176,6 @@ export default function Followed() {
         </Box>
         <AddLeagueModal />
       </Box>
-    </>
+    </Box>
   );
 }

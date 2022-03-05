@@ -42,15 +42,15 @@ export default function Recent({ fixtures }) {
                 justifyContent: "space-evenly",
               }
             : {
-                textAlign: "center",
                 display: "flex",
-                overflowX: "auto",
-                flexFlow: "column nowrap",
-                justifyContent: "space-evenly",
+                flexDirection: "column",
+                width: "100%",
+                textAlign: "center",
+                justifyContent: "center",
               }
         }
       >
-        <Typography variant="h5" align="center">
+        <Typography variant="h5" align={desktop ? "right" : "center"}>
           Recent
         </Typography>
         <Box
@@ -68,7 +68,10 @@ export default function Recent({ fixtures }) {
             >
               {fixtureCards.map((section, index) => {
                 return (
-                  <Box key={index} sx={{ display: "flex" }}>
+                  <Box
+                    key={index}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
                     {section
                       .sort((fixtureOne, fixtureTwo) => {
                         return (

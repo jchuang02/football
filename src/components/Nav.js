@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Link, navigate } from "gatsby";
-import { Home } from "iconoir-react";
+import { Home, HomeAlt } from "iconoir-react";
 import theme from "./MaterialUI/Theme";
 import { ProfileCircled } from "iconoir-react";
 import Followed from "../components/Followed";
@@ -38,6 +38,7 @@ export default function Nav(props) {
   const dispatch = useDispatch();
   const auth = getAuth();
   const user = useAuth();
+  const [hover, setHover] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -68,13 +69,19 @@ export default function Nav(props) {
                 dispatch(selectLeague(""));
                 dispatch(selectTeam(""));
               }}
+              onMouseOver={() => {
+                setHover(true);
+              }}
+              onMouseOut={() => {
+                setHover(false);
+              }}
               size="large"
               edge="start"
               color="primary"
               sx={{ mr: 2 }}
               aria-label="home"
             >
-              <Home strokeWidth={2} />
+              {hover ? <HomeAlt strokeWidth={3} /> : <Home strokeWidth={2} />}
             </IconButton>
           </Link>
           <Followed />

@@ -96,8 +96,8 @@ export default function Teams() {
   useEffect(() => {
     const teamFixtures = Object.values(fixtures).filter((match) => {
       return (
-        match.teams.away.id === selectedTeam ||
-        match.teams.home.id === selectedTeam
+        Number(match.teams.away.id) === selectedTeam ||
+        Number(match.teams.home.id) === selectedTeam
       );
     });
     if (teamFixtures.length) {
@@ -274,8 +274,8 @@ export default function Teams() {
 
   const teamFixtures = Object.values(fixtures).filter((match) => {
     return (
-      match.teams.away.id === selectedTeam ||
-      match.teams.home.id === selectedTeam
+      Number(match.teams.away.id) === selectedTeam ||
+      Number(match.teams.home.id) === selectedTeam
     );
   });
 

@@ -63,14 +63,16 @@ export default function useGetData() {
       const teamSpecificMatches = Object.values(fixtures).filter((match) => {
         return (
           match.teams &&
-          (match.teams.home.id === team || match.teams.away.id === team) &&
+          (Number(match.teams.home.id) === team ||
+            Number(match.teams.away.id) === team) &&
           !followedLeagues.includes(match.league.id)
         );
       });
       const needsUpdate = Object.values(fixtures).filter((match) => {
         return (
           match.teams &&
-          (match.teams.home.id === team || match.teams.away.id === team) &&
+          (Number(match.teams.home.id) === team ||
+            Number(match.teams.away.id) === team) &&
           Date.now() - match.lastUpdated >= 86400000
         );
       });
@@ -93,17 +95,16 @@ export default function useGetData() {
     followedLeagues.forEach((league) => {
       const leagueSpecificMatches = Object.values(fixtures).filter((match) => {
         return (
-          match.league.id === league &&
+          Number(match.league.id) === league &&
           !(
             followedTeams.includes(match.teams.home.id) ||
             followedTeams.includes(match.teams.away.id)
           )
         );
       });
-      console.log(leagueSpecificMatches);
       const needsUpdate = Object.values(fixtures).filter((match) => {
         return (
-          match.league.id === league &&
+          Number(match.league.id) === league &&
           Date.now() - match.lastUpdated >= 86400000
         );
       });
@@ -169,11 +170,11 @@ export default function useGetData() {
         if (
           leagues[league] &&
           Object.values(fixtures).filter((match) => {
-            return match.league.id === league;
+            return Number(match.league.id) === league;
           }).length > 0
         ) {
           const competitionMatches = Object.values(fixtures).filter((match) => {
-            return match.league.id === league;
+            return Number(match.league.id) === league;
           });
           const liveMatches = fixturesInProgress(competitionMatches);
           const now = new Date();
@@ -246,6 +247,7 @@ export default function useGetData() {
   let delay = 60000;
   useInterval(() => {
     if (
+      Object.values(fixtures).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0

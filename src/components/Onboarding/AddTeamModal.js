@@ -100,7 +100,7 @@ export default function AddTeamModal() {
         }}
       >
         {!followed.teams.length > 0 ? (
-          <Typography variant="h4" sx={{ fontWeight: 500, marginRight: 2 }}>
+          <Typography variant="h4" sx={{ fontWeight: 500 }}>
             Add Team
           </Typography>
         ) : (
@@ -113,16 +113,18 @@ export default function AddTeamModal() {
                   alignItems: "center",
                   display: "flex",
                   justifyContent: "center",
+                  mr: 2,
+                  ml: 2,
                   "&:hover": {
                     cursor: "pointer",
                   },
-                  width: "100%",
                 }
               : {
                   alignItems: "center",
                   display: "flex",
                   justifyContent: "center",
-                  width: "100%",
+                  mr: 2,
+                  ml: 2,
                   "&:hover": {
                     cursor: "pointer",
                   },

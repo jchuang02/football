@@ -48,7 +48,10 @@ export default function Upcoming({ fixtures }) {
             >
               {fixtureCards.map((section, index) => {
                 return (
-                  <Box key={index} sx={{ display: "flex" }}>
+                  <Box
+                    key={index}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
                     {section.map((fixture) => {
                       return (
                         <FixtureCard

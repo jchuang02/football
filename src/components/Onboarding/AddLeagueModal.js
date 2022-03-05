@@ -79,19 +79,16 @@ export default function PersonalizationModal() {
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
+                width: "100%",
                 "&:hover": {
                   cursor: "pointer",
                 },
-                width: "100%",
               }
             : {
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                "&:hover": {
-                  cursor: "pointer",
-                },
               }
         }
         onMouseOver={() => {
@@ -102,8 +99,8 @@ export default function PersonalizationModal() {
         }}
         onClick={handleOpen}
       >
-        {!followed.leagues.length > 0 ? (
-          <Typography variant="h4" sx={{ fontWeight: 500, marginRight: 2 }}>
+        {!followed.leagues.length ? (
+          <Typography variant="h4" sx={{ fontWeight: 500 }}>
             Add Competition
           </Typography>
         ) : (
@@ -119,16 +116,15 @@ export default function PersonalizationModal() {
                   "&:hover": {
                     cursor: "pointer",
                   },
-                  width: "100%",
+                  mr: 2,
+                  ml: 2,
                 }
               : {
                   alignItems: "center",
                   display: "flex",
                   justifyContent: "center",
-                  width: "100%",
-                  "&:hover": {
-                    cursor: "pointer",
-                  },
+                  mr: 2,
+                  ml: 2,
                 }
           }
         >
