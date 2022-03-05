@@ -140,6 +140,7 @@ export default function Followed() {
             justifyContent: "center",
             alignItems: "center",
             overflowX: "auto",
+            width: "100%",
           }}
         >
           {leagues

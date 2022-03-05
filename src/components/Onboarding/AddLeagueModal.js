@@ -79,7 +79,6 @@ export default function PersonalizationModal() {
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
-                width: "100%",
                 "&:hover": {
                   cursor: "pointer",
                 },
@@ -88,7 +87,6 @@ export default function PersonalizationModal() {
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
-                width: "100%",
               }
         }
         onMouseOver={() => {
