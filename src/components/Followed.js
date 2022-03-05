@@ -50,7 +50,6 @@ export default function Followed() {
 
   const choiceStyle = {
     border: "2px solid #2E3A59",
-    m: 1,
     flex: "0 1 25%",
     borderRadius: "16px",
     minWidth: "64px",
@@ -61,6 +60,8 @@ export default function Followed() {
     backgroundSize: "80%",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
+    width: "100%",
+    m: 1,
     "&:hover": {
       cursor: "pointer",
       border: "4px solid #2E3A59",
@@ -89,6 +90,7 @@ export default function Followed() {
             justifyContent: "center",
             alignItems: "center",
             overflowX: "auto",
+            width: "100%",
           }}
         >
           {leagues
