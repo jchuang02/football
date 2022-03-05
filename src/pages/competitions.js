@@ -63,7 +63,7 @@ export default function Competitions() {
     };
   }, []);
 
-  //If
+  //Get league information if it does not exist and update it if updated more than a day ago.
   useEffect(() => {
     if (selectedLeague) {
       if (standings === undefined) {
@@ -74,18 +74,17 @@ export default function Competitions() {
     }
   }, []);
 
-  //If no fixtures present for the selected competition, fetch them.
+  //If no matches present for the selected competition, fetch them.
   useEffect(() => {
     const competitionFixtures = Object.values(fixtures).filter((match) => {
       return match.league.id === selectedLeague;
     });
     if (!competitionFixtures && selectedLeague) {
       dispatch(fetchFixtures(current, selectedLeague));
-      //If it's been more than 24 hours since fixtures have been updated.
     }
   }, []);
 
-  //If live fixtures are present in fixtures, update them.
+  //If live matches are present in fixtures, update them.
   useEffect(() => {
     const competitionFixtures = Object.values(fixtures).filter((match) => {
       return match.league.id === selectedLeague;
@@ -120,7 +119,7 @@ export default function Competitions() {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures));
+      const allMatchesToday = fixturesToday(Object.values(fixtures)) || [];
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -146,12 +145,13 @@ export default function Competitions() {
     return () => {
       clearTimeout(timer);
     };
-  });
+  }, [dispatch, fixtures]);
 
   //For matches happening soon or now
   let delay = 60000;
   useInterval(() => {
     if (
+      Object.values(fixtures) &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
@@ -236,6 +236,7 @@ export default function Competitions() {
   //When fixtures are all on break
   useInterval(() => {
     if (
+      Object.values(fixtures) &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
@@ -254,7 +255,7 @@ export default function Competitions() {
   }, breakDelay);
 
   const competitionFixtures = Object.values(fixtures).filter((match) => {
-    return match.league.id === selectedLeague;
+    return Number(match.league.id) === selectedLeague;
   });
 
   if (leagues) {

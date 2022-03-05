@@ -70,7 +70,7 @@ export default function Teams() {
     };
   }, []);
 
-  //
+  //Get league information if it does not exist and update it if updated more than a day ago.
   useEffect(() => {
     if (!teamLeagues[selectedTeam]) {
       dispatch(fetchTeamLeagues(selectedTeam));
@@ -79,18 +79,18 @@ export default function Teams() {
     }
   }, [dispatch, selectedTeam, teamLeagues]);
 
+  //If no matches are present for the selected team, fetch them.
   useEffect(() => {
     const teamFixtures = Object.values(fixtures).filter((match) => {
       return (
-        match.teams.away.id === selectedTeam ||
-        match.teams.home.id === selectedTeam
+        Number(match.teams.away.id) === selectedTeam ||
+        Number(match.teams.home.id) === selectedTeam
       );
     });
-    if (!teamFixtures && selectedTeam) {
+    if (!teamFixtures.length && selectedTeam) {
       dispatch(fetchTeamFixtures(selectedTeam, current));
-      //If it's been more than 24 hours since fixtures have been updated.
     }
-  }, []);
+  }, [dispatch, current, fixtures, selectedTeam]);
 
   //If live fixtures are present in fixtures, update them.
   useEffect(() => {
@@ -130,7 +130,7 @@ export default function Teams() {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures));
+      const allMatchesToday = fixturesToday(Object.values(fixtures)) || [];
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -156,17 +156,18 @@ export default function Teams() {
     return () => {
       clearTimeout(timer);
     };
-  });
+  }, [dispatch, fixtures]);
 
   //For matches happening soon or now
   let delay = 60000;
   useInterval(() => {
     if (
+      Object.values(fixtures) &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures));
+      const allMatchesToday = fixturesToday(Object.values(fixtures)) || [];
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -253,6 +254,7 @@ export default function Teams() {
   //When fixtures are all on break
   useInterval(() => {
     if (
+      Object.values(fixtures) &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
