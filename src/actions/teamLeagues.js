@@ -6,13 +6,16 @@ export const fetchTeamLeagues =
     const { data } = await football.get("/leagues", {
       params: { team, current },
     });
-    const theData = {
-      team: team,
-      leagueInfo: data.response,
-      lastUpdated: Date.now(),
-    };
+    let parsedLeagues = {};
+    data.response.forEach((league) => {
+      parsedLeagues[league.league.id] = {
+        team: team,
+        league: league,
+        lastUpdated: Date.now(),
+      };
+    });
 
-    dispatch({ type: "FETCH_TEAM_LEAGUES", payload: theData });
+    dispatch({ type: "FETCH_TEAM_LEAGUES", payload: parsedLeagues });
   };
 
 export const updateTeamLeagues =
@@ -22,11 +25,14 @@ export const updateTeamLeagues =
       params: { team, current },
     });
 
-    const theData = {
-      team: team,
-      leagueInfo: data.response,
-      lastUpdated: Date.now(),
-    };
+    let parsedLeagues = {};
+    data.response.forEach((league) => {
+      parsedLeagues[league.league.id] = {
+        team: team,
+        league: league,
+        lastUpdated: Date.now(),
+      };
+    });
 
-    dispatch({ type: "UPDATE_TEAM_LEAGUES", payload: theData });
+    dispatch({ type: "UPDATE_TEAM_LEAGUES", payload: parsedLeagues });
   };

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import {
   fetchTeamFixtures,
   updateTeamFixtures,
   updateAllLiveFixtures,
-  updateLiveTeamFixtures,
   updateLiveTeamFixturesById,
 } from "../actions/fixtures";
 import { updateStandings } from "../actions/standings";
@@ -36,12 +35,19 @@ export default function Teams() {
   const leagues = useSelector((state) => state.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
   const selectedTeam = useSelector((state) => state.selectedTeam);
-  const teamLeagues = useSelector((state) => state.teamLeagues);
   const fixtures = useSelector((state) => state.fixtures);
   const standings = useSelector((state) => state.standings);
 
   const now = new Date();
-
+  const teamLeagues = useMemo(() => {
+    if (Object.values(leagues).length) {
+      return Object.values(leagues).filter(({ league }) => {
+        return league.team === selectedTeam;
+      });
+    } else {
+      return [];
+    }
+  }, [leagues, selectedTeam]);
   const current = useSelector((state) => {
     if (teams && selectedTeam && teamLeagues[selectedTeam]) {
       let currentSeasons = state.teamLeagues[selectedTeam].leagueInfo.map(
@@ -68,7 +74,7 @@ export default function Teams() {
     return () => {
       clearTimeout(pageLoading);
     };
-  }, []);
+  }, [selectedTeam]);
 
   //Get league information if it does not exist and update it if updated more than a day ago.
   useEffect(() => {

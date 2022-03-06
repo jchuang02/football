@@ -40,7 +40,7 @@ export default function Competitions() {
   const fixtures = useSelector((state) => state.fixtures);
   const current = useSelector((state) => {
     if (leagues && selectedLeague) {
-      let currentSeason = state.leagues[selectedLeague].leagueInfo.seasons.find(
+      let currentSeason = state.leagues[selectedLeague].league.seasons.find(
         (season) => {
           return season.current;
         }
@@ -61,7 +61,7 @@ export default function Competitions() {
     return () => {
       clearTimeout(pageLoading);
     };
-  }, []);
+  }, [selectedLeague]);
 
   //Get league information if it does not exist and update it if updated more than a day ago.
   useEffect(() => {

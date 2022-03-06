@@ -4,15 +4,22 @@ export default (state = {}, action) => {
     case "FETCH_LEAGUES":
       return {
         ...state,
-        [action.payload.league]: action.payload,
+        ...action.payload,
       };
     case "UPDATE_LEAGUES":
       return {
         ...state,
-        [action.payload.league]: {
-          leagueInfo: action.payload.leagueInfo,
-          lastUpdated: action.payload.lastUpdated,
-        },
+        ...action.payload,
+      };
+    case "FETCH_TEAM_LEAGUES":
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case "UPDATE_TEAM_LEAGUES":
+      return {
+        ...state,
+        ...action.payload,
       };
     default:
       return state;

@@ -122,10 +122,6 @@ export const fetchTeamFixtures = (team, season) => async (dispatch) => {
 
   let parsedMatches = {};
   data.response.forEach((match) => {
-    dispatch({
-      type: "FIXTURE_ACTION_START",
-      payload: { id: match.fixture.id, loading: true },
-    });
     parsedMatches[match.fixture.id] = {
       ...match,
       lastUpdated: Date.now(),

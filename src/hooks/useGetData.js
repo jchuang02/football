@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchFixtures,
   updateFixtures,
   updateAllLiveFixtures,
-  updateLiveFixtures,
   updateLiveFixturesById,
-  updateLiveTeamFixtures,
-  updateLiveTeamFixturesById,
   fetchTeamFixtures,
   updateTeamFixtures,
 } from "../actions/fixtures";
@@ -29,11 +26,9 @@ import useInterval from "./useInterval";
 
 export default function useGetData() {
   const dispatch = useDispatch();
-  const [allFixtures, setAllFixtures] = useState([]);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
   const leagues = useSelector((state) => state.leagues);
-  const teamLeagues = useSelector((state) => state.teamLeagues);
   const fixtures = useSelector((state) => state.fixtures);
   const standings = useSelector((state) => state.standings);
 
@@ -43,7 +38,7 @@ export default function useGetData() {
       if (leagues[league]) {
         const now = new Date();
         const currentSeason =
-          leagues[league].leagueInfo.seasons.find((season) => {
+          leagues[league].league.seasons.find((season) => {
             return season.current;
           }).year || now.getFullYear();
         if (!standings[league]) {
@@ -53,38 +48,60 @@ export default function useGetData() {
         }
       }
     });
-  }, [followedLeagues, dispatch, leagues, standings]);
+    followedTeams.forEach((team) => {
+      const teamLeagues = Object.values(leagues).filter((league) => {
+        return league.team === team;
+      });
+      let currentSeasons = teamLeagues.map(({ league }) => {
+        return league.seasons[0].year;
+      });
+      let currentYear = 0;
+      currentSeasons.forEach((season) => {
+        currentYear = Math.max(season, currentYear);
+      });
+      teamLeagues.forEach(({ league }) => {
+        if (!standings[league.league.id]) {
+          dispatch(fetchStandings(league.league.id, currentYear));
+        } else if (
+          Date.now() - standings[league.league.id].lastUpdated >=
+          86400000
+        ) {
+          dispatch(updateStandings(league.league.id, currentYear));
+        }
+      });
+    });
+  }, [followedLeagues, followedTeams]);
 
   //get match info.
   useEffect(() => {
-    if (Object.values(fixtures).length) {
-    }
     followedTeams.forEach((team) => {
       const teamSpecificMatches = Object.values(fixtures).filter((match) => {
         return (
           match.teams &&
           (Number(match.teams.home.id) === team ||
             Number(match.teams.away.id) === team) &&
-          !followedLeagues.includes(match.league.id)
+          !followedLeagues.includes(Number(match.league.id))
         );
       });
-      const needsUpdate = Object.values(fixtures).filter((match) => {
-        return (
-          match.teams &&
-          (Number(match.teams.home.id) === team ||
-            Number(match.teams.away.id) === team) &&
-          Date.now() - match.lastUpdated >= 86400000
-        );
+      const needsUpdate = teamSpecificMatches.filter((match) => {
+        return Date.now() - match.lastUpdated >= 86400000;
       });
-      if (teamLeagues[team]) {
-        let currentSeasons = teamLeagues[team].leagueInfo.map((league) => {
+      if (
+        Object.values(leagues).filter((league) => {
+          return league.team === team;
+        }).length
+      ) {
+        const teamLeagues = Object.values(leagues).filter((league) => {
+          return league.team === team;
+        });
+        let currentSeasons = teamLeagues.map(({ league }) => {
           return league.seasons[0].year;
         });
         let currentYear = 0;
         currentSeasons.forEach((season) => {
           currentYear = Math.max(season, currentYear);
         });
-        if (!teamSpecificMatches.length) {
+        if (teamSpecificMatches.length === 0) {
           dispatch(fetchTeamFixtures(team, currentYear));
         } else if (needsUpdate.length) {
           dispatch(updateTeamFixtures(team, currentYear));
@@ -97,8 +114,8 @@ export default function useGetData() {
         return (
           Number(match.league.id) === league &&
           !(
-            followedTeams.includes(match.teams.home.id) ||
-            followedTeams.includes(match.teams.away.id)
+            followedTeams.includes(Number(match.teams.home.id)) ||
+            followedTeams.includes(Number(match.teams.away.id))
           )
         );
       });
@@ -111,10 +128,10 @@ export default function useGetData() {
       if (leagues[league]) {
         const now = new Date();
         let currentSeason =
-          leagues[league].leagueInfo.seasons.find((season) => {
+          leagues[league].league.seasons.find((season) => {
             return season.current;
           }).year || now.getFullYear();
-        if (!leagueSpecificMatches.length) {
+        if (leagueSpecificMatches.length === 0) {
           dispatch(fetchFixtures(currentSeason, league));
           //If it's been more than 24 hours since fixtures have been updated.
         } else if (needsUpdate.length) {
@@ -122,7 +139,7 @@ export default function useGetData() {
         }
       }
     });
-  }, [followedTeams, followedLeagues, leagues, teamLeagues, dispatch]);
+  }, [dispatch, fixtures, followedTeams, followedLeagues, leagues]);
 
   //If live matches are present in data when application first loads, update them.
   useEffect(() => {
@@ -131,12 +148,20 @@ export default function useGetData() {
       fixturesInProgress(Object.values(fixtures)).length
     ) {
       followedTeams.forEach((team) => {
-        if (teamLeagues[team] && Object.values(fixtures).length > 0) {
+        if (
+          Object.values(leagues).filter((league) => {
+            return league.team === team;
+          }).length > 0 &&
+          Object.values(fixtures).length > 0
+        ) {
           const teamMatches = Object.values(fixtures).filter((match) => {
             return match.teams.home.id === team || match.teams.away.id === team;
           });
           const liveMatches = fixturesInProgress(teamMatches);
-          let currentSeasons = teamLeagues[team].leagueInfo.map((league) => {
+          const teamLeagues = Object.values(leagues).filter((league) => {
+            return league.team === team;
+          });
+          let currentSeasons = teamLeagues.map((league) => {
             return league.seasons[0].year;
           });
           let currentYear = 0;
@@ -179,7 +204,7 @@ export default function useGetData() {
           const liveMatches = fixturesInProgress(competitionMatches);
           const now = new Date();
           const currentSeason =
-            leagues[league].leagueInfo.seasons.find((season) => {
+            leagues[league].league.seasons.find((season) => {
               return season.current;
             }).year || now.getFullYear();
           if (
@@ -247,10 +272,12 @@ export default function useGetData() {
   let delay = 60000;
   useInterval(() => {
     if (
-      Object.values(fixtures).length &&
+      fixturesToday(Object.values(fixtures)).filter((match) => {
+        return match.fixture.status.short === "NS";
+      }).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
-      }).length > 0
+      }).length
     ) {
       const allMatchesToday = fixturesToday(Object.values(fixtures));
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
@@ -314,7 +341,7 @@ export default function useGetData() {
         allStandings.forEach((standing) => {
           const now = new Date();
           const currentSeason =
-            leagues[standing].leagueInfo.seasons.find((season) => {
+            leagues[standing].league.seasons.find((season) => {
               return season.current;
             }).year || now.getFullYear();
           if (
@@ -332,9 +359,10 @@ export default function useGetData() {
   //When fixtures are all on break
   useInterval(() => {
     if (
+      Object.values(fixtures).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
-      }).length > 0
+      }).length
     ) {
       const allMatchesOnBreak = Object.values(fixtures).filter(
         ({ fixture }) => {
@@ -350,33 +378,26 @@ export default function useGetData() {
   }, breakDelay);
 
   //Build a shortened fixtures array.
-  useEffect(() => {
+  const allFixtures = useMemo(() => {
     if (Object.values(fixtures).length) {
-      let tempFixtures = [];
+      let firstTenFixtures = [];
       fixturesUpcoming(Object.values(fixtures))
         .splice(0, 10)
         .forEach((fixture) => {
-          tempFixtures.push(fixture);
+          firstTenFixtures.push(fixture);
         });
       fixturesInProgress(Object.values(fixtures))
         .splice(0, 10)
         .forEach((fixture) => {
-          tempFixtures.push(fixture);
+          firstTenFixtures.push(fixture);
         });
       fixturesFinished(Object.values(fixtures))
         .splice(0, 10)
         .forEach((fixture) => {
-          tempFixtures.push(fixture);
+          firstTenFixtures.push(fixture);
         });
 
-      //Filters all unique fixture objects available
-      const allUniqFixtures = tempFixtures.filter(
-        (fixture, index) =>
-          tempFixtures.findIndex(
-            (obj) => obj.fixture.id === fixture.fixture.id
-          ) === index
-      );
-      setAllFixtures(allUniqFixtures);
+      return firstTenFixtures;
     }
   }, [fixtures]);
 

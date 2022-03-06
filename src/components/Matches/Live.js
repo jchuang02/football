@@ -14,6 +14,7 @@ export default function Live({ fixtures }) {
   const laptop = useMediaQuery("(min-width: 1400px");
   const tablet = useMediaQuery("(min-width: 1050px");
   const phone = useMediaQuery("(min-width: 700px");
+
   if (fixtures) {
     const fixtureCards = separateFixtures(
       fixtures,

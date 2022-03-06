@@ -5,13 +5,13 @@ export const fetchLeagues =
     const { data } = await football.get("/leagues", {
       params: { id, current },
     });
-    const theData = {
-      league: id,
-      leagueInfo: data.response[0],
+    let parsedLeagues = {};
+    parsedLeagues[id] = {
+      league: data.response[0],
       lastUpdated: Date.now(),
     };
 
-    dispatch({ type: "FETCH_LEAGUES", payload: theData });
+    dispatch({ type: "FETCH_LEAGUES", payload: parsedLeagues });
   };
 
 export const updateLeagues =
@@ -20,10 +20,10 @@ export const updateLeagues =
     const { data } = await football.get("/leagues", {
       params: { id, current },
     });
-    const theData = {
-      league: id,
-      leagueInfo: data.response[0],
+    let parsedLeagues = {};
+    parsedLeagues[id] = {
+      league: data.response[0],
       lastUpdated: Date.now(),
     };
-    dispatch({ type: "UPDATE_LEAGUES", payload: theData });
+    dispatch({ type: "UPDATE_LEAGUES", payload: parsedLeagues });
   };

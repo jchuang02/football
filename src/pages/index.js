@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/layout";
 import { Box, Container, Typography, useMediaQuery } from "@mui/material";
@@ -20,23 +20,30 @@ export default function Home() {
   const desktop = useMediaQuery("(min-width: 1600px");
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
-  const selectorItems = followedLeagues
-    .filter((league) => {
-      return Object.keys(leagues).includes(String(league));
-    })
-    .map((league) => {
-      return {
-        id: leagues[league].leagueInfo.league.id,
-        name: leagues[league].leagueInfo.league.name,
-        logo: leagues[league].leagueInfo.league.logo,
-        country: leagues[league].leagueInfo.country.name,
-        flag: leagues[league].leagueInfo.country.flag,
-      };
-    });
+  const fixtures = useSelector((state) => state.fixtures);
+
+  const selectorItems = useMemo(() => {
+    if (Object.values(leagues).length) {
+      return Object.values(leagues).map(({ league }) => {
+        return {
+          id: league.league.id,
+          name: league.league.name,
+          logo: league.league.logo,
+          country: league.country.name,
+          flag: league.country.flag,
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [leagues]);
   const [selected, setSelected] = useState(
-    selectorItems[0] ? selectorItems[0].id : 0
+    selectorItems[0] ? selectorItems[0].id : ""
   );
+
   const { allFixtures } = useGetData();
+
+  console.log(fixtures);
 
   useSignInWithEmailLink();
 
@@ -57,7 +64,9 @@ export default function Home() {
     return (
       <Layout>
         <Live
-          fixtures={fixturesInProgress(allFixtures.length ? allFixtures : "")}
+          fixtures={fixturesInProgress(
+            allFixtures !== undefined ? allFixtures : ""
+          )}
         />
         <Box
           sx={
@@ -72,7 +81,7 @@ export default function Home() {
         >
           <Recent
             fixtures={fixturesFinished(
-              allFixtures.length
+              allFixtures !== undefined
                 ? allFixtures.sort((fixture) => {
                     if (
                       followedTeams.includes(fixture.teams.home.id) ||
@@ -88,17 +97,19 @@ export default function Home() {
           />
           <Upcoming
             fixtures={fixturesUpcoming(
-              allFixtures.length
-                ? fixturesUpcoming(allFixtures).sort((fixture) => {
-                    if (
-                      followedTeams.includes(fixture.teams.home.id) ||
-                      followedTeams.includes(fixture.teams.away.id)
-                    ) {
-                      return 1;
-                    } else {
-                      return undefined;
-                    }
-                  })
+              allFixtures !== undefined
+                ? allFixtures.length
+                  ? fixturesUpcoming(allFixtures).sort((fixture) => {
+                      if (
+                        followedTeams.includes(fixture.teams.home.id) ||
+                        followedTeams.includes(fixture.teams.away.id)
+                      ) {
+                        return 1;
+                      } else {
+                        return undefined;
+                      }
+                    })
+                  : ""
                 : ""
             )}
           />

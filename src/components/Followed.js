@@ -15,18 +15,19 @@ export default function Followed() {
   const selectedLeague = useSelector((state) => state.selectedLeague);
   const selectedTeam = useSelector((state) => state.selectedTeam);
   const leagues = useSelector((state) => state.leagues);
-  const teamLeagues = useSelector((state) => state.teamLeagues);
   const teams = useSelector((state) => state.teams);
 
   useEffect(() => {
     followedTeams.forEach((team) => {
       if (!teams[team]) {
         dispatch(fetchTeams(team));
+        dispatch(fetchTeamLeagues(team));
       } else if (Date.now() - teams[team].lastUpdated >= 86400000) {
         dispatch(updateTeams(team));
+        dispatch(updateTeamLeagues(team));
       }
     });
-  }, [followedTeams]);
+  }, [dispatch, followedTeams, teams]);
 
   useEffect(() => {
     followedLeagues.forEach((league) => {
@@ -36,17 +37,7 @@ export default function Followed() {
         dispatch(updateLeagues(league));
       }
     });
-  }, [followedLeagues]);
-
-  useEffect(() => {
-    followedTeams.forEach((team) => {
-      if (!teamLeagues[team]) {
-        dispatch(fetchTeamLeagues(team));
-      } else if (Date.now() - teamLeagues[team].lastUpdated >= 86400000) {
-        dispatch(updateTeamLeagues(team));
-      }
-    });
-  }, [followedTeams]);
+  }, [dispatch, followedLeagues, leagues]);
 
   const choiceStyle = {
     border: "2px solid #2E3A59",
@@ -93,7 +84,7 @@ export default function Followed() {
             width: "100%",
           }}
         >
-          {leagues
+          {teams
             ? followedTeams.map((team) => {
                 return (
                   <Box
@@ -163,7 +154,7 @@ export default function Followed() {
                     sx={{
                       ...choiceStyle,
                       backgroundImage: leagues[league]
-                        ? `url(${leagues[league].leagueInfo.league.logo})`
+                        ? `url(${leagues[league].league.league.logo})`
                         : "",
                       border:
                         selectedLeague === league

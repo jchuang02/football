@@ -29,7 +29,6 @@ export default function Selector({ selected, setSelected, items = [] }) {
   const currentItemIndex = items.findIndex((element) => {
     return element.id === selected;
   });
-
   return (
     <Container
       sx={{
