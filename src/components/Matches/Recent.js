@@ -63,8 +63,8 @@ export default function Recent({ fixtures }) {
             <Matches
               fixtures={sortedFixtures}
               groupedBy={desktop ? 2 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1}
-              axis="x-reverse"
-              direction="rtl"
+              axis={desktop ? "x-reverse" : "x"}
+              direction={desktop ? "rtl" : "ltr"}
             >
               {fixtureCards.map((section, index) => {
                 return (
@@ -98,6 +98,10 @@ export default function Recent({ fixtures }) {
       </Box>
     );
   } else {
-    return <CircularProgress />;
+    return (
+      <CircularProgress
+        sx={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
   }
 }

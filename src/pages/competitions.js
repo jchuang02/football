@@ -4,7 +4,6 @@ import { Box, LinearProgress, Typography } from "@mui/material";
 import Standings from "../components/Standings";
 import Layout from "../components/layout";
 import {
-  updateLiveFixtures,
   updateAllLiveFixtures,
   updateLiveFixturesById,
   fetchFixtures,
@@ -51,7 +50,7 @@ export default function Competitions() {
     }
   });
   const standings = useSelector((state) => state.standings[selectedLeague]);
-
+  
   useEffect(() => {
     setLoading(true);
     const pageLoading = setTimeout(() => {

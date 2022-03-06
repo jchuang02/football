@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/layout";
 import { Box, Container, Typography, useMediaQuery } from "@mui/material";
@@ -20,7 +20,6 @@ export default function Home() {
   const desktop = useMediaQuery("(min-width: 1600px");
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
-  const fixtures = useSelector((state) => state.fixtures);
 
   const selectorItems = useMemo(() => {
     if (Object.values(leagues).length) {
@@ -38,12 +37,16 @@ export default function Home() {
     }
   }, [leagues]);
   const [selected, setSelected] = useState(
-    selectorItems[0] ? selectorItems[0].id : ""
+    selectorItems[0] ? selectorItems[0].id : 0
   );
 
-  const { allFixtures } = useGetData();
+  useEffect(() => {
+    if (selectorItems.length) {
+      setSelected(selectorItems[0].id);
+    }
+  }, [selectorItems]);
 
-  console.log(fixtures);
+  const { allFixtures } = useGetData();
 
   useSignInWithEmailLink();
 
@@ -114,7 +117,7 @@ export default function Home() {
             )}
           />
         </Box>
-        {leagues ? (
+        {Object.keys(leagues).length ? (
           <>
             <Selector
               selected={selected}

@@ -74,6 +74,10 @@ export default function Live({ fixtures }) {
       </Box>
     );
   } else {
-    return <CircularProgress />;
+    return (
+      <CircularProgress
+        sx={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
   }
 }

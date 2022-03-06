@@ -25,10 +25,6 @@ export const updateFixtures = (season, league) => async (dispatch) => {
 
   let parsedMatches = {};
   data.response.forEach((match) => {
-    dispatch({
-      type: "FIXTURE_ACTION_START",
-      payload: { id: match.fixture.id, loading: true },
-    });
     parsedMatches[match.fixture.id] = {
       ...match,
       lastUpdated: Date.now(),
@@ -53,10 +49,6 @@ export const updateAllLiveFixtures =
         getState().followed.teams.includes(match.teams.away.id) ||
         getState().followed.teams.includes(match.teams.home.id)
       ) {
-        dispatch({
-          type: "FIXTURE_ACTION_START",
-          payload: { id: match.fixture.id, loading: true },
-        });
         parsedMatches[match.fixture.id] = {
           ...match,
           lastUpdated: Date.now(),
@@ -78,10 +70,6 @@ export const updateLiveFixtures =
 
     let parsedMatches = {};
     data.response.forEach((match) => {
-      dispatch({
-        type: "FIXTURE_ACTION_START",
-        payload: { id: match.fixture.id, loading: true },
-      });
       parsedMatches[match.fixture.id] = {
         ...match,
         lastUpdated: Date.now(),
@@ -100,10 +88,6 @@ export const updateLiveFixturesById = (id) => async (dispatch) => {
 
   let parsedMatches = {};
   data.response.forEach((match) => {
-    dispatch({
-      type: "FIXTURE_ACTION_START",
-      payload: { id: match.fixture.id, loading: true },
-    });
     parsedMatches[match.fixture.id] = {
       ...match,
       lastUpdated: Date.now(),
@@ -140,10 +124,6 @@ export const updateTeamFixtures = (team, season) => async (dispatch) => {
 
   let parsedMatches = {};
   data.response.forEach((match) => {
-    dispatch({
-      type: "FIXTURE_ACTION_START",
-      payload: { id: match.fixture.id, loading: true },
-    });
     parsedMatches[match.fixture.id] = {
       ...match,
       lastUpdated: Date.now(),
@@ -168,10 +148,6 @@ export const updateLiveTeamFixtures =
 
     let parsedMatches = {};
     data.response.forEach((match) => {
-      dispatch({
-        type: "FIXTURE_ACTION_START",
-        payload: { id: match.fixture.id, loading: true },
-      });
       parsedMatches[match.fixture.id] = {
         ...match,
         lastUpdated: Date.now(),
@@ -190,10 +166,6 @@ export const updateLiveTeamFixturesById = (id) => async (dispatch) => {
 
   let parsedMatches = {};
   data.response.forEach((match) => {
-    dispatch({
-      type: "FIXTURE_ACTION_START",
-      payload: { id: match.fixture.id, loading: true },
-    });
     parsedMatches[match.fixture.id] = {
       ...match,
       lastUpdated: Date.now(),

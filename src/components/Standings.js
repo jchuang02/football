@@ -4,11 +4,11 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Cup from "./Cup";
 import League from "./League";
 
-export default function Standings({ selectedLeague = 0 }) {
+export default function Standings({ selectedLeague }) {
   const standings = useSelector((state) => state.standings[selectedLeague]);
 
   const showStandings = () => {
-    if (standings !== undefined) {
+    if (standings) {
       if (standings.standingInfo.league.standings.length === 1) {
         return (
           <League standings={standings.standingInfo.league.standings[0]} />
@@ -16,7 +16,11 @@ export default function Standings({ selectedLeague = 0 }) {
       } else if (standings.standingInfo.league.standings.length > 1) {
         return <Cup standings={standings.standingInfo.league.standings} />;
       } else {
-        return <Typography>No Standings Available</Typography>;
+        return (
+          <Typography variant="h4" align="center">
+            No Standings Available
+          </Typography>
+        );
       }
     } else if (selectedLeague === 0) {
       return "";
@@ -29,9 +33,5 @@ export default function Standings({ selectedLeague = 0 }) {
     }
   };
 
-  return (
-    <Container sx={{ marginBottom: "4rem" }}>
-      {showStandings()}
-    </Container>
-  );
+  return <Container sx={{ marginBottom: "4rem" }}>{showStandings()}</Container>;
 }

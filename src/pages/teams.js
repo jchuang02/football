@@ -41,13 +41,14 @@ export default function Teams() {
   const now = new Date();
   const teamLeagues = useMemo(() => {
     if (Object.values(leagues).length) {
-      return Object.values(leagues).filter(({ league }) => {
+      return Object.values(leagues).filter((league) => {
         return league.team === selectedTeam;
       });
     } else {
       return [];
     }
   }, [leagues, selectedTeam]);
+
   const current = useSelector((state) => {
     if (teams && selectedTeam && teamLeagues[selectedTeam]) {
       let currentSeasons = state.teamLeagues[selectedTeam].leagueInfo.map(
@@ -78,10 +79,14 @@ export default function Teams() {
 
   //Get league information if it does not exist and update it if updated more than a day ago.
   useEffect(() => {
-    if (!teamLeagues[selectedTeam]) {
+    if (teamLeagues.length === 0 && selectedTeam) {
       dispatch(fetchTeamLeagues(selectedTeam));
-    } else if (Date.now() - teamLeagues[selectedTeam].lastUpdated >= 86400000) {
-      dispatch(updateTeamLeagues(selectedTeam));
+    } else {
+      teamLeagues.forEach((league) => {
+        if (Date.now() - league.lastUpdated >= 86400000) {
+          dispatch(updateTeamLeagues(selectedTeam));
+        }
+      });
     }
   }, [dispatch, selectedTeam, teamLeagues]);
 

@@ -71,6 +71,10 @@ export default function Upcoming({ fixtures }) {
       </Box>
     );
   } else {
-    return <CircularProgress />;
+    return (
+      <CircularProgress
+        sx={{ position: "absolute", top: "50%", left: "50%" }}
+      />
+    );
   }
 }

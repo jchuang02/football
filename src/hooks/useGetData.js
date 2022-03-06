@@ -70,7 +70,7 @@ export default function useGetData() {
         }
       });
     });
-  }, [followedLeagues, followedTeams]);
+  }, [followedLeagues, followedTeams, dispatch, leagues]);
 
   //get match info.
   useEffect(() => {
@@ -110,22 +110,24 @@ export default function useGetData() {
     });
 
     followedLeagues.forEach((league) => {
-      const leagueSpecificMatches = Object.values(fixtures).filter((match) => {
-        return (
-          Number(match.league.id) === league &&
-          !(
-            followedTeams.includes(Number(match.teams.home.id)) ||
-            followedTeams.includes(Number(match.teams.away.id))
-          )
-        );
-      });
-      const needsUpdate = Object.values(fixtures).filter((match) => {
-        return (
-          Number(match.league.id) === league &&
-          Date.now() - match.lastUpdated >= 86400000
-        );
-      });
       if (leagues[league]) {
+        const leagueSpecificMatches = Object.values(fixtures).filter(
+          (match) => {
+            return (
+              Number(match.league.id) === league &&
+              !(
+                followedTeams.includes(Number(match.teams.home.id)) ||
+                followedTeams.includes(Number(match.teams.away.id))
+              )
+            );
+          }
+        );
+        const needsUpdate = leagueSpecificMatches.filter((match) => {
+          return (
+            Number(match.league.id) === league &&
+            Date.now() - match.lastUpdated >= 86400000
+          );
+        });
         const now = new Date();
         let currentSeason =
           leagues[league].league.seasons.find((season) => {
@@ -161,7 +163,7 @@ export default function useGetData() {
           const teamLeagues = Object.values(leagues).filter((league) => {
             return league.team === team;
           });
-          let currentSeasons = teamLeagues.map((league) => {
+          let currentSeasons = teamLeagues.map(({ league }) => {
             return league.seasons[0].year;
           });
           let currentYear = 0;
@@ -337,7 +339,6 @@ export default function useGetData() {
               return match.league.id;
             })
         );
-        console.log(allStandings);
         allStandings.forEach((standing) => {
           const now = new Date();
           const currentSeason =

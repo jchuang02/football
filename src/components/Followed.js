@@ -76,15 +76,19 @@ export default function Followed() {
         }}
       >
         <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            overflowX: "auto",
-            width: "100%",
-          }}
+          sx={
+            !followedTeams.length
+              ? { display: "none" }
+              : {
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflowX: "auto",
+                  width: "100%",
+                }
+          }
         >
-          {teams
+          {Object.keys(teams).length
             ? followedTeams.map((team) => {
                 return (
                   <Box
@@ -126,15 +130,19 @@ export default function Followed() {
         }}
       >
         <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            overflowX: "auto",
-            width: "100%",
-          }}
+          sx={
+            !followedLeagues.length
+              ? { display: "none" }
+              : {
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflowX: "auto",
+                  width: "100%",
+                }
+          }
         >
-          {leagues
+          {Object.keys(leagues).length
             ? followedLeagues.map((league) => {
                 return (
                   <Box
