@@ -86,7 +86,11 @@ export default function useGetData() {
       const needsUpdate = teamSpecificMatches.filter((match) => {
         return Date.now() - match.lastUpdated >= 86400000;
       });
-      const todaysMatches = fixturesToday(teamSpecificMatches);
+      const todaysMatches = fixturesToday(teamSpecificMatches).filter(
+        (match) => {
+          return Date.now() - match.fixture.timestamp < 0;
+        }
+      );
       if (
         Object.values(leagues).filter((league) => {
           return league.team === team;
@@ -129,7 +133,11 @@ export default function useGetData() {
             Date.now() - match.lastUpdated >= 86400000
           );
         });
-        const todaysMatches = fixturesToday(leagueSpecificMatches);
+        const todaysMatches = fixturesToday(leagueSpecificMatches).filter(
+          (match) => {
+            return Date.now() - match.fixture.timestamp < 0;
+          }
+        );
         const now = new Date();
         let currentSeason =
           leagues[league].league.seasons.find((season) => {
@@ -143,7 +151,7 @@ export default function useGetData() {
         }
       }
     });
-  }, [dispatch, fixtures, followedTeams, followedLeagues, leagues]);
+  }, [dispatch, followedTeams, followedLeagues, leagues]);
 
   //If live matches are present in data when application first loads, update them.
   useEffect(() => {
