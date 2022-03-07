@@ -86,6 +86,7 @@ export default function useGetData() {
       const needsUpdate = teamSpecificMatches.filter((match) => {
         return Date.now() - match.lastUpdated >= 86400000;
       });
+      const todaysMatches = fixturesToday(teamSpecificMatches);
       if (
         Object.values(leagues).filter((league) => {
           return league.team === team;
@@ -103,7 +104,7 @@ export default function useGetData() {
         });
         if (teamSpecificMatches.length === 0) {
           dispatch(fetchTeamFixtures(team, currentYear));
-        } else if (needsUpdate.length) {
+        } else if (needsUpdate.length || todaysMatches.length > 0) {
           dispatch(updateTeamFixtures(team, currentYear));
         }
       }
@@ -128,6 +129,7 @@ export default function useGetData() {
             Date.now() - match.lastUpdated >= 86400000
           );
         });
+        const todaysMatches = fixturesToday(leagueSpecificMatches);
         const now = new Date();
         let currentSeason =
           leagues[league].league.seasons.find((season) => {
@@ -136,7 +138,7 @@ export default function useGetData() {
         if (leagueSpecificMatches.length === 0) {
           dispatch(fetchFixtures(currentSeason, league));
           //If it's been more than 24 hours since fixtures have been updated.
-        } else if (needsUpdate.length) {
+        } else if (needsUpdate.length || todaysMatches.length > 0) {
           dispatch(updateFixtures(currentSeason, league));
         }
       }
@@ -276,9 +278,6 @@ export default function useGetData() {
     if (
       fixturesToday(Object.values(fixtures)).filter((match) => {
         return match.fixture.status.short === "NS";
-      }).length &&
-      !Object.values(fixtures).filter((match) => {
-        return match.loading;
       }).length
     ) {
       const allMatchesToday = fixturesToday(Object.values(fixtures));
@@ -362,9 +361,6 @@ export default function useGetData() {
     if (
       fixturesToday(Object.values(fixtures)).filter((match) => {
         return match.fixture.status.short === "HT";
-      }).length &&
-      !Object.values(fixtures).filter((match) => {
-        return match.loading;
       }).length
     ) {
       const allMatchesOnBreak = Object.values(fixtures).filter(

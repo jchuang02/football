@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 
 export default function Fixture({ fixture }) {
   const fixtureStyle = {
@@ -17,13 +17,54 @@ export default function Fixture({ fixture }) {
   };
 
   return (
-    <Box sx={fixtureStyle}>
-      <Typography id="fixture-modal-title" variant="h6" component="h2">
-        {fixture.fixture.id}
-      </Typography>
-      <Typography id="fixture-modal-description" sx={{ mt: 2 }}>
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </Typography>
+    <Box sx={fixtureStyle} key={fixture.fixture.id}>
+      <Container>
+        <Typography
+          id="fixture-modal-title"
+          variant="h2"
+          align="center"
+          component="h2"
+        >
+          {fixture.league.name}
+        </Typography>
+        <Typography
+          id="fixture-modal-title"
+          variant="body1"
+          align="center"
+          component="h2"
+        >
+          {fixture.league.country}
+        </Typography>
+        <Typography
+          id="fixture-modal-title"
+          variant="h6"
+          align="center"
+          component="h2"
+        >
+          {fixture.league.round}
+        </Typography>
+      </Container>
+
+      <Box sx={{ marginTop: 8, display: "flex" }}>
+        <Typography
+          id="fixture-modal-title"
+          variant="h4"
+          align="center"
+          component="h2"
+        >
+          {`${fixture.teams.home.name} vs ${fixture.teams.away.name}`}
+        </Typography>
+      </Box>
+      <Box sx={{ marginTop: 8, display: "flex" }}>
+        <Typography
+          id="fixture-modal-title"
+          variant="h4"
+          align="center"
+          component="h2"
+        >
+          {fixture.lineups ? fixture.lineups[0].team.name : ""}
+        </Typography>
+      </Box>
     </Box>
   );
 }

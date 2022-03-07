@@ -23,6 +23,7 @@ import {
 import { keyframes } from "@mui/styled-engine";
 import LazyLoad from "react-lazyload";
 import { Modal } from "@mui/material";
+import Fixture from "./Fixture";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -98,7 +99,6 @@ export default function FixtureCard({ fixture, loading }) {
 
   const handleOnClick = (event) => {
     setShowFixture(!showFixture);
-    console.log(event);
   };
 
   const handleClose = () => {
@@ -144,20 +144,6 @@ export default function FixtureCard({ fixture, loading }) {
     animation: `${pulse} 2s infinite ease`,
   }));
 
-  const fixtureStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "60vw",
-    height: "80vh",
-    bgcolor: "background.paper",
-    border: "2px solid #2E3A59",
-    borderRadius: "16px",
-    boxShadow: 24,
-    p: 4,
-  };
-
   return (
     <Card
       key={fixture.fixture.id}
@@ -174,15 +160,7 @@ export default function FixtureCard({ fixture, loading }) {
         <CardContent>
           {showFixture ? (
             <Modal onClose={handleClose} open={showFixture}>
-              <Box sx={fixtureStyle}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  {fixture.fixture.id}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Duis mollis, est non commodo luctus, nisi erat porttitor
-                  ligula.
-                </Typography>
-              </Box>
+              <Fixture fixture={fixture} />
             </Modal>
           ) : (
             ""
