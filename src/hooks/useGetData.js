@@ -83,19 +83,6 @@ export default function useGetData() {
           !followedLeagues.includes(Number(match.league.id))
         );
       });
-      const needsUpdate = teamSpecificMatches.filter((match) => {
-        return Date.now() - match.lastUpdated >= 86400000;
-      });
-      const todaysMatches = fixturesToday(teamSpecificMatches).filter(
-        (match) => {
-          return (
-            match.fixture.status.short === "NS" &&
-            match.fixture.timestamp * 1000 - Date.now() < 0
-          );
-        }
-      );
-
-      console.log(todaysMatches);
       if (
         Object.values(leagues).filter((league) => {
           return league.team === team;
@@ -113,8 +100,21 @@ export default function useGetData() {
         });
         if (teamSpecificMatches.length === 0) {
           dispatch(fetchTeamFixtures(team, currentYear));
-        } else if (needsUpdate.length || todaysMatches.length > 0) {
-          dispatch(updateTeamFixtures(team, currentYear));
+        } else {
+          const needsUpdate = teamSpecificMatches.filter((match) => {
+            return Date.now() - match.lastUpdated >= 86400000;
+          });
+          const todaysMatches = fixturesToday(teamSpecificMatches).filter(
+            (match) => {
+              return (
+                match.fixture.status.short === "NS" &&
+                match.fixture.timestamp * 1000 - Date.now() < 0
+              );
+            }
+          );
+          if (needsUpdate.length || todaysMatches.length > 0) {
+            dispatch(updateTeamFixtures(team, currentYear));
+          }
         }
       }
     });
@@ -132,22 +132,6 @@ export default function useGetData() {
             );
           }
         );
-        const needsUpdate = leagueSpecificMatches.filter((match) => {
-          return (
-            Number(match.league.id) === league &&
-            Date.now() - match.lastUpdated >= 86400000
-          );
-        });
-        const todaysMatches = fixturesToday(leagueSpecificMatches).filter(
-          (match) => {
-            return (
-              match.fixture.status.short === "NS" &&
-              match.fixture.timestamp * 1000 - Date.now() < 0
-            );
-          }
-        );
-        console.log(todaysMatches);
-
         const now = new Date();
         let currentSeason =
           leagues[league].league.seasons.find((season) => {
@@ -156,8 +140,24 @@ export default function useGetData() {
         if (leagueSpecificMatches.length === 0) {
           dispatch(fetchFixtures(currentSeason, league));
           //If it's been more than 24 hours since fixtures have been updated.
-        } else if (needsUpdate.length || todaysMatches.length > 0) {
-          dispatch(updateFixtures(currentSeason, league));
+        } else {
+          const needsUpdate = leagueSpecificMatches.filter((match) => {
+            return (
+              Number(match.league.id) === league &&
+              Date.now() - match.lastUpdated >= 86400000
+            );
+          });
+          const todaysMatches = fixturesToday(leagueSpecificMatches).filter(
+            (match) => {
+              return (
+                match.fixture.status.short === "NS" &&
+                match.fixture.timestamp * 1000 - Date.now() < 0
+              );
+            }
+          );
+          if (needsUpdate.length || todaysMatches.length > 0) {
+            dispatch(updateFixtures(currentSeason, league));
+          }
         }
       }
     });
@@ -294,9 +294,8 @@ export default function useGetData() {
   let delay = 60000;
   useInterval(() => {
     if (
-      fixturesToday(Object.values(fixtures)).filter((match) => {
-        return match.fixture.status.short === "NS";
-      }).length
+      Object.values(fixtures).length &&
+      fixturesToday(Object.values(fixtures)).length
     ) {
       const allMatchesToday = fixturesToday(Object.values(fixtures));
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
@@ -377,6 +376,7 @@ export default function useGetData() {
   //When fixtures are all on break
   useInterval(() => {
     if (
+      Object.values(fixtures).length &&
       fixturesToday(Object.values(fixtures)).filter((match) => {
         return match.fixture.status.short === "HT";
       }).length
