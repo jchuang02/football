@@ -50,7 +50,7 @@ export default function Competitions() {
     }
   });
   const standings = useSelector((state) => state.standings[selectedLeague]);
-  
+
   useEffect(() => {
     setLoading(true);
     const pageLoading = setTimeout(() => {
@@ -150,7 +150,9 @@ export default function Competitions() {
   let delay = 60000;
   useInterval(() => {
     if (
-      Object.values(fixtures) &&
+      fixturesToday(Object.values(fixtures)).filter((match) => {
+        return match.fixture.status.short === "NS";
+      }).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
@@ -235,7 +237,9 @@ export default function Competitions() {
   //When fixtures are all on break
   useInterval(() => {
     if (
-      Object.values(fixtures) &&
+      fixturesToday(Object.values(fixtures)).filter((match) => {
+        return match.fixture.status.short === "HT";
+      }).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0

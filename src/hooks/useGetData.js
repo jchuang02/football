@@ -360,7 +360,9 @@ export default function useGetData() {
   //When fixtures are all on break
   useInterval(() => {
     if (
-      Object.values(fixtures).length &&
+      fixturesToday(Object.values(fixtures)).filter((match) => {
+        return match.fixture.status.short === "HT";
+      }).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length

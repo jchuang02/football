@@ -22,11 +22,11 @@ import { selectLeague, selectTeam } from "../actions/index";
 import { getAuth, signOut } from "firebase/auth";
 
 function ElevationScroll(props) {
-  const { children } = props;
+  const { children, window } = props;
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 0,
-    target: undefined,
+    target: window ? window() : undefined,
   });
 
   return React.cloneElement(children, {

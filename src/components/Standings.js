@@ -6,7 +6,6 @@ import League from "./League";
 
 export default function Standings({ selectedLeague }) {
   const standings = useSelector((state) => state.standings[selectedLeague]);
-
   const showStandings = () => {
     if (standings) {
       if (standings.standingInfo.league.standings.length === 1) {

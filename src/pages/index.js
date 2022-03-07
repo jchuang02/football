@@ -1,7 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/layout";
-import { Box, Container, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Container,
+  LinearProgress,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import Live from "../components/Matches/Live";
 import Upcoming from "../components/Matches/Upcoming";
 import Recent from "../components/Matches/Recent";
@@ -16,6 +22,8 @@ import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
 import useGetData from "../hooks/useGetData";
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+
   const leagues = useSelector((state) => state.leagues);
   const desktop = useMediaQuery("(min-width: 1600px");
   const followedLeagues = useSelector((state) => state.followed.leagues);
@@ -39,6 +47,17 @@ export default function Home() {
   const [selected, setSelected] = useState(
     selectorItems[0] ? selectorItems[0].id : 0
   );
+
+  useEffect(() => {
+    setLoading(true);
+    const pageLoading = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(pageLoading);
+    };
+  }, []);
 
   useEffect(() => {
     if (selectorItems.length) {
@@ -66,68 +85,74 @@ export default function Home() {
   } else {
     return (
       <Layout>
-        <Live
-          fixtures={fixturesInProgress(
-            allFixtures !== undefined ? allFixtures : ""
-          )}
-        />
-        <Box
-          sx={
-            desktop
-              ? {
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                }
-              : {}
-          }
-        >
-          <Recent
-            fixtures={fixturesFinished(
-              allFixtures !== undefined
-                ? allFixtures.sort((fixture) => {
-                    if (
-                      followedTeams.includes(fixture.teams.home.id) ||
-                      followedTeams.includes(fixture.teams.away.id)
-                    ) {
-                      return 1;
-                    } else {
-                      return undefined;
-                    }
-                  })
-                : ""
-            )}
-          />
-          <Upcoming
-            fixtures={fixturesUpcoming(
-              allFixtures !== undefined
-                ? allFixtures.length
-                  ? fixturesUpcoming(allFixtures).sort((fixture) => {
-                      if (
-                        followedTeams.includes(fixture.teams.home.id) ||
-                        followedTeams.includes(fixture.teams.away.id)
-                      ) {
-                        return 1;
-                      } else {
-                        return undefined;
-                      }
-                    })
-                  : ""
-                : ""
-            )}
-          />
-        </Box>
-        {Object.keys(leagues).length ? (
+        {!loading ? (
           <>
-            <Selector
-              selected={selected}
-              setSelected={setSelected}
-              items={selectorItems}
+            <Live
+              fixtures={fixturesInProgress(
+                allFixtures !== undefined ? allFixtures : ""
+              )}
             />
-            <Standings selectedLeague={selected} />
+            <Box
+              sx={
+                desktop
+                  ? {
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                    }
+                  : {}
+              }
+            >
+              <Recent
+                fixtures={fixturesFinished(
+                  allFixtures !== undefined
+                    ? allFixtures.sort((fixture) => {
+                        if (
+                          followedTeams.includes(fixture.teams.home.id) ||
+                          followedTeams.includes(fixture.teams.away.id)
+                        ) {
+                          return 1;
+                        } else {
+                          return undefined;
+                        }
+                      })
+                    : ""
+                )}
+              />
+              <Upcoming
+                fixtures={fixturesUpcoming(
+                  allFixtures !== undefined
+                    ? allFixtures.length
+                      ? fixturesUpcoming(allFixtures).sort((fixture) => {
+                          if (
+                            followedTeams.includes(fixture.teams.home.id) ||
+                            followedTeams.includes(fixture.teams.away.id)
+                          ) {
+                            return 1;
+                          } else {
+                            return undefined;
+                          }
+                        })
+                      : ""
+                    : ""
+                )}
+              />
+            </Box>
+            {Object.keys(leagues).length ? (
+              <>
+                <Selector
+                  selected={selected}
+                  setSelected={setSelected}
+                  items={selectorItems}
+                />
+                <Standings selectedLeague={selected} />
+              </>
+            ) : (
+              ""
+            )}
           </>
         ) : (
-          ""
+          <LinearProgress />
         )}
       </Layout>
     );

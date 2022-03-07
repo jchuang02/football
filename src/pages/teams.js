@@ -101,7 +101,7 @@ export default function Teams() {
     if (!teamFixtures.length && selectedTeam) {
       dispatch(fetchTeamFixtures(selectedTeam, current));
     }
-  }, [dispatch, current, fixtures, selectedTeam]);
+  }, [dispatch, current, selectedTeam]);
 
   //If live fixtures are present in fixtures, update them.
   useEffect(() => {
@@ -173,7 +173,9 @@ export default function Teams() {
   let delay = 60000;
   useInterval(() => {
     if (
-      Object.values(fixtures) &&
+      fixturesToday(Object.values(fixtures)).filter((match) => {
+        return match.fixture.status.short === "NS";
+      }).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
@@ -265,7 +267,9 @@ export default function Teams() {
   //When fixtures are all on break
   useInterval(() => {
     if (
-      Object.values(fixtures) &&
+      fixturesToday(Object.values(fixtures)).filter((match) => {
+        return match.fixture.status.short === "HT";
+      }).length &&
       !Object.values(fixtures).filter((match) => {
         return match.loading;
       }).length > 0
@@ -293,16 +297,6 @@ export default function Teams() {
   if (teams) {
     return (
       <Layout>
-        {!selectedTeam ? (
-          <Typography
-            variant="h2"
-            sx={{ padding: "4rem", textAlign: "center" }}
-          >
-            Welcome to Footdash
-          </Typography>
-        ) : (
-          ""
-        )}
         {!loading ? (
           <>
             <Box

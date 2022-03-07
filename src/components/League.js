@@ -10,10 +10,13 @@ import {
   TableBody,
 } from "@mui/material";
 
-export default function League({ standings }) {
+export default function League(props) {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ borderCollapse: "separate" }} aria-label="simple table">
+      <Table
+        sx={{ borderCollapse: "separate" }}
+        aria-label="league standings table"
+      >
         <TableHead>
           <TableRow>
             <TableCell align="center">Rank</TableCell>
@@ -29,7 +32,7 @@ export default function League({ standings }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {standings.map((team) => {
+          {props.standings.map((team) => {
             return (
               <TableRow key={team.team.id}>
                 <TableCell
