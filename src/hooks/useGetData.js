@@ -88,9 +88,14 @@ export default function useGetData() {
       });
       const todaysMatches = fixturesToday(teamSpecificMatches).filter(
         (match) => {
-          return Date.now() - match.fixture.timestamp < 0;
+          return (
+            match.fixture.status.short === "NS" &&
+            match.fixture.timestamp * 1000 - Date.now() < 0
+          );
         }
       );
+
+      console.log(todaysMatches);
       if (
         Object.values(leagues).filter((league) => {
           return league.team === team;
@@ -135,9 +140,14 @@ export default function useGetData() {
         });
         const todaysMatches = fixturesToday(leagueSpecificMatches).filter(
           (match) => {
-            return Date.now() - match.fixture.timestamp < 0;
+            return (
+              match.fixture.status.short === "NS" &&
+              match.fixture.timestamp * 1000 - Date.now() < 0
+            );
           }
         );
+        console.log(todaysMatches);
+
         const now = new Date();
         let currentSeason =
           leagues[league].league.seasons.find((season) => {
