@@ -77,15 +77,15 @@ export default function Followed() {
       >
         <Box
           sx={
-            followedTeams.length === 0
-              ? { display: "none" }
-              : {
+            followedTeams.length !== 0
+              ? {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   overflowX: "auto",
                   width: "100%",
                 }
+              : { display: "none" }
           }
         >
           {Object.keys(teams).length
@@ -131,15 +131,15 @@ export default function Followed() {
       >
         <Box
           sx={
-            followedLeagues.length === 0
-              ? { display: "none" }
-              : {
+            followedLeagues.length !== 0
+              ? {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   overflowX: "auto",
                   width: "100%",
                 }
+              : { display: "none" }
           }
         >
           {Object.keys(leagues).length
