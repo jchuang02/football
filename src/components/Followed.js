@@ -77,7 +77,7 @@ export default function Followed() {
       >
         <Box
           sx={
-            followedTeams.length !== 0
+            Object.keys(teams).length !== 0
               ? {
                   display: "flex",
                   justifyContent: "center",
@@ -131,7 +131,7 @@ export default function Followed() {
       >
         <Box
           sx={
-            followedLeagues.length !== 0
+            Object.keys(leagues).length !== 0
               ? {
                   display: "flex",
                   justifyContent: "center",
