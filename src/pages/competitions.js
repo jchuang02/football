@@ -75,11 +75,29 @@ export default function Competitions() {
 
   //If no matches present for the selected competition, fetch them.
   useEffect(() => {
-    const competitionFixtures = Object.values(fixtures).filter((match) => {
+    const competitionMatches = Object.values(fixtures).filter((match) => {
       return Number(match.league.id) === selectedLeague;
     });
-    if (!competitionFixtures && selectedLeague) {
+    if (!competitionMatches.length && selectedLeague) {
       dispatch(fetchFixtures(current, selectedLeague));
+    } else {
+      const needsUpdate = competitionMatches.filter((match) => {
+        return (
+          Number(match.league.id) === selectedLeague &&
+          Date.now() - match.lastUpdated >= 86400000
+        );
+      });
+      const todaysMatches = fixturesToday(competitionMatches).filter(
+        (match) => {
+          return (
+            match.fixture.status.short === "NS" &&
+            match.fixture.timestamp * 1000 - Date.now() < 0
+          );
+        }
+      );
+      if (needsUpdate.length || todaysMatches.length > 0) {
+        dispatch(updateFixtures(current, selectedLeague));
+      }
     }
   }, []);
 

@@ -92,14 +92,27 @@ export default function Teams() {
 
   //If no matches are present for the selected team, fetch them.
   useEffect(() => {
-    const teamFixtures = Object.values(fixtures).filter((match) => {
+    const teamMatches = Object.values(fixtures).filter((match) => {
       return (
         Number(match.teams.away.id) === selectedTeam ||
         Number(match.teams.home.id) === selectedTeam
       );
     });
-    if (!teamFixtures.length && selectedTeam) {
+    if (!teamMatches.length && selectedTeam) {
       dispatch(fetchTeamFixtures(selectedTeam, current));
+    } else {
+      const needsUpdate = teamMatches.filter((match) => {
+        return Date.now() - match.lastUpdated >= 86400000;
+      });
+      const todaysMatches = fixturesToday(teamMatches).filter((match) => {
+        return (
+          match.fixture.status.short === "NS" &&
+          match.fixture.timestamp * 1000 - Date.now() < 0
+        );
+      });
+      if (needsUpdate.length || todaysMatches.length > 0) {
+        dispatch(updateTeamFixtures(selectedTeam, current));
+      }
     }
   }, [dispatch, current, selectedTeam]);
 
