@@ -84,46 +84,30 @@ export default function Home() {
     );
   } else {
     return (
-      <Layout>
-        {!loading ? (
-          <>
-            <Live
-              fixtures={fixturesInProgress(
-                allFixtures !== undefined ? allFixtures : ""
-              )}
-            />
-            <Box
-              sx={
-                desktop
-                  ? {
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-evenly",
-                    }
-                  : {}
-              }
-            >
-              <Recent
-                fixtures={fixturesFinished(
-                  allFixtures !== undefined
-                    ? allFixtures.sort((fixture) => {
-                        if (
-                          followedTeams.includes(fixture.teams.home.id) ||
-                          followedTeams.includes(fixture.teams.away.id)
-                        ) {
-                          return 1;
-                        } else {
-                          return undefined;
-                        }
-                      })
-                    : ""
+      <>
+        <Layout>
+          {!loading ? (
+            <>
+              <Live
+                fixtures={fixturesInProgress(
+                  allFixtures !== undefined ? allFixtures : ""
                 )}
               />
-              <Upcoming
-                fixtures={fixturesUpcoming(
-                  allFixtures !== undefined
-                    ? allFixtures.length
-                      ? fixturesUpcoming(allFixtures).sort((fixture) => {
+              <Box
+                sx={
+                  desktop
+                    ? {
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                      }
+                    : {}
+                }
+              >
+                <Recent
+                  fixtures={fixturesFinished(
+                    allFixtures !== undefined
+                      ? allFixtures.sort((fixture) => {
                           if (
                             followedTeams.includes(fixture.teams.home.id) ||
                             followedTeams.includes(fixture.teams.away.id)
@@ -134,27 +118,45 @@ export default function Home() {
                           }
                         })
                       : ""
-                    : ""
-                )}
-              />
-            </Box>
-            {Object.keys(leagues).length ? (
-              <>
-                <Selector
-                  selected={selected}
-                  setSelected={setSelected}
-                  items={selectorItems}
+                  )}
                 />
-                <Standings selectedLeague={selected} />
-              </>
-            ) : (
-              ""
-            )}
-          </>
-        ) : (
-          <LinearProgress />
-        )}
-      </Layout>
+                <Upcoming
+                  fixtures={fixturesUpcoming(
+                    allFixtures !== undefined
+                      ? allFixtures.length
+                        ? fixturesUpcoming(allFixtures).sort((fixture) => {
+                            if (
+                              followedTeams.includes(fixture.teams.home.id) ||
+                              followedTeams.includes(fixture.teams.away.id)
+                            ) {
+                              return 1;
+                            } else {
+                              return undefined;
+                            }
+                          })
+                        : ""
+                      : ""
+                  )}
+                />
+              </Box>
+              {Object.keys(leagues).length ? (
+                <>
+                  <Selector
+                    selected={selected}
+                    setSelected={setSelected}
+                    items={selectorItems}
+                  />
+                  <Standings selectedLeague={selected} />
+                </>
+              ) : (
+                ""
+              )}
+            </>
+          ) : (
+            <LinearProgress />
+          )}
+        </Layout>
+      </>
     );
   }
 }

@@ -104,14 +104,16 @@ export default function Teams() {
       const needsUpdate = teamMatches.filter((match) => {
         return Date.now() - match.lastUpdated >= 86400000;
       });
-      const todaysMatches = fixturesToday(teamMatches).filter((match) => {
-        return (
-          match.fixture.status.short === "NS" &&
-          match.fixture.timestamp * 1000 - Date.now() < 0
-        );
-      });
-      if (needsUpdate.length || todaysMatches.length > 0) {
-        dispatch(updateTeamFixtures(selectedTeam, current));
+      if (teamMatches.length) {
+        const todaysMatches = fixturesToday(teamMatches).filter((match) => {
+          return (
+            match.fixture.status.short === "NS" &&
+            match.fixture.timestamp * 1000 - Date.now() < 0
+          );
+        });
+        if (needsUpdate.length || todaysMatches.length > 0) {
+          dispatch(updateTeamFixtures(selectedTeam, current));
+        }
       }
     }
   }, [dispatch, current, selectedTeam]);

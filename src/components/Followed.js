@@ -112,9 +112,7 @@ export default function Followed() {
                           ? "4px solid #2E3A59"
                           : "2px solid #2E3A59",
                     }}
-                  >
-                    {teams[team] ? "" : ""}
-                  </Box>
+                  ></Box>
                 );
               })
             : ""}
@@ -169,9 +167,7 @@ export default function Followed() {
                           ? "4px solid #2E3A59"
                           : "2px solid #2E3A59",
                     }}
-                  >
-                    {leagues[league] ? "" : ""}
-                  </Box>
+                  ></Box>
                 );
               })
             : ""}
