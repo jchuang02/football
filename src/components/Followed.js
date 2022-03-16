@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLeagues, updateLeagues } from "../actions/leagues";
 import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
@@ -63,117 +63,68 @@ export default function Followed() {
     <Box
       sx={{
         display: "flex",
-        width: "100%",
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={
-            Object.keys(teams).length !== 0
-              ? {
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflowX: "auto",
-                  width: "100%",
-                }
-              : { display: "none" }
-          }
-        >
-          {Object.keys(teams).length
-            ? followedTeams.map((team) => {
-                return (
-                  <Box
-                    key={team}
-                    onClick={() => {
-                      if (selectedTeam !== team) {
-                        dispatch(selectTeam(team));
-                        dispatch(selectLeague(""));
-                      }
-                      if (window && window.location.pathname !== "/teams") {
-                        navigate("/teams");
-                      }
-                    }}
-                    sx={{
-                      ...choiceStyle,
-                      backgroundImage: teams[team]
-                        ? `url(${teams[team].teamInfo.team.logo})`
-                        : "",
-                      border:
-                        selectedTeam === team
-                          ? "4px solid #2E3A59"
-                          : "2px solid #2E3A59",
-                    }}
-                  ></Box>
-                );
-              })
-            : ""}
-        </Box>
-        <AddTeamModal />
-      </Box>
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={
-            Object.keys(leagues).length !== 0
-              ? {
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflowX: "auto",
-                  width: "100%",
-                }
-              : { display: "none" }
-          }
-        >
-          {Object.keys(leagues).length
-            ? followedLeagues.map((league) => {
-                return (
-                  <Box
-                    key={league}
-                    onClick={() => {
-                      if (selectedLeague !== league) {
-                        dispatch(selectLeague(league));
-                        dispatch(selectTeam(""));
-                      }
-                      if (
-                        window &&
-                        window.location.pathname !== "/competitions"
-                      ) {
-                        navigate("/competitions");
-                      }
-                    }}
-                    sx={{
-                      ...choiceStyle,
-                      backgroundImage: leagues[league]
-                        ? `url(${leagues[league].league.league.logo})`
-                        : "",
-                      border:
-                        selectedLeague === league
-                          ? "4px solid #2E3A59"
-                          : "2px solid #2E3A59",
-                    }}
-                  ></Box>
-                );
-              })
-            : ""}
-        </Box>
-        <AddLeagueModal />
-      </Box>
+      {followedLeagues.length > 0
+        ? followedLeagues.map((league) => {
+            return (
+              <Box
+                key={league}
+                onClick={() => {
+                  if (selectedLeague !== league) {
+                    dispatch(selectLeague(league));
+                    dispatch(selectTeam(""));
+                  }
+                  if (window && window.location.pathname !== "/competitions") {
+                    navigate("/competitions");
+                  }
+                }}
+                sx={{
+                  ...choiceStyle,
+                  backgroundImage: leagues[league]
+                    ? `url(${leagues[league].league.league.logo})`
+                    : "",
+                  border:
+                    selectedLeague === league
+                      ? "4px solid #2E3A59"
+                      : "2px solid #2E3A59",
+                }}
+              ></Box>
+            );
+          })
+        : null}
+      <AddLeagueModal />
+      {followedTeams.length > 0
+        ? followedTeams.map((team) => {
+            return (
+              <Box
+                key={team}
+                onClick={() => {
+                  if (selectedTeam !== team) {
+                    dispatch(selectTeam(team));
+                    dispatch(selectLeague(""));
+                  }
+                  if (window && window.location.pathname !== "/teams") {
+                    navigate("/teams");
+                  }
+                }}
+                sx={{
+                  ...choiceStyle,
+                  backgroundImage: teams[team]
+                    ? `url(${teams[team].teamInfo.team.logo})`
+                    : "",
+                  border:
+                    selectedTeam === team
+                      ? "4px solid #2E3A59"
+                      : "2px solid #2E3A59",
+                }}
+              ></Box>
+            );
+          })
+        : null}
+      <AddTeamModal />
     </Box>
   );
 }

@@ -62,7 +62,7 @@ export default function Nav(props) {
   return (
     <ElevationScroll {...props}>
       <AppBar sx={{ height: "120px", justifyContent: "center" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
           <Link to="/">
             <IconButton
               onClick={() => {

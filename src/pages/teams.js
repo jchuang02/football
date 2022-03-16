@@ -70,7 +70,7 @@ export default function Teams() {
     setLoading(true);
     const pageLoading = setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 400);
 
     return () => {
       clearTimeout(pageLoading);

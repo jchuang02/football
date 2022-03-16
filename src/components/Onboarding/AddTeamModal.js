@@ -71,9 +71,10 @@ export default function AddTeamModal() {
   return (
     <>
       <Box
+        component={"span"}
         sx={
           followed.teams.length > 0
-            ? {}
+            ? null
             : hover
             ? {
                 alignItems: "center",
@@ -82,13 +83,11 @@ export default function AddTeamModal() {
                 "&:hover": {
                   cursor: "pointer",
                 },
-                width: "100%",
               }
             : {
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
-                width: "100%",
               }
         }
         onClick={handleOpen}
@@ -113,11 +112,11 @@ export default function AddTeamModal() {
                   alignItems: "center",
                   display: "flex",
                   justifyContent: "center",
-                  mr: 2,
-                  ml: 2,
                   "&:hover": {
                     cursor: "pointer",
                   },
+                  mr: 2,
+                  ml: 2,
                 }
               : {
                   alignItems: "center",
@@ -125,9 +124,6 @@ export default function AddTeamModal() {
                   justifyContent: "center",
                   mr: 2,
                   ml: 2,
-                  "&:hover": {
-                    cursor: "pointer",
-                  },
                 }
           }
         >

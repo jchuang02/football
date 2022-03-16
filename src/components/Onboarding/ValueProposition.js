@@ -5,7 +5,7 @@ const propositionStyle = {
   height: "100%",
   width: "20vw",
   bgcolor: "background.paper",
-  border: "4px solid #2E3A59",
+  border: "2px solid #2E3A59",
   p: 4,
   marginBottom: 4,
   marginLeft: "auto",

@@ -55,7 +55,7 @@ export default function Competitions() {
     setLoading(true);
     const pageLoading = setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 400);
 
     return () => {
       clearTimeout(pageLoading);

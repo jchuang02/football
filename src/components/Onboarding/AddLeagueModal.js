@@ -71,9 +71,10 @@ export default function PersonalizationModal() {
   return (
     <>
       <Box
+        component={"span"}
         sx={
           followed.leagues.length > 0
-            ? {}
+            ? null
             : hover
             ? {
                 alignItems: "center",

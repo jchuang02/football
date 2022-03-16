@@ -52,7 +52,7 @@ export default function Home() {
     setLoading(true);
     const pageLoading = setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 400);
 
     return () => {
       clearTimeout(pageLoading);
