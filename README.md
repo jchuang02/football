@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Dashboard.football is a dashboard application displaying information about football/soccer competitions around the world.
+[Dashboard.football](https://dashboard.football/) is a dashboard application displaying information about football/soccer competitions around the world.
 
 Users can select the teams and competitions they want to follow. They can find live match information, results of previous matches, and the times of upcoming games.
 
@@ -34,4 +34,27 @@ Dashboard.football is a Gatsby React application. It uses a number of open sourc
 
 ## Getting Started
 
-To get started developing [dashboard.football](https://www.api-football.com/)
+### Setup
+
+To get started developing dashboard.football, remember to first npm install after cloning the repo.
+
+You will also need to obtain a free API key from [api-football](https://www.api-football.com/)
+and put the key into a `.env.development` and `.env.production` file like so,
+
+    GATSBY_APP_FOOTBALL_API_KEY = YOUR-API-KEY-HERE
+
+and put that inside the `src` folder.
+
+###  Startup
+
+You can now start develop dashboard.football with
+
+    gatsby develop
+
+To view a production build of dashboard.football, use
+
+    gatsby build
+
+and view the files of the production build in the `./public` folder or by using
+
+    gatsby serve

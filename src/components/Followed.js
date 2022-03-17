@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLeagues, updateLeagues } from "../actions/leagues";
 import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
@@ -67,35 +67,6 @@ export default function Followed() {
         alignItems: "center",
       }}
     >
-      {followedLeagues.length > 0
-        ? followedLeagues.map((league) => {
-            return (
-              <Box
-                key={league}
-                onClick={() => {
-                  if (selectedLeague !== league) {
-                    dispatch(selectLeague(league));
-                    dispatch(selectTeam(""));
-                  }
-                  if (window && window.location.pathname !== "/competitions") {
-                    navigate("/competitions");
-                  }
-                }}
-                sx={{
-                  ...choiceStyle,
-                  backgroundImage: leagues[league]
-                    ? `url(${leagues[league].league.league.logo})`
-                    : "",
-                  border:
-                    selectedLeague === league
-                      ? "4px solid #2E3A59"
-                      : "2px solid #2E3A59",
-                }}
-              ></Box>
-            );
-          })
-        : null}
-      <AddLeagueModal />
       {followedTeams.length > 0
         ? followedTeams.map((team) => {
             return (
@@ -125,6 +96,35 @@ export default function Followed() {
           })
         : null}
       <AddTeamModal />
+      {followedLeagues.length > 0
+        ? followedLeagues.map((league) => {
+            return (
+              <Box
+                key={league}
+                onClick={() => {
+                  if (selectedLeague !== league) {
+                    dispatch(selectLeague(league));
+                    dispatch(selectTeam(""));
+                  }
+                  if (window && window.location.pathname !== "/competitions") {
+                    navigate("/competitions");
+                  }
+                }}
+                sx={{
+                  ...choiceStyle,
+                  backgroundImage: leagues[league]
+                    ? `url(${leagues[league].league.league.logo})`
+                    : "",
+                  border:
+                    selectedLeague === league
+                      ? "4px solid #2E3A59"
+                      : "2px solid #2E3A59",
+                }}
+              ></Box>
+            );
+          })
+        : null}
+      <AddLeagueModal />
     </Box>
   );
 }
