@@ -34,11 +34,7 @@ export default function Live({ fixtures }) {
               }
         }
       >
-        <Typography
-          variant="h5"
-          align="center"
-          sx={desktop ? { display: "none" } : {}}
-        >
+        <Typography variant="h5" align="center">
           Live
         </Typography>
         {fixtures.length > 0 ? (
@@ -64,13 +60,6 @@ export default function Live({ fixtures }) {
         ) : (
           <Typography>No Upcoming Matches</Typography>
         )}
-        <Typography
-          variant="h5"
-          align="center"
-          sx={desktop ? {} : { display: "none" }}
-        >
-          Live
-        </Typography>
       </Box>
     );
   } else {

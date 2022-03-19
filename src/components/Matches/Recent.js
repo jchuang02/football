@@ -50,7 +50,7 @@ export default function Recent({ fixtures }) {
               }
         }
       >
-        <Typography variant="h5" align={desktop ? "right" : "center"}>
+        <Typography variant="h5" align={"center"}>
           Recent
         </Typography>
         <Box

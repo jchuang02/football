@@ -33,7 +33,9 @@ export default function Upcoming({ fixtures }) {
               }
         }
       >
-        <Typography variant="h5">Upcoming</Typography>
+        <Typography variant="h5" align={"center"}>
+          Upcoming
+        </Typography>
         <Box
           sx={{
             textAlign: "center",

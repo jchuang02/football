@@ -40,8 +40,8 @@ export default function MyForm() {
     // URL must be in the authorized domains list in the Firebase Console.
     url:
       followed.teams.length > 0 && followed.leagues.length > 0
-        ? "http://localhost:8000/"
-        : "http://localhost:8000/personalize",
+        ? "https://football.gatsbyjs.io/"
+        : "https://football.gatsbyjs.io/personalize",
     handleCodeInApp: true,
   };
   const onSubmit = async (values) => {
