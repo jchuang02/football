@@ -5,7 +5,7 @@ export const fetchStandings = (league, season) => async (dispatch) => {
     params: { league, season },
   });
   let theData;
-  if (data.results > 0) {
+  if (data.response.length > 0) {
     theData = { standingInfo: data.response[0], lastUpdated: Date.now() };
   } else {
     theData = {
@@ -22,7 +22,7 @@ export const updateStandings = (league, season) => async (dispatch) => {
     params: { league, season },
   });
   let theData;
-  if (data.results > 0) {
+  if (data.response.length > 0) {
     theData = { standingInfo: data.response[0], lastUpdated: Date.now() };
   } else {
     theData = {

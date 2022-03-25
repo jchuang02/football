@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { MoonSat } from "iconoir-react";
+import { Globe } from "iconoir-react";
 import theme from "../components/MaterialUI/Theme";
 
 const SelectorInput = styled(OutlinedInput)(({ theme }) => ({
@@ -105,7 +105,7 @@ export default function Selector({ selected, setSelected, items = [] }) {
                       alt={`${items[currentItemIndex].flag} flag`}
                     ></img>
                   ) : (
-                    <MoonSat
+                    <Globe
                       color={theme.palette.primary.main}
                       width={"24px"}
                       height={"24px"}
@@ -142,7 +142,7 @@ export default function Selector({ selected, setSelected, items = [] }) {
                     <img src={item.flag} alt={`${item.flag} flag`}></img>
                   </Box>
                 ) : (
-                  <MoonSat
+                  <Globe
                     color={theme.palette.primary.main}
                     width={"24px"}
                     height={"24px"}
