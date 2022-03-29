@@ -78,15 +78,17 @@ export default function useGetData() {
       const teamSpecificMatches = Object.values(fixtures).filter((match) => {
         return (
           match.teams &&
-          (Number(match.teams.home.id) === team ||
-            Number(match.teams.away.id) === team) &&
+          ((Number(match.teams.home.id) === team &&
+            !followedTeams.includes(match.teams.away.id)) ||
+            (Number(match.teams.away.id) === team &&
+              !followedTeams.includes(match.teams.home.id))) &&
           !followedLeagues.includes(Number(match.league.id))
         );
       });
       if (
         Object.values(leagues).filter((league) => {
           return league.team.includes(team);
-        }).length
+        }).length > 0
       ) {
         const teamLeagues = Object.values(leagues).filter((league) => {
           return league.team.includes(team);

@@ -10,8 +10,9 @@ export const fetchTeamLeagues =
     data.response.forEach((league) => {
       parsedLeagues[league.league.id] = {
         team:
-          getState[league.league.id] && getState[league.league.id].team
-            ? [...getState[league.league.id].team, team]
+          getState().leagues[league.league.id] &&
+          getState().leagues[league.league.id].team
+            ? [...getState().leagues[league.league.id].team, team]
             : [team],
         league: league,
         lastUpdated: Date.now(),
@@ -32,8 +33,9 @@ export const updateTeamLeagues =
     data.response.forEach((league) => {
       parsedLeagues[league.league.id] = {
         team:
-          getState[league.league.id] && getState[league.league.id].team
-            ? [...getState[league.league.id].team, team]
+          getState().leagues[league.league.id] &&
+          getState().leagues[league.league.id].team
+            ? [...getState().leagues[league.league.id].team, team]
             : [team],
         league: league,
         lastUpdated: Date.now(),

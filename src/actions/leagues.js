@@ -7,7 +7,10 @@ export const fetchLeagues =
     });
     let parsedLeagues = {};
     parsedLeagues[id] = {
-      team: getState[id].team,
+      team:
+        getState().leagues[id] && getState().leagues[id].team
+          ? getState().leagues[id].team
+          : [],
       league: data.response[0],
       lastUpdated: Date.now(),
     };
@@ -23,7 +26,10 @@ export const updateLeagues =
     });
     let parsedLeagues = {};
     parsedLeagues[id] = {
-      team: getState[id].team,
+      team:
+        getState().leagues[id] && getState().leagues[id].team
+          ? getState().leagues[id].team
+          : [],
       league: data.response[0],
       lastUpdated: Date.now(),
     };
