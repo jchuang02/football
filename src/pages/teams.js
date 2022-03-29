@@ -27,6 +27,8 @@ import Layout from "../components/layout";
 import { fetchTeamLeagues, updateTeamLeagues } from "../actions/teamLeagues";
 import _ from "lodash";
 import useInterval from "../hooks/useInterval";
+import Selector from "../components/Selector";
+import Standings from "../components/Standings/Standings";
 
 export default function Teams() {
   const dispatch = useDispatch();
@@ -42,12 +44,30 @@ export default function Teams() {
   const teamLeagues = useMemo(() => {
     if (Object.values(leagues).length) {
       return Object.values(leagues).filter((league) => {
-        return league.team === selectedTeam;
+        return league.team.includes(selectedTeam);
       });
     } else {
       return [];
     }
   }, [leagues, selectedTeam]);
+  const selectorItems = useMemo(() => {
+    if (teamLeagues.length) {
+      return teamLeagues.map(({ league }) => {
+        return {
+          id: league.league.id,
+          name: league.league.name,
+          logo: league.league.logo,
+          country: league.country.name,
+          flag: league.country.flag,
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [teamLeagues]);
+  const [selected, setSelected] = useState(
+    selectorItems[0] ? selectorItems[0].id : 0
+  );
 
   const current = useSelector((state) => {
     if (teams && selectedTeam && teamLeagues[selectedTeam]) {
@@ -98,7 +118,7 @@ export default function Teams() {
         Number(match.teams.home.id) === selectedTeam
       );
     });
-    if (!teamMatches.length && selectedTeam) {
+    if (teamMatches.length === 0 && selectedTeam) {
       dispatch(fetchTeamFixtures(selectedTeam, current));
     } else {
       const needsUpdate = teamMatches.filter((match) => {
@@ -260,7 +280,6 @@ export default function Teams() {
               return match.league.id;
             })
         );
-        console.log(allStandings);
         allStandings.forEach((standing) => {
           const now = new Date();
           const currentSeason =
@@ -343,6 +362,18 @@ export default function Teams() {
           </>
         ) : (
           <LinearProgress />
+        )}
+        {Object.keys(leagues).length ? (
+          <>
+            <Selector
+              selected={selected}
+              setSelected={setSelected}
+              items={selectorItems}
+            />
+            <Standings selectedLeague={selected} />
+          </>
+        ) : (
+          ""
         )}
       </Layout>
     );

@@ -1,12 +1,13 @@
 import football from "../api/football";
 export const fetchLeagues =
   (id, current = "true") =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     const { data } = await football.get("/leagues", {
       params: { id, current },
     });
     let parsedLeagues = {};
     parsedLeagues[id] = {
+      team: getState[id].team,
       league: data.response[0],
       lastUpdated: Date.now(),
     };
@@ -16,12 +17,13 @@ export const fetchLeagues =
 
 export const updateLeagues =
   (id, current = "true") =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     const { data } = await football.get("/leagues", {
       params: { id, current },
     });
     let parsedLeagues = {};
     parsedLeagues[id] = {
+      team: getState[id].team,
       league: data.response[0],
       lastUpdated: Date.now(),
     };

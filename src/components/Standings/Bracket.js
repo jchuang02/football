@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import FixtureCard from "./FixtureCard";
+import FixtureCard from "../FixtureCard";
 import { Container, Grid } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';

@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import Cup from "./Cup";
-import League from "./League";
+import League from "../League";
 
 export default function Standings({ selectedLeague }) {
   const standings = useSelector((state) => state.standings[selectedLeague]);

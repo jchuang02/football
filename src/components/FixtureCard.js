@@ -148,8 +148,8 @@ export default function FixtureCard({ fixture, loading }) {
     <Card
       key={fixture.fixture.id}
       sx={{
-        minWidth: "320px",
-        minHeight: "340px",
+        width: "25vw",
+        height: "40vh",
         boxShadow: "none",
         border: "2px solid #2E3A59",
         m: 1,

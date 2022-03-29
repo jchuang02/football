@@ -29,81 +29,122 @@ export default function Selector({ selected, setSelected, items = [] }) {
   const currentItemIndex = items.findIndex((element) => {
     return element.id === selected;
   });
-  return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        alignContent: "center",
-        textAlign: "center",
-      }}
-    >
-      {selected ? (
-        <Box
-          sx={{
-            img: {
-              height: "160px",
-              widght: "160px",
-              padding: "2rem",
-            },
-          }}
-        >
-          <img
-            alt={
-              items[currentItemIndex].name
-                ? `${items[currentItemIndex].name} logo`
-                : "no image found"
-            }
-            src={items[currentItemIndex].logo}
-          ></img>
-        </Box>
-      ) : (
-        ""
-      )}
-      <FormControl
+  if (currentItemIndex === -1) {
+    setSelected(items[0] ? items[0].id : 0);
+    return "";
+  } else {
+    return (
+      <Container
         sx={{
-          minWidth: 400,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          alignContent: "center",
+          textAlign: "center",
         }}
       >
-        <Select
-          id="competitions-selector"
-          value={selected}
-          displayEmpty
-          onChange={(e) => {
-            setSelected(e.target.value);
+        {selected ? (
+          <Box
+            sx={{
+              img: {
+                height: "160px",
+                widght: "160px",
+                padding: "2rem",
+              },
+            }}
+          >
+            <img
+              alt={
+                items[currentItemIndex].name
+                  ? `${items[currentItemIndex].name} logo`
+                  : "no image found"
+              }
+              src={items[currentItemIndex].logo}
+            ></img>
+          </Box>
+        ) : (
+          ""
+        )}
+        <FormControl
+          sx={{
+            minWidth: 400,
           }}
-          input={<SelectorInput />}
-          renderValue={() => {
-            if (!selected) {
-              return <em>Choose Competition</em>;
-            } else {
-              return (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    img: {
-                      height: "48px",
-                      width: "48px",
-                      paddingLeft: "2rem",
-                    },
-                  }}
-                >
-                  <Typography
+        >
+          <Select
+            id="competitions-selector"
+            value={selected}
+            displayEmpty
+            onChange={(e) => {
+              setSelected(e.target.value);
+            }}
+            input={<SelectorInput />}
+            renderValue={() => {
+              if (!selected) {
+                return <em>Choose Competition</em>;
+              } else {
+                return (
+                  <Box
                     sx={{
-                      fontSize: "24pt",
-                      fontWeight: "500",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      img: {
+                        height: "48px",
+                        width: "48px",
+                        paddingLeft: "2rem",
+                      },
                     }}
                   >
-                    {items[currentItemIndex].name}
-                  </Typography>
-                  {items[currentItemIndex].flag ? (
-                    <img
-                      src={items[currentItemIndex].flag}
-                      alt={`${items[currentItemIndex].flag} flag`}
-                    ></img>
+                    <Typography
+                      sx={{
+                        fontSize: "24pt",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {items[currentItemIndex].name}
+                    </Typography>
+                    {items[currentItemIndex].flag ? (
+                      <img
+                        src={items[currentItemIndex].flag}
+                        alt={`${items[currentItemIndex].flag} flag`}
+                      ></img>
+                    ) : (
+                      <Globe
+                        color={theme.palette.primary.main}
+                        width={"24px"}
+                        height={"24px"}
+                        style={{ marginLeft: "0.5rem" }}
+                      />
+                    )}
+                  </Box>
+                );
+              }
+            }}
+            inputProps={{ "aria-label": "Without label" }}
+          >
+            <MenuItem disabled value="">
+              <em>Select Competition</em>
+            </MenuItem>
+            {Object.values(items).map((item) => {
+              return (
+                <MenuItem
+                  value={item.id}
+                  key={item.id}
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  {item.name}
+                  {item.flag ? (
+                    <Box
+                      sx={{
+                        img: {
+                          height: "24px",
+                          width: "24px",
+                          marginLeft: "0.5rem",
+                        },
+                      }}
+                    >
+                      <img src={item.flag} alt={`${item.flag} flag`}></img>
+                    </Box>
                   ) : (
                     <Globe
                       color={theme.palette.primary.main}
@@ -112,48 +153,12 @@ export default function Selector({ selected, setSelected, items = [] }) {
                       style={{ marginLeft: "0.5rem" }}
                     />
                   )}
-                </Box>
+                </MenuItem>
               );
-            }
-          }}
-          inputProps={{ "aria-label": "Without label" }}
-        >
-          <MenuItem disabled value="">
-            <em>Select Competition</em>
-          </MenuItem>
-          {Object.values(items).map((item) => {
-            return (
-              <MenuItem
-                value={item.id}
-                key={item.id}
-                sx={{ display: "flex", alignItems: "center" }}
-              >
-                {item.name}
-                {item.flag ? (
-                  <Box
-                    sx={{
-                      img: {
-                        height: "24px",
-                        width: "24px",
-                        marginLeft: "0.5rem",
-                      },
-                    }}
-                  >
-                    <img src={item.flag} alt={`${item.flag} flag`}></img>
-                  </Box>
-                ) : (
-                  <Globe
-                    color={theme.palette.primary.main}
-                    width={"24px"}
-                    height={"24px"}
-                    style={{ marginLeft: "0.5rem" }}
-                  />
-                )}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-    </Container>
-  );
+            })}
+          </Select>
+        </FormControl>
+      </Container>
+    );
+  }
 }

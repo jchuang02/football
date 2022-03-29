@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import { Link, navigate } from "gatsby";
 import { Home, HomeAlt } from "iconoir-react";
-import theme from "./MaterialUI/Theme";
+import theme from "../MaterialUI/Theme";
 import { ProfileCircled } from "iconoir-react";
-import Followed from "../components/Followed";
-import useAuth from "../hooks/useAuth";
+import Followed from "./Followed";
+import useAuth from "../../hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { resetFollowed } from "../actions/favorites";
-import { selectLeague, selectTeam } from "../actions/index";
+import { resetFollowed } from "../../actions/favorites";
+import { selectLeague, selectTeam } from "../../actions/index";
 import { getAuth, signOut } from "firebase/auth";
 
 function ElevationScroll(props) {

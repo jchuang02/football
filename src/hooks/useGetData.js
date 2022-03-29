@@ -50,7 +50,7 @@ export default function useGetData() {
     });
     followedTeams.forEach((team) => {
       const teamLeagues = Object.values(leagues).filter((league) => {
-        return league.team === team;
+        return league.team.includes(team);
       });
       let currentSeasons = teamLeagues.map(({ league }) => {
         return league.seasons[0].year;
@@ -85,11 +85,11 @@ export default function useGetData() {
       });
       if (
         Object.values(leagues).filter((league) => {
-          return league.team === team;
+          return league.team.includes(team);
         }).length
       ) {
         const teamLeagues = Object.values(leagues).filter((league) => {
-          return league.team === team;
+          return league.team.includes(team);
         });
         let currentSeasons = teamLeagues.map(({ league }) => {
           return league.seasons[0].year;

@@ -16,7 +16,7 @@ import {
   fixturesInProgress,
   fixturesUpcoming,
 } from "../helpers/fixturesHelper";
-import Standings from "../components/Standings";
+import Standings from "../components/Standings/Standings";
 import Selector from "../components/Selector";
 import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
 import useGetData from "../hooks/useGetData";

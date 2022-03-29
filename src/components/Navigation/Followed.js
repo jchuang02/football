@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeagues, updateLeagues } from "../actions/leagues";
-import { fetchTeams, updateTeams, selectLeague, selectTeam } from "../actions";
-import { fetchTeamLeagues, updateTeamLeagues } from "../actions/teamLeagues";
+import { fetchLeagues, updateLeagues } from "../../actions/leagues";
+import {
+  fetchTeams,
+  updateTeams,
+  selectLeague,
+  selectTeam,
+} from "../../actions";
+import { fetchTeamLeagues, updateTeamLeagues } from "../../actions/teamLeagues";
 import { navigate } from "gatsby";
-import AddLeagueModal from "./Onboarding/AddLeagueModal";
-import AddTeamModal from "./Onboarding/AddTeamModal";
+import AddLeagueModal from "../Onboarding/AddLeagueModal";
+import AddTeamModal from "../Onboarding/AddTeamModal";
 
 export default function Followed() {
   const dispatch = useDispatch();
