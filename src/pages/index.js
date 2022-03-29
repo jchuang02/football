@@ -65,7 +65,7 @@ export default function Home() {
     }
   }, [selectorItems]);
 
-  const { allFixtures } = useGetData();
+  const { allShownFixtures } = useGetData();
 
   useSignInWithEmailLink();
 
@@ -90,7 +90,7 @@ export default function Home() {
             <>
               <Live
                 fixtures={fixturesInProgress(
-                  allFixtures !== undefined ? allFixtures : ""
+                  allShownFixtures !== undefined ? allShownFixtures : ""
                 )}
               />
               <Box
@@ -106,8 +106,8 @@ export default function Home() {
               >
                 <Recent
                   fixtures={fixturesFinished(
-                    allFixtures !== undefined
-                      ? allFixtures.sort((fixture) => {
+                    allShownFixtures !== undefined
+                      ? allShownFixtures.sort((fixture) => {
                           if (
                             followedTeams.includes(fixture.teams.home.id) ||
                             followedTeams.includes(fixture.teams.away.id)
@@ -122,9 +122,9 @@ export default function Home() {
                 />
                 <Upcoming
                   fixtures={fixturesUpcoming(
-                    allFixtures !== undefined
-                      ? allFixtures.length
-                        ? fixturesUpcoming(allFixtures).sort((fixture) => {
+                    allShownFixtures !== undefined
+                      ? allShownFixtures.length
+                        ? fixturesUpcoming(allShownFixtures).sort((fixture) => {
                             if (
                               followedTeams.includes(fixture.teams.home.id) ||
                               followedTeams.includes(fixture.teams.away.id)
