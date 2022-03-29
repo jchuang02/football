@@ -130,13 +130,14 @@ export default function Competitions() {
 
   // For matches starting later today
   useEffect(() => {
+    const allFixtures = Object.values(fixtures);
     let timer;
     if (
-      !Object.values(fixtures).filter((match) => {
+      !allFixtures.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures)) || [];
+      const allMatchesToday = fixturesToday(allFixtures) || [];
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -167,15 +168,16 @@ export default function Competitions() {
   //For matches happening soon or now
   let delay = 60000;
   useInterval(() => {
+    const allFixtures = Object.values(fixtures);
     if (
-      fixturesToday(Object.values(fixtures)).filter((match) => {
+      fixturesToday(allFixtures).filter((match) => {
         return match.fixture.status.short === "NS";
       }).length &&
-      !Object.values(fixtures).filter((match) => {
+      !allFixtures.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures));
+      const allMatchesToday = fixturesToday(allFixtures);
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -186,15 +188,13 @@ export default function Competitions() {
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
       });
-      const allMatchesOnBreak = Object.values(fixtures).filter(
-        ({ fixture }) => {
-          return fixture.status.short === "HT" && fixture.status.elapsed === 45;
-        }
-      );
-      const allMatchesEnding = Object.values(fixtures).filter(({ fixture }) => {
+      const allMatchesOnBreak = allFixtures.filter(({ fixture }) => {
+        return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      });
+      const allMatchesEnding = allFixtures.filter(({ fixture }) => {
         return fixtureEnding(fixture.status.elapsed, fixture.status.short);
       });
-      const allMatchesInProgress = fixturesInProgress(Object.values(fixtures));
+      const allMatchesInProgress = fixturesInProgress(allFixtures);
       if (
         (allMatchesInProgress.length > 0 || continueUpdates.length > 0) &&
         !allMatchesOnBreak.length !== allMatchesInProgress.length
@@ -233,7 +233,6 @@ export default function Competitions() {
               return match.league.id;
             })
         );
-        console.log(allStandings);
         allStandings.forEach((standing) => {
           const now = new Date();
           const currentSeason =
@@ -254,20 +253,19 @@ export default function Competitions() {
   let breakDelay = 60000 * 5.1;
   //When fixtures are all on break
   useInterval(() => {
+    const allFixtures = Object.values(fixtures);
     if (
-      fixturesToday(Object.values(fixtures)).filter((match) => {
+      fixturesToday(allFixtures).filter((match) => {
         return match.fixture.status.short === "HT";
       }).length &&
-      !Object.values(fixtures).filter((match) => {
+      !allFixtures.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesOnBreak = Object.values(fixtures).filter(
-        ({ fixture }) => {
-          return fixture.status.short === "HT" && fixture.status.elapsed === 45;
-        }
-      );
-      const allMatchesInProgress = fixturesInProgress(Object.values(fixtures));
+      const allMatchesOnBreak = allFixtures.filter(({ fixture }) => {
+        return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      });
+      const allMatchesInProgress = fixturesInProgress(allFixtures);
       if (allMatchesOnBreak.length === allMatchesInProgress.length) {
         console.log("Match at halftime break. Staggering updates");
         dispatch(updateAllLiveFixtures());
