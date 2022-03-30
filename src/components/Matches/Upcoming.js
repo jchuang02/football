@@ -3,6 +3,7 @@ import { separateFixtures } from "../../helpers/fixturesHelper";
 import {
   Box,
   CircularProgress,
+  Container,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -67,7 +68,9 @@ export default function Upcoming({ fixtures }) {
               })}
             </Matches>
           ) : (
-            <Typography>No Upcoming Matches</Typography>
+            <Container>
+              <Typography>No Upcoming Matches</Typography>
+            </Container>
           )}
         </Box>
       </Box>

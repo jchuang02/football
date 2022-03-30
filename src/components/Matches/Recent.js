@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   CircularProgress,
+  Container,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -32,14 +33,6 @@ export default function Recent({ fixtures }) {
                 width: "45%",
                 marginLeft: "0.5rem",
                 textAlign: "right",
-              }
-            : laptop
-            ? {
-                textAlign: "center",
-                display: "flex",
-                overflowX: "auto",
-                flexFlow: "column nowrap",
-                justifyContent: "space-evenly",
               }
             : {
                 display: "flex",
@@ -92,7 +85,9 @@ export default function Recent({ fixtures }) {
               })}
             </Matches>
           ) : (
-            <Typography>No previous matches available</Typography>
+            <Container>
+              <Typography>No previous matches available</Typography>
+            </Container>
           )}
         </Box>
       </Box>

@@ -1,37 +1,45 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { lazy, Suspense, useState, useMemo, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/layout";
 import {
   Box,
+  CircularProgress,
   Container,
-  LinearProgress,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import Live from "../components/Matches/Live";
-import Upcoming from "../components/Matches/Upcoming";
-import Recent from "../components/Matches/Recent";
 import {
   fixturesFinished,
   fixturesInProgress,
   fixturesUpcoming,
 } from "../helpers/fixturesHelper";
-import Standings from "../components/Standings/Standings";
-import Selector from "../components/Selector";
 import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
 import useGetData from "../hooks/useGetData";
 
-export default function Home() {
-  const [loading, setLoading] = useState(false);
+const Standings = lazy(() => import("../components/Standings/Standings"));
+const Live = lazy(() => import("../components/Matches/Live"));
+const Upcoming = lazy(() => import("../components/Matches/Upcoming"));
+const Recent = lazy(() => import("../components/Matches/Recent"));
+const Selector = lazy(() => import("../components/Selector"));
 
+const renderLoader = () => (
+  <Container>
+    <CircularProgress />
+  </Container>
+);
+
+export default function Home() {
   const leagues = useSelector((state) => state.leagues);
   const desktop = useMediaQuery("(min-width: 1600px");
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
+  const allLeagues = useMemo(() => {
+    return Object.values(leagues);
+  }, [leagues]);
 
   const selectorItems = useMemo(() => {
-    if (Object.values(leagues).length) {
-      return Object.values(leagues).map(({ league }) => {
+    if (allLeagues.length) {
+      return allLeagues.map(({ league }) => {
         return {
           id: league.league.id,
           name: league.league.name,
@@ -43,21 +51,10 @@ export default function Home() {
     } else {
       return [];
     }
-  }, [leagues]);
+  }, [allLeagues]);
   const [selected, setSelected] = useState(
     selectorItems[0] ? selectorItems[0].id : 0
   );
-
-  useEffect(() => {
-    setLoading(true);
-    const pageLoading = setTimeout(() => {
-      setLoading(false);
-    }, 400);
-
-    return () => {
-      clearTimeout(pageLoading);
-    };
-  }, []);
 
   useEffect(() => {
     if (selectorItems.length) {
@@ -85,8 +82,8 @@ export default function Home() {
   } else {
     return (
       <>
-        <Layout>
-          {!loading ? (
+        <Suspense fallback={renderLoader()}>
+          <Layout>
             <>
               <Live
                 fixtures={fixturesInProgress(
@@ -139,7 +136,7 @@ export default function Home() {
                   )}
                 />
               </Box>
-              {Object.keys(leagues).length ? (
+              {allLeagues.length ? (
                 <>
                   <Selector
                     selected={selected}
@@ -152,10 +149,9 @@ export default function Home() {
                 ""
               )}
             </>
-          ) : (
-            <LinearProgress />
-          )}
-        </Layout>
+            )
+          </Layout>
+        </Suspense>
       </>
     );
   }

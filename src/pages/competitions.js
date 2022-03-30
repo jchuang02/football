@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import _ from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, LinearProgress, Typography } from "@mui/material";
-import Standings from "../components/Standings/Standings";
+import {
+  useMediaQuery,
+  Box,
+  Container,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+
 import Layout from "../components/layout";
 import {
   updateAllLiveFixtures,
@@ -23,16 +30,23 @@ import {
   fixtureEnding,
   fixtureOnBreak,
 } from "../helpers/fixtureStatusHelper";
-import Live from "../components/Matches/Live";
-import Upcoming from "../components/Matches/Upcoming";
-import Recent from "../components/Matches/Recent";
-import _ from "lodash";
 import useInterval from "../hooks/useInterval";
+const Standings = lazy(() => import("../components/Standings/Standings"));
+const Live = lazy(() => import("../components/Matches/Live"));
+const Upcoming = lazy(() => import("../components/Matches/Upcoming"));
+const Recent = lazy(() => import("../components/Matches/Recent"));
+
+const renderLoader = () => (
+  <Container>
+    <CircularProgress />
+  </Container>
+);
 
 export default function Competitions() {
+  const desktop = useMediaQuery("(min-width: 1600px");
+
   const dispatch = useDispatch();
   const now = new Date();
-  const [loading, setLoading] = useState(false);
   const leagues = useSelector((state) => state.leagues);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const selectedLeague = useSelector((state) => state.selectedLeague);
@@ -50,17 +64,20 @@ export default function Competitions() {
     }
   });
   const standings = useSelector((state) => state.standings[selectedLeague]);
+  const competitionMatches = useMemo(() => {
+    return Object.values(fixtures).filter((match) => {
+      return Number(match.league.id) === selectedLeague;
+    });
+  }, [fixtures, selectedLeague]);
 
-  useEffect(() => {
-    setLoading(true);
-    const pageLoading = setTimeout(() => {
-      setLoading(false);
-    }, 400);
-
-    return () => {
-      clearTimeout(pageLoading);
-    };
-  }, [selectedLeague]);
+  const needsUpdates = useMemo(() => {
+    return competitionMatches.filter((match) => {
+      return (
+        Number(match.league.id) === selectedLeague &&
+        Date.now() - match.lastUpdated >= 86400000
+      );
+    });
+  }, [competitionMatches, selectedLeague]);
 
   //Get league information if it does not exist and update it if updated more than a day ago.
   useEffect(() => {
@@ -75,18 +92,9 @@ export default function Competitions() {
 
   //If no matches present for the selected competition, fetch them.
   useEffect(() => {
-    const competitionMatches = Object.values(fixtures).filter((match) => {
-      return Number(match.league.id) === selectedLeague;
-    });
     if (!competitionMatches.length && selectedLeague) {
       dispatch(fetchFixtures(current, selectedLeague));
     } else {
-      const needsUpdate = competitionMatches.filter((match) => {
-        return (
-          Number(match.league.id) === selectedLeague &&
-          Date.now() - match.lastUpdated >= 86400000
-        );
-      });
       const todaysMatches = fixturesToday(competitionMatches).filter(
         (match) => {
           return (
@@ -95,7 +103,7 @@ export default function Competitions() {
           );
         }
       );
-      if (needsUpdate.length || todaysMatches.length > 0) {
+      if (needsUpdates.length || todaysMatches.length > 0) {
         dispatch(updateFixtures(current, selectedLeague));
       }
     }
@@ -103,19 +111,16 @@ export default function Competitions() {
 
   //If live matches are present in fixtures, update them.
   useEffect(() => {
-    const competitionFixtures = Object.values(fixtures).filter((match) => {
-      return match.league.id === selectedLeague;
-    });
-    if (competitionFixtures.length) {
+    if (competitionMatches.length) {
       if (
-        competitionFixtures.filter((match) => {
+        competitionMatches.filter((match) => {
           return (
             fixtureInProgress(match.fixture.status.short) &&
             !fixtureOnBreak(match.fixture.status.short) &&
             Date.now() - match.lastUpdated >= 60000
           );
         }).length > 0 ||
-        competitionFixtures.filter((match) => {
+        competitionMatches.filter((match) => {
           return (
             match.fixture.timestamp * 1000 - Date.now() < 0 &&
             match.fixture.status.short === "NS" &&
@@ -130,14 +135,13 @@ export default function Competitions() {
 
   // For matches starting later today
   useEffect(() => {
-    const allFixtures = Object.values(fixtures);
     let timer;
     if (
-      !allFixtures.filter((match) => {
+      !competitionMatches.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(allFixtures) || [];
+      const allMatchesToday = fixturesToday(competitionMatches) || [];
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -168,16 +172,15 @@ export default function Competitions() {
   //For matches happening soon or now
   let delay = 60000;
   useInterval(() => {
-    const allFixtures = Object.values(fixtures);
     if (
-      fixturesToday(allFixtures).filter((match) => {
+      fixturesToday(competitionMatches).filter((match) => {
         return match.fixture.status.short === "NS";
       }).length &&
-      !allFixtures.filter((match) => {
+      !competitionMatches.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(allFixtures);
+      const allMatchesToday = fixturesToday(competitionMatches);
       let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
         return fixture.timestamp * 1000 - Date.now();
       });
@@ -188,13 +191,13 @@ export default function Competitions() {
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
       });
-      const allMatchesOnBreak = allFixtures.filter(({ fixture }) => {
+      const allMatchesOnBreak = competitionMatches.filter(({ fixture }) => {
         return fixture.status.short === "HT" && fixture.status.elapsed === 45;
       });
-      const allMatchesEnding = allFixtures.filter(({ fixture }) => {
+      const allMatchesEnding = competitionMatches.filter(({ fixture }) => {
         return fixtureEnding(fixture.status.elapsed, fixture.status.short);
       });
-      const allMatchesInProgress = fixturesInProgress(allFixtures);
+      const allMatchesInProgress = fixturesInProgress(competitionMatches);
       if (
         (allMatchesInProgress.length > 0 || continueUpdates.length > 0) &&
         !allMatchesOnBreak.length !== allMatchesInProgress.length
@@ -253,73 +256,71 @@ export default function Competitions() {
   let breakDelay = 60000 * 5.1;
   //When fixtures are all on break
   useInterval(() => {
-    const allFixtures = Object.values(fixtures);
     if (
-      fixturesToday(allFixtures).filter((match) => {
+      fixturesToday(competitionMatches).filter((match) => {
         return match.fixture.status.short === "HT";
       }).length &&
-      !allFixtures.filter((match) => {
+      !competitionMatches.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesOnBreak = allFixtures.filter(({ fixture }) => {
+      const allMatchesOnBreak = competitionMatches.filter(({ fixture }) => {
         return fixture.status.short === "HT" && fixture.status.elapsed === 45;
       });
-      const allMatchesInProgress = fixturesInProgress(allFixtures);
+      const allMatchesInProgress = fixturesInProgress(competitionMatches);
       if (allMatchesOnBreak.length === allMatchesInProgress.length) {
-        console.log("Match at halftime break. Staggering updates");
         dispatch(updateAllLiveFixtures());
       }
     }
   }, breakDelay);
 
-  const competitionFixtures = Object.values(fixtures).filter((match) => {
-    return Number(match.league.id) === selectedLeague;
-  });
-
   if (leagues) {
     return (
       <Layout>
-        {!loading ? (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <Live
-                fixtures={fixturesInProgress(
-                  competitionFixtures ? competitionFixtures : ""
-                )}
-              />
-            </Box>
+        <Suspense fallback={renderLoader()}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+            }}
+          >
+            <Live
+              fixtures={fixturesInProgress(
+                competitionMatches ? competitionMatches : ""
+              )}
+            />
+          </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <Recent
-                fixtures={fixturesFinished(
-                  competitionFixtures ? competitionFixtures : ""
-                )}
-              />
-              <Upcoming
-                fixtures={fixturesUpcoming(
-                  competitionFixtures ? competitionFixtures : ""
-                )}
-              />
-            </Box>
+          <Box
+            sx={
+              desktop
+                ? {
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                  }
+                : {
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-evenly",
+                  }
+            }
+          >
+            <Recent
+              fixtures={fixturesFinished(
+                competitionMatches ? competitionMatches : ""
+              )}
+            />
+            <Upcoming
+              fixtures={fixturesUpcoming(
+                competitionMatches ? competitionMatches : ""
+              )}
+            />
+          </Box>
 
-            <Standings selectedLeague={selectedLeague} />
-          </>
-        ) : (
-          <LinearProgress />
-        )}
+          <Standings selectedLeague={selectedLeague} />
+        </Suspense>
       </Layout>
     );
   } else {

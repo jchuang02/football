@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   CircularProgress,
+  Container,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -58,7 +59,9 @@ export default function Live({ fixtures }) {
             })}
           </Matches>
         ) : (
-          <Typography>No Upcoming Matches</Typography>
+          <Container>
+            <Typography>No Upcoming Matches</Typography>
+          </Container>
         )}
       </Box>
     );
