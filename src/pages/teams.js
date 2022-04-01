@@ -45,6 +45,7 @@ const renderLoader = () => (
 );
 
 export default function Teams() {
+  const isSSR = typeof window === "undefined";
   const dispatch = useDispatch();
   const teams = useSelector((state) => state.teams);
   const leagues = useSelector((state) => state.leagues);
@@ -318,7 +319,7 @@ export default function Teams() {
     }
   }, breakDelay);
 
-  if (teams) {
+  if (teams && !isSSR) {
     return (
       <Layout>
         <Suspense fallback={renderLoader()}>

@@ -43,8 +43,8 @@ const renderLoader = () => (
 );
 
 export default function Competitions() {
+  const isSSR = typeof window === "undefined";
   const desktop = useMediaQuery("(min-width: 1600px");
-
   const dispatch = useDispatch();
   const now = new Date();
   const leagues = useSelector((state) => state.leagues);
@@ -274,7 +274,7 @@ export default function Competitions() {
     }
   }, breakDelay);
 
-  if (leagues) {
+  if (leagues && !isSSR) {
     return (
       <Layout>
         <Suspense fallback={renderLoader()}>
