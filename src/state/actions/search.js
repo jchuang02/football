@@ -1,4 +1,4 @@
-import football from "../api/football";
+import football from "../../api/football";
 
 export const searchLeagues = (search) => async (dispatch) => {
   dispatch(searchActionStart());

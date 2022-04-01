@@ -1,6 +1,6 @@
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
-import { addFaveLeague, addFaveTeam } from "../actions/favorites";
+import { addFaveLeague, addFaveTeam } from "../state/actions/favorites";
 
 const db = getFirestore();
 export function addFollowsToFirebase(followed, userId) {

@@ -5,7 +5,7 @@ import {
   isSignInWithEmailLink,
   signInWithEmailLink,
 } from "firebase/auth";
-import { deleteEmail } from "../actions";
+import { deleteEmail } from "../state/actions";
 import { getFollowsFromFirebase } from "../helpers/firebaseHelper";
 
 export default function useSignInWithEmailLink() {

@@ -11,7 +11,7 @@ import { ProfileCircled } from "iconoir-react";
 import { TextField } from "mui-rff";
 import { Form } from "react-final-form";
 import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
-import { setEmail } from "../../actions";
+import { setEmail } from "../../state/actions";
 import { useDispatch, useSelector } from "react-redux";
 
 const style = {

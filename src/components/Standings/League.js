@@ -33,6 +33,7 @@ export default function League(props) {
         </TableHead>
         <TableBody>
           {props.standings.map((team) => {
+            console.log(team);
             return (
               <TableRow key={team.team.id}>
                 <TableCell
