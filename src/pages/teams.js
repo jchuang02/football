@@ -165,7 +165,7 @@ export default function Teams() {
           );
         }).length > 0
       ) {
-        dispatch(updateTeamFixtures(current, selectedTeam));
+        dispatch(updateTeamFixtures(selectedTeam, current));
       }
     }
   }, []);
