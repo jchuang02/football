@@ -7,7 +7,7 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import { searchLeagues, searchReset } from "../../actions/search";
+import { searchLeagues, searchReset } from "../../state/actions/search";
 import SearchInput from "../SearchInput";
 import { AddSquare, Group } from "iconoir-react";
 import theme from "../MaterialUI/Theme";

@@ -15,8 +15,8 @@ import {
   updateLiveFixturesById,
   fetchFixtures,
   updateFixtures,
-} from "../actions/fixtures";
-import { fetchStandings, updateStandings } from "../actions/standings";
+} from "../state/actions/fixtures";
+import { fetchStandings, updateStandings } from "../state/actions/standings";
 
 import {
   fixturesInProgress,
@@ -66,7 +66,11 @@ export default function Competitions() {
   const standings = useSelector((state) => state.standings[selectedLeague]);
   const competitionMatches = useMemo(() => {
     return Object.values(fixtures).filter((match) => {
-      return Number(match.league.id) === selectedLeague;
+      return (
+        Number(match.league.id) === selectedLeague &&
+        match.fixture.timestamp * 1000 - Date.now() < 30 * 86400000 &&
+        match.fixture.timestamp * 1000 - Date.now() > -30 * 86400000
+      );
     });
   }, [fixtures, selectedLeague]);
 

@@ -69,9 +69,6 @@ export default function Bracket() {
     },
   };
 
-  const playoffFixtures = fixtures.filter((fixture) => {
-    return fixture.round === "8th Finals";
-  });
   return (
     <Container>
       <Grid container>

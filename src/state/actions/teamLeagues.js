@@ -1,4 +1,4 @@
-import football from "../api/football";
+import football from "../../api/football";
 
 export const fetchTeamLeagues =
   (team, current = "true") =>

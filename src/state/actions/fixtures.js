@@ -1,4 +1,4 @@
-import football from "../api/football";
+import football from "../../api/football";
 
 export const fetchFixtures = (season, league) => async (dispatch) => {
   const { data } = await football.get("/fixtures", {

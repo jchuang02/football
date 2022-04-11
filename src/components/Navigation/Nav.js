@@ -17,8 +17,8 @@ import { ProfileCircled } from "iconoir-react";
 import Followed from "./Followed";
 import useAuth from "../../hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { resetFollowed } from "../../actions/favorites";
-import { selectLeague, selectTeam } from "../../actions/index";
+import { resetFollowed } from "../../state/actions/favorites";
+import { selectLeague, selectTeam } from "../../state/actions/index";
 import { getAuth, signOut } from "firebase/auth";
 
 function ElevationScroll(props) {

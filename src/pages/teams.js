@@ -9,9 +9,12 @@ import {
   updateTeamFixtures,
   updateAllLiveFixtures,
   updateLiveTeamFixturesById,
-} from "../actions/fixtures";
-import { updateStandings } from "../actions/standings";
-import { fetchTeamLeagues, updateTeamLeagues } from "../actions/teamLeagues";
+} from "../state/actions/fixtures";
+import { updateStandings } from "../state/actions/standings";
+import {
+  fetchTeamLeagues,
+  updateTeamLeagues,
+} from "../state/actions/teamLeagues";
 
 //Helpers
 import {

@@ -7,8 +7,8 @@ import {
   updateLiveFixturesById,
   fetchTeamFixtures,
   updateTeamFixtures,
-} from "../actions/fixtures";
-import { fetchStandings, updateStandings } from "../actions/standings";
+} from "../state/actions/fixtures";
+import { fetchStandings, updateStandings } from "../state/actions/standings";
 import {
   fixtureInProgress,
   fixtureOnBreak,

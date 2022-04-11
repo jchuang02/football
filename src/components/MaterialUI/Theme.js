@@ -87,7 +87,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           border: "solid 2px #2E3A59",
-          borderRadius: "16px",
+          borderRadius: "8px",
           boxShadow: "none",
           marginTop: "1rem",
         },
