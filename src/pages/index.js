@@ -29,6 +29,7 @@ const renderLoader = () => (
 );
 
 export default function Home() {
+  const state = useSelector((state) => state);
   const leagues = useSelector((state) => state.leagues);
   const desktop = useMediaQuery("(min-width: 1600px");
   const followedLeagues = useSelector((state) => state.followed.leagues);
@@ -65,63 +66,47 @@ export default function Home() {
   const { allShownFixtures } = useGetData();
 
   useSignInWithEmailLink();
-
-  if (!followedLeagues.length > 0 && !followedTeams.length > 0) {
-    return (
-      <Layout>
-        <Container>
-          <Typography variant="h1" align="center" sx={{ marginTop: "16rem" }}>
-            Welcome to dashboard.football
-          </Typography>
-          <Typography variant="h5" align="center">
-            To start, add the teams and competitions you'd like to follow above!
-          </Typography>
-        </Container>
-      </Layout>
-    );
-  } else {
-    return (
-      <>
-        <Suspense fallback={renderLoader()}>
-          <Layout>
-            <>
-              <Live
-                fixtures={fixturesInProgress(
-                  allShownFixtures !== undefined ? allShownFixtures : ""
-                )}
-              />
-              <Box
-                sx={
-                  desktop
-                    ? {
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-evenly",
-                      }
-                    : {}
-                }
-              >
-                <Recent
-                  fixtures={fixturesFinished(
-                    allShownFixtures !== undefined
-                      ? allShownFixtures.sort((fixture) => {
-                          if (
-                            followedTeams.includes(fixture.teams.home.id) ||
-                            followedTeams.includes(fixture.teams.away.id)
-                          ) {
-                            return 1;
-                          } else {
-                            return undefined;
-                          }
-                        })
-                      : ""
+  if (state) {
+    if (!followedLeagues.length > 0 && !followedTeams.length > 0) {
+      return (
+        <Layout>
+          <Container>
+            <Typography variant="h1" align="center" sx={{ marginTop: "16rem" }}>
+              Welcome to dashboard.football
+            </Typography>
+            <Typography variant="h5" align="center">
+              To start, add the teams and competitions you'd like to follow
+              above!
+            </Typography>
+          </Container>
+        </Layout>
+      );
+    } else {
+      return (
+        <>
+          <Suspense fallback={renderLoader()}>
+            <Layout>
+              <>
+                <Live
+                  fixtures={fixturesInProgress(
+                    allShownFixtures !== undefined ? allShownFixtures : ""
                   )}
                 />
-                <Upcoming
-                  fixtures={fixturesUpcoming(
-                    allShownFixtures !== undefined
-                      ? allShownFixtures.length
-                        ? fixturesUpcoming(allShownFixtures).sort((fixture) => {
+                <Box
+                  sx={
+                    desktop
+                      ? {
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-evenly",
+                        }
+                      : {}
+                  }
+                >
+                  <Recent
+                    fixtures={fixturesFinished(
+                      allShownFixtures !== undefined
+                        ? allShownFixtures.sort((fixture) => {
                             if (
                               followedTeams.includes(fixture.teams.home.id) ||
                               followedTeams.includes(fixture.teams.away.id)
@@ -132,27 +117,51 @@ export default function Home() {
                             }
                           })
                         : ""
-                      : ""
-                  )}
-                />
-              </Box>
-              {allLeagues.length ? (
-                <>
-                  <Selector
-                    selected={selected}
-                    setSelected={setSelected}
-                    items={selectorItems}
+                    )}
                   />
-                  <Standings selectedLeague={selected} />
-                </>
-              ) : (
-                ""
-              )}
-            </>
-            )
-          </Layout>
-        </Suspense>
-      </>
-    );
+                  <Upcoming
+                    fixtures={fixturesUpcoming(
+                      allShownFixtures !== undefined
+                        ? allShownFixtures.length
+                          ? fixturesUpcoming(allShownFixtures).sort(
+                              (fixture) => {
+                                if (
+                                  followedTeams.includes(
+                                    fixture.teams.home.id
+                                  ) ||
+                                  followedTeams.includes(fixture.teams.away.id)
+                                ) {
+                                  return 1;
+                                } else {
+                                  return undefined;
+                                }
+                              }
+                            )
+                          : ""
+                        : ""
+                    )}
+                  />
+                </Box>
+                {allLeagues.length ? (
+                  <>
+                    <Selector
+                      selected={selected}
+                      setSelected={setSelected}
+                      items={selectorItems}
+                    />
+                    <Standings selectedLeague={selected} />
+                  </>
+                ) : (
+                  ""
+                )}
+              </>
+              )
+            </Layout>
+          </Suspense>
+        </>
+      );
+    }
+  } else {
+    return <CircularProgress></CircularProgress>;
   }
 }

@@ -49,9 +49,11 @@ export default function useGetData() {
       }
     });
     followedTeams.forEach((team) => {
-      const teamLeagues = Object.values(leagues).filter((league) => {
-        return league.team.includes(team);
-      });
+      const teamLeagues = leagues
+        ? Object.values(leagues).filter((league) => {
+            return league.team.includes(team);
+          })
+        : [];
       let currentSeasons = teamLeagues.map(({ league }) => {
         return league.seasons[0].year;
       });

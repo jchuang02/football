@@ -25,7 +25,7 @@ import LazyLoad from "react-lazyload";
 import { Modal } from "@mui/material";
 import Fixture from "./Fixture";
 
-const ExpandMore = styled((props) => {
+const ShowEvents = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} size="large" />;
 })(({ theme, expand }) => ({
@@ -54,7 +54,7 @@ export default function FixtureCard({ fixture, loading }) {
             >
               Events
             </Typography>
-            <ExpandMore
+            <ShowEvents
               expand={expanded}
               onClick={handleExpandClick}
               aria-expanded={expanded}
@@ -63,7 +63,7 @@ export default function FixtureCard({ fixture, loading }) {
               sx={{ marginLeft: "0" }}
             >
               <ExpandMoreIcon />
-            </ExpandMore>
+            </ShowEvents>
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent sx={{ overflow: "scroll", maxHeight: "200px" }}>

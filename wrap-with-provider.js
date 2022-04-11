@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React from "react";
+import React, { StrictMode } from "react";
 import { Provider } from "react-redux";
 import createStore from "./src/state/createStore";
 import { initializeApp } from "firebase/app";
@@ -27,9 +27,11 @@ export default ({ element }) => {
   const store = createStore();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Provider store={store}>{element}</Provider>
-    </ThemeProvider>
+    <StrictMode>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Provider store={store}>{element}</Provider>
+      </ThemeProvider>
+    </StrictMode>
   );
 };
