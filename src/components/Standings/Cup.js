@@ -63,8 +63,8 @@ export default function Cup({ standings }) {
             key={group[0].group}
           >
             <Typography variant="h5">{group[0].group}</Typography>
-            <TableContainer>
-              <Table sx={{ borderCollapse: "separate" }}>
+            <TableContainer sx={{ maxHeight: "50vh" }}>
+              <Table stickyHeader sx={{ borderCollapse: "separate" }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Rank</TableCell>

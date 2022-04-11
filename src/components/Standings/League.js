@@ -11,11 +11,13 @@ import {
 } from "@mui/material";
 
 export default function League(props) {
+
   return (
-    <TableContainer component={Paper}>
+    <TableContainer sx={{ maxHeight: "50vh" }}>
       <Table
+        stickyHeader
         sx={{ borderCollapse: "separate" }}
-        aria-label="league standings table"
+        aria-label="league standings sticky table"
       >
         <TableHead>
           <TableRow>
@@ -33,7 +35,6 @@ export default function League(props) {
         </TableHead>
         <TableBody>
           {props.standings.map((team) => {
-            console.log(team);
             return (
               <TableRow key={team.team.id}>
                 <TableCell
