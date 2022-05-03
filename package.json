@@ -20,6 +20,7 @@
     "firebase": "^9.6.5",
     "gatsby": "^4.10.3",
     "gatsby-plugin-gatsby-cloud": "^4.7.0",
+    "gatsby-plugin-google-fonts": "^1.0.1",
     "gatsby-plugin-image": "^2.6.0",
     "gatsby-plugin-lodash": "^5.10.0",
     "gatsby-plugin-material-ui": "^4.1.0",

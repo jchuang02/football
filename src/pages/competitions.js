@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import _ from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -19,17 +19,17 @@ import {
 import { fetchStandings, updateStandings } from "../state/actions/standings";
 
 import {
-  fixturesInProgress,
-  fixturesFinished,
-  fixturesUpcoming,
-  fixturesToday,
-} from "../helpers/fixturesHelper";
+  matchesInProgress,
+  matchesFinished,
+  matchesUpcoming,
+  matchesToday,
+} from "../helpers/matchesHelper";
 import {
-  fixtureInProgress,
-  fixtureFinished,
-  fixtureEnding,
-  fixtureOnBreak,
-} from "../helpers/fixtureStatusHelper";
+  matchInProgress,
+  matchFinished,
+  matchEnding,
+  matchOnBreak,
+} from "../helpers/matchStatusHelper";
 import useInterval from "../hooks/useInterval";
 const Standings = lazy(() => import("../components/Standings/Standings"));
 const Live = lazy(() => import("../components/Matches/Live"));
@@ -50,7 +50,7 @@ export default function Competitions() {
   const leagues = useSelector((state) => state.leagues);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const selectedLeague = useSelector((state) => state.selectedLeague);
-  const fixtures = useSelector((state) => state.fixtures);
+  const matches = useSelector((state) => state.fixtures);
   const current = useSelector((state) => {
     if (leagues && selectedLeague) {
       let currentSeason = state.leagues[selectedLeague].league.seasons.find(
@@ -65,14 +65,14 @@ export default function Competitions() {
   });
   const standings = useSelector((state) => state.standings[selectedLeague]);
   const competitionMatches = useMemo(() => {
-    return Object.values(fixtures).filter((match) => {
+    return Object.values(matches).filter((match) => {
       return (
         Number(match.league.id) === selectedLeague &&
         match.fixture.timestamp * 1000 - Date.now() < 30 * 86400000 &&
         match.fixture.timestamp * 1000 - Date.now() > -30 * 86400000
       );
     });
-  }, [fixtures, selectedLeague]);
+  }, [matches, selectedLeague]);
 
   const needsUpdates = useMemo(() => {
     return competitionMatches.filter((match) => {
@@ -99,7 +99,7 @@ export default function Competitions() {
     if (!competitionMatches.length && selectedLeague) {
       dispatch(fetchFixtures(current, selectedLeague));
     } else {
-      const todaysMatches = fixturesToday(competitionMatches).filter(
+      const todaysMatches = matchesToday(competitionMatches).filter(
         (match) => {
           return (
             match.fixture.status.short === "NS" &&
@@ -113,14 +113,14 @@ export default function Competitions() {
     }
   }, []);
 
-  //If live matches are present in fixtures, update them.
+  //If live matches are present in matches, update them.
   useEffect(() => {
     if (competitionMatches.length) {
       if (
         competitionMatches.filter((match) => {
           return (
-            fixtureInProgress(match.fixture.status.short) &&
-            !fixtureOnBreak(match.fixture.status.short) &&
+            matchInProgress(match.fixture.status.short) &&
+            !matchOnBreak(match.fixture.status.short) &&
             Date.now() - match.lastUpdated >= 60000
           );
         }).length > 0 ||
@@ -145,18 +145,18 @@ export default function Competitions() {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(competitionMatches) || [];
-      let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
-        return fixture.timestamp * 1000 - Date.now();
+      const allMatchesToday = matchesToday(competitionMatches) || [];
+      let startUpdateTimes = allMatchesToday.map((match) => {
+        return match.fixture.timestamp * 1000 - Date.now();
       });
       startUpdateTimes = [...new Set(startUpdateTimes)];
       startUpdateTimes = startUpdateTimes.filter((time) => {
         return time > 0;
       });
-      //If a game is starting later, start a timer to start updating live fixtures when the game begins.
+      //If a game is starting later, start a timer to start updating live matches when the game begins.
       if (
         startUpdateTimes.length > 0 &&
-        !fixturesInProgress(allMatchesToday).length > 0
+        !matchesInProgress(allMatchesToday).length > 0
       ) {
         startUpdateTimes.forEach((time) => {
           console.log(
@@ -171,22 +171,22 @@ export default function Competitions() {
     return () => {
       clearTimeout(timer);
     };
-  }, [dispatch, fixtures]);
+  }, [dispatch, matches]);
 
   //For matches happening soon or now
   let delay = 60000;
   useInterval(() => {
     if (
-      fixturesToday(competitionMatches).filter((match) => {
+      matchesToday(competitionMatches).filter((match) => {
         return match.fixture.status.short === "NS";
       }).length &&
       !competitionMatches.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(competitionMatches);
-      let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
-        return fixture.timestamp * 1000 - Date.now();
+      const allMatchesToday = matchesToday(competitionMatches);
+      let startUpdateTimes = allMatchesToday.map((match) => {
+        return match.fixture.timestamp * 1000 - Date.now();
       });
       startUpdateTimes = [...new Set(startUpdateTimes)];
       startUpdateTimes = startUpdateTimes.filter((time) => {
@@ -195,13 +195,13 @@ export default function Competitions() {
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
       });
-      const allMatchesOnBreak = competitionMatches.filter(({ fixture }) => {
-        return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      const allMatchesOnBreak = competitionMatches.filter((match) => {
+        return match.fixture.status.short === "HT" && match.fixture.status.elapsed === 45;
       });
-      const allMatchesEnding = competitionMatches.filter(({ fixture }) => {
-        return fixtureEnding(fixture.status.elapsed, fixture.status.short);
+      const allMatchesEnding = competitionMatches.filter((match) => {
+        return matchEnding(match.fixture.status.elapsed, match.fixture.status.short);
       });
-      const allMatchesInProgress = fixturesInProgress(competitionMatches);
+      const allMatchesInProgress = matchesInProgress(competitionMatches);
       if (
         (allMatchesInProgress.length > 0 || continueUpdates.length > 0) &&
         !allMatchesOnBreak.length !== allMatchesInProgress.length
@@ -228,7 +228,7 @@ export default function Competitions() {
       } else if (
         allMatchesToday.length > 0 &&
         allMatchesToday.filter((match) => {
-          return fixtureFinished(match.fixture.status.short);
+          return matchFinished(match.fixture.status.short);
         }).length === allMatchesToday.length
       ) {
         const allStandings = _.uniq(
@@ -258,20 +258,20 @@ export default function Competitions() {
   }, delay);
 
   let breakDelay = 60000 * 5.1;
-  //When fixtures are all on break
+  //When matches are all on break
   useInterval(() => {
     if (
-      fixturesToday(competitionMatches).filter((match) => {
+      matchesToday(competitionMatches).filter((match) => {
         return match.fixture.status.short === "HT";
       }).length &&
       !competitionMatches.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesOnBreak = competitionMatches.filter(({ fixture }) => {
-        return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      const allMatchesOnBreak = competitionMatches.filter((match) => {
+        return match.fixture.status.short === "HT" && match.fixture.status.elapsed === 45;
       });
-      const allMatchesInProgress = fixturesInProgress(competitionMatches);
+      const allMatchesInProgress = matchesInProgress(competitionMatches);
       if (allMatchesOnBreak.length === allMatchesInProgress.length) {
         dispatch(updateAllLiveFixtures());
       }
@@ -290,7 +290,7 @@ export default function Competitions() {
             }}
           >
             <Live
-              fixtures={fixturesInProgress(
+              matches={matchesInProgress(
                 competitionMatches ? competitionMatches : ""
               )}
             />
@@ -300,24 +300,24 @@ export default function Competitions() {
             sx={
               desktop
                 ? {
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                  }
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                }
                 : {
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-evenly",
-                  }
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-evenly",
+                }
             }
           >
             <Recent
-              fixtures={fixturesFinished(
+              matches={matchesFinished(
                 competitionMatches ? competitionMatches : ""
               )}
             />
             <Upcoming
-              fixtures={fixturesUpcoming(
+              matches={matchesUpcoming(
                 competitionMatches ? competitionMatches : ""
               )}
             />

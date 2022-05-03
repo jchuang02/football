@@ -5,7 +5,7 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 export default function Matches({
-  fixtures,
+  matches,
   groupedBy = 2,
   children,
   axis = "x",
@@ -17,7 +17,7 @@ export default function Matches({
   const phone = useMediaQuery("(min-width: 700px");
 
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = Math.ceil(fixtures.length / groupedBy);
+  const maxSteps = Math.ceil(matches.length / groupedBy);
 
   useEffect(() => {
     if (activeStep > maxSteps) {
@@ -45,7 +45,7 @@ export default function Matches({
     }
   };
 
-  const showFixtures = () => {
+  const showMatches = () => {
     return (
       <Box
         sx={{
@@ -102,5 +102,5 @@ export default function Matches({
       </Box>
     );
   };
-  return showFixtures();
+  return showMatches();
 }

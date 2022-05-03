@@ -10,17 +10,17 @@ import {
 } from "../state/actions/fixtures";
 import { fetchStandings, updateStandings } from "../state/actions/standings";
 import {
-  fixtureInProgress,
-  fixtureOnBreak,
-  fixtureEnding,
-  fixtureFinished,
-} from "../helpers/fixtureStatusHelper";
+  matchInProgress,
+  matchOnBreak,
+  matchEnding,
+  matchFinished,
+} from "../helpers/matchStatusHelper";
 import {
-  fixturesUpcoming,
-  fixturesFinished,
-  fixturesInProgress,
-  fixturesToday,
-} from "../helpers/fixturesHelper";
+  matchesUpcoming,
+  matchesFinished,
+  matchesInProgress,
+  matchesToday,
+} from "../helpers/matchesHelper";
 import _ from "lodash";
 import useInterval from "./useInterval";
 
@@ -29,7 +29,7 @@ export default function useGetData() {
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const followedTeams = useSelector((state) => state.followed.teams);
   const leagues = useSelector((state) => state.leagues);
-  const fixtures = useSelector((state) => state.fixtures);
+  const matches = useSelector((state) => state.fixtures);
   const standings = useSelector((state) => state.standings);
 
   //get standings info
@@ -75,7 +75,7 @@ export default function useGetData() {
   //get match info.
   useEffect(() => {
     followedTeams.forEach((team) => {
-      const teamSpecificMatches = Object.values(fixtures).filter((match) => {
+      const teamSpecificMatches = Object.values(matches).filter((match) => {
         return (
           match.teams &&
           ((Number(match.teams.home.id) === team &&
@@ -102,7 +102,7 @@ export default function useGetData() {
           const needsUpdate = teamSpecificMatches.filter((match) => {
             return Date.now() - match.lastUpdated >= 86400000;
           });
-          const todaysMatches = fixturesToday(teamSpecificMatches).filter(
+          const todaysMatches = matchesToday(teamSpecificMatches).filter(
             (match) => {
               return (
                 match.fixture.status.short === "NS" &&
@@ -119,7 +119,7 @@ export default function useGetData() {
 
     followedLeagues.forEach((league) => {
       if (leagues[league]) {
-        const leagueSpecificMatches = Object.values(fixtures).filter(
+        const leagueSpecificMatches = Object.values(matches).filter(
           (match) => {
             return (
               Number(match.league.id) === league &&
@@ -137,7 +137,7 @@ export default function useGetData() {
           }).year || now.getFullYear();
         if (leagueSpecificMatches.length === 0) {
           dispatch(fetchFixtures(currentSeason, league));
-          //If it's been more than 24 hours since fixtures have been updated.
+          //If it's been more than 24 hours since matches have been updated.
         } else {
           const needsUpdate = leagueSpecificMatches.filter((match) => {
             return (
@@ -145,7 +145,7 @@ export default function useGetData() {
               Date.now() - match.lastUpdated >= 86400000
             );
           });
-          const todaysMatches = fixturesToday(leagueSpecificMatches).filter(
+          const todaysMatches = matchesToday(leagueSpecificMatches).filter(
             (match) => {
               return (
                 match.fixture.status.short === "NS" &&
@@ -163,20 +163,20 @@ export default function useGetData() {
 
   //If live matches are present in data when application first loads, update them.
   useEffect(() => {
-    const allFixtures = Object.values(fixtures);
+    const allMatches = Object.values(matches);
     const allLeagues = Object.values(leagues);
-    if (allFixtures.length && fixturesInProgress(allFixtures).length) {
+    if (allMatches.length && matchesInProgress(allMatches).length) {
       followedTeams.forEach((team) => {
         if (
           allLeagues.filter((league) => {
             return league.team === team;
           }).length > 0 &&
-          allFixtures.length > 0
+          allMatches.length > 0
         ) {
-          const teamMatches = allFixtures.filter((match) => {
+          const teamMatches = allMatches.filter((match) => {
             return match.teams.home.id === team || match.teams.away.id === team;
           });
-          const liveMatches = fixturesInProgress(teamMatches);
+          const liveMatches = matchesInProgress(teamMatches);
           const teamLeagues = allLeagues.filter((league) => {
             return league.team === team;
           });
@@ -191,7 +191,7 @@ export default function useGetData() {
             //The match is not on break and hasn't been updated for more than a minute
             liveMatches.filter((match) => {
               return (
-                !fixtureOnBreak(match.fixture.status.short) &&
+                !matchOnBreak(match.fixture.status.short) &&
                 Date.now() - match.lastUpdated >= 60000
               );
             }).length > 0 ||
@@ -210,17 +210,17 @@ export default function useGetData() {
       });
 
       followedLeagues.forEach((league) => {
-        //Check if fixtures for the specific league exist
+        //Check if matches for the specific league exist
         if (
           leagues[league] &&
-          allFixtures.filter((match) => {
+          allMatches.filter((match) => {
             return Number(match.league.id) === league;
           }).length > 0
         ) {
-          const competitionMatches = allFixtures.filter((match) => {
+          const competitionMatches = allMatches.filter((match) => {
             return Number(match.league.id) === league;
           });
-          const liveMatches = fixturesInProgress(competitionMatches);
+          const liveMatches = matchesInProgress(competitionMatches);
           const now = new Date();
           const currentSeason =
             leagues[league].league.seasons.find((season) => {
@@ -229,8 +229,8 @@ export default function useGetData() {
           if (
             (liveMatches.filter((match) => {
               return (
-                fixtureInProgress(match.fixture.status.short) &&
-                !fixtureOnBreak(match.fixture.status.short)
+                matchInProgress(match.fixture.status.short) &&
+                !matchOnBreak(match.fixture.status.short)
               );
             }).length > 0 &&
               liveMatches.filter((match) => {
@@ -253,25 +253,25 @@ export default function useGetData() {
 
   // For matches starting later today
   useEffect(() => {
-    const allFixtures = Object.values(fixtures);
+    const allMatches = Object.values(matches);
     let timer;
     if (
-      !allFixtures.filter((match) => {
+      !allMatches.filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(allFixtures) || [];
-      let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
-        return fixture.timestamp * 1000 - Date.now();
+      const allMatchesToday = matchesToday(allMatches) || [];
+      let startUpdateTimes = allMatchesToday.map((match) => {
+        return match.fixture.timestamp * 1000 - Date.now();
       });
       startUpdateTimes = [...new Set(startUpdateTimes)];
       startUpdateTimes = startUpdateTimes.filter((time) => {
         return time > 0;
       });
-      //If a game is starting later, start a timer to start updating live fixtures when the game begins.
+      //If a game is starting later, start a timer to start updating live matches when the game begins.
       if (
         startUpdateTimes.length > 0 &&
-        !fixturesInProgress(allMatchesToday).length > 0
+        !matchesInProgress(allMatchesToday).length > 0
       ) {
         startUpdateTimes.forEach((time) => {
           timer = setTimeout(() => {
@@ -283,16 +283,16 @@ export default function useGetData() {
     return () => {
       clearTimeout(timer);
     };
-  }, [dispatch, fixtures]);
+  }, [dispatch, matches]);
 
   //For matches happening soon or now
   let delay = 60000;
   useInterval(() => {
-    const allFixtures = Object.values(fixtures);
-    if (allFixtures.length && fixturesToday(allFixtures).length) {
-      const allMatchesToday = fixturesToday(allFixtures);
-      let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
-        return fixture.timestamp * 1000 - Date.now();
+    const allMatches = Object.values(matches);
+    if (allMatches.length && matchesToday(allMatches).length) {
+      const allMatchesToday = matchesToday(allMatches);
+      let startUpdateTimes = allMatchesToday.map((match) => {
+        return match.fixture.timestamp * 1000 - Date.now();
       });
       startUpdateTimes = [...new Set(startUpdateTimes)];
       startUpdateTimes = startUpdateTimes.filter((time) => {
@@ -301,13 +301,13 @@ export default function useGetData() {
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
       });
-      const allMatchesOnBreak = allFixtures.filter(({ fixture }) => {
-        return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      const allMatchesOnBreak = allMatches.filter((match) => {
+        return match.fixture.status.short === "HT" && match.fixture.status.elapsed === 45;
       });
-      const allMatchesEnding = allFixtures.filter(({ fixture }) => {
-        return fixtureEnding(fixture.status.elapsed, fixture.status.short);
+      const allMatchesEnding = allMatches.filter((match) => {
+        return matchEnding(match.fixture.status.elapsed, match.fixture.status.short);
       });
-      const allMatchesInProgress = fixturesInProgress(allFixtures);
+      const allMatchesInProgress = matchesInProgress(allMatches);
       if (
         (allMatchesInProgress.length > 0 || continueUpdates.length > 0) &&
         allMatchesOnBreak.length !== allMatchesInProgress.length
@@ -334,7 +334,7 @@ export default function useGetData() {
       } else if (
         allMatchesToday.length > 0 &&
         allMatchesToday.filter((match) => {
-          return fixtureFinished(match.fixture.status.short);
+          return matchFinished(match.fixture.status.short);
         }).length === allMatchesToday.length
       ) {
         const allStandings = _.uniq(
@@ -364,49 +364,49 @@ export default function useGetData() {
   }, delay);
 
   let breakDelay = 60000 * 5.1;
-  //When fixtures are all on break
+  //When matches are all on break
   useInterval(() => {
-    const allFixtures = Object.values(fixtures);
+    const allMatches = Object.values(matches);
     if (
-      allFixtures.length &&
-      fixturesToday(allFixtures).filter((match) => {
+      allMatches.length &&
+      matchesToday(allMatches).filter((match) => {
         return match.fixture.status.short === "HT";
       }).length
     ) {
-      const allMatchesOnBreak = allFixtures.filter(({ fixture }) => {
-        return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      const allMatchesOnBreak = allMatches.filter((match) => {
+        return match.fixture.status.short === "HT" && match.fixture.status.elapsed === 45;
       });
-      const allMatchesInProgress = fixturesInProgress(allFixtures);
+      const allMatchesInProgress = matchesInProgress(allMatches);
       if (allMatchesOnBreak.length === allMatchesInProgress.length) {
         dispatch(updateAllLiveFixtures());
       }
     }
   }, breakDelay);
 
-  //Build a shortened fixtures array.
-  const allShownFixtures = useMemo(() => {
-    const allFixtures = Object.values(fixtures);
-    if (allFixtures.length) {
-      let firstTenFixtures = [];
-      fixturesUpcoming(allFixtures)
+  //Build a shortened matches array.
+  const allShownMatches = useMemo(() => {
+    const allMatches = Object.values(matches);
+    if (allMatches.length) {
+      let firstTenMatches = [];
+      matchesUpcoming(allMatches)
         .splice(0, 10)
-        .forEach((fixture) => {
-          firstTenFixtures.push(fixture);
+        .forEach((match) => {
+          firstTenMatches.push(match);
         });
-      fixturesInProgress(allFixtures)
+      matchesInProgress(allMatches)
         .splice(0, 10)
-        .forEach((fixture) => {
-          firstTenFixtures.push(fixture);
+        .forEach((match) => {
+          firstTenMatches.push(match);
         });
-      fixturesFinished(allFixtures)
+      matchesFinished(allMatches)
         .splice(0, 10)
-        .forEach((fixture) => {
-          firstTenFixtures.push(fixture);
+        .forEach((match) => {
+          firstTenMatches.push(match);
         });
 
-      return firstTenFixtures;
+      return firstTenMatches;
     }
-  }, [fixtures]);
+  }, [matches]);
 
-  return { allShownFixtures };
+  return { allShownMatches };
 }

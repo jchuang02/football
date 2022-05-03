@@ -7,74 +7,74 @@ export default (state = {}, action) => {
         [action.payload.team]: action.payload,
       };
     case "UPDATE_TEAM_FIXTURES":
-      const currentFixturesWithEvents = state[
+      const currentMatchesWithEvents = state[
         action.payload.team
-      ].fixtureInfo.filter((fixture) => {
-        return fixture.events;
+      ].matchInfo.filter((match) => {
+        return match.events;
       });
-      if (currentFixturesWithEvents.length === 0) {
+      if (currentMatchesWithEvents.length === 0) {
         return {
           ...state,
           [action.payload.team]: action.payload,
         };
       } else {
-        const newFixturesArray = action.payload.fixtureInfo.map((fixture) => {
-          for (let i = 0; i < currentFixturesWithEvents.length; i++) {
+        const newMatchesArray = action.payload.matchInfo.map((match) => {
+          for (let i = 0; i < currentMatchesWithEvents.length; i++) {
             if (
-              fixture.fixture.id === currentFixturesWithEvents[i].fixture.id
+              match.fixture.id === currentMatchesWithEvents[i].match.id
             ) {
-              let fixtureWithEvents = fixture;
-              fixtureWithEvents.events = currentFixturesWithEvents[i].events;
-              return fixtureWithEvents;
+              let matchWithEvents = match;
+              matchWithEvents.events = currentMatchesWithEvents[i].events;
+              return matchWithEvents;
             }
           }
-          return fixture;
+          return match;
         });
         return {
           ...state,
           [action.payload.team]: {
-            fixtureInfo: newFixturesArray,
+            matchInfo: newMatchesArray,
             lastUpdated: action.payload.lastUpdated,
           },
         };
       }
     case "UPDATE_LIVE_TEAM_FIXTURES":
-      if (action.payload.fixtureInfo.length === 0) {
+      if (action.payload.matchInfo.length === 0) {
         return { ...state };
       } else {
-        const updatedFixturesArray = state[action.payload.team].fixtureInfo.map(
-          (fixture) => {
-            for (let i = 0; i < action.payload.fixtureInfo.length; i++) {
+        const updatedMatchesArray = state[action.payload.team].matchInfo.map(
+          (match) => {
+            for (let i = 0; i < action.payload.matchInfo.length; i++) {
               if (
-                fixture.fixture.id === action.payload.fixtureInfo[i].fixture.id
+                match.fixture.id === action.payload.matchInfo[i].match.id
               ) {
-                return action.payload.fixtureInfo[i];
+                return action.payload.matchInfo[i];
               }
             }
-            return fixture;
+            return match;
           }
         );
         return {
           ...state,
           [action.payload.team]: {
-            fixtureInfo: updatedFixturesArray,
+            matchInfo: updatedMatchesArray,
             lastUpdated: action.payload.lastUpdated,
           },
         };
       }
     case "UPDATE_LIVE_TEAM_FIXTURES_BY_ID":
-      const updatedFixturesArrayById = state[
+      const updatedMatchesArrayById = state[
         action.payload.team
-      ].fixtureInfo.map((fixture) => {
-        if (fixture.fixture.id === action.payload.fixtureInfo[0].fixture.id) {
-          return action.payload.fixtureInfo[0];
+      ].matchInfo.map((match) => {
+        if (match.fixture.id === action.payload.matchInfo[0].fixture.id) {
+          return action.payload.matchInfo[0];
         }
-        return fixture;
+        return match;
       });
       return {
         ...state,
         [action.payload.team]: {
-          fixtureInfo: updatedFixturesArrayById,
+          matchInfo: updatedMatchesArrayById,
           lastUpdated: action.payload.lastUpdated,
         },
       };

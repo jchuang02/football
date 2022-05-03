@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 export default (state = {}, action) => {
   switch (action.type) {
-    //Competition Fixtures
+    //Competition matches
     case "FETCH_FIXTURES":
       return {
         ...state,
@@ -27,7 +27,7 @@ export default (state = {}, action) => {
         ...state,
         ...action.payload,
       };
-    //Team Fixtures
+    //Team matches
     case "FETCH_TEAM_FIXTURES":
       return {
         ...state,
@@ -63,6 +63,12 @@ export default (state = {}, action) => {
           ...state[action.payload.id],
           loading: action.payload.loading,
         },
+      };
+
+    case "FETCH_FIXTURE":
+      return {
+        ...state,
+        ...action.payload
       };
     default:
       return state;

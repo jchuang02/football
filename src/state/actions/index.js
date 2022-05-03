@@ -49,14 +49,6 @@ export const fetchTeamPlayers = (team, season, league) => async (dispatch) => {
   dispatch({ type: "FETCH_TEAM_PLAYERS", payload: allPlayers });
 };
 
-export const fetchFixture = (id) => async (dispatch) => {
-  const { data } = await football.get("/fixtures", {
-    params: { id },
-  });
-
-  dispatch({ type: "FETCH_FIXTURE", payload: data.response });
-};
-
 export const selectLeague = (league) => {
   return { type: "SET_SELECTED_LEAGUE", payload: league };
 };

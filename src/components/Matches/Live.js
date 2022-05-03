@@ -6,52 +6,52 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import FixtureCard from "../FixtureCard";
-import { separateFixtures } from "../../helpers/fixturesHelper";
+import MatchCard from "../Match/MatchCard";
+import { separateMatches } from "../../helpers/matchesHelper";
 import Matches from "./Matches";
 
-export default function Live({ fixtures }) {
+export default function Live({ matches }) {
   const desktop = useMediaQuery("(min-width: 1600px");
   const laptop = useMediaQuery("(min-width: 1400px");
   const tablet = useMediaQuery("(min-width: 1050px");
   const phone = useMediaQuery("(min-width: 700px");
 
-  if (fixtures) {
-    const fixtureCards = separateFixtures(
-      fixtures,
+  if (matches) {
+    const matchCards = separateMatches(
+      matches,
       desktop ? 4 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1
     );
     return (
       <Box
         sx={
-          !fixtures.length > 0
+          !matches.length > 0
             ? { display: "none" }
             : {
-                display: "flex",
-                textAlign: "center",
-                overflowX: "auto",
-                flexFlow: "column nowrap",
-                justifyContent: "space-evenly",
-              }
+              display: "flex",
+              textAlign: "center",
+              overflowX: "auto",
+              flexFlow: "column nowrap",
+              justifyContent: "space-evenly",
+            }
         }
       >
         <Typography variant="h5" align="center">
           Live
         </Typography>
-        {fixtures.length > 0 ? (
+        {matches.length > 0 ? (
           <Matches
-            fixtures={fixtures}
+            matches={matches}
             groupedBy={desktop ? 4 : laptop ? 4 : tablet ? 3 : phone ? 2 : 1}
           >
-            {fixtureCards.map((section, index) => {
+            {matchCards.map((section, index) => {
               return (
                 <Box
                   key={index}
                   sx={{ display: "flex", justifyContent: "center" }}
                 >
-                  {section.map((fixture) => {
+                  {section.map((match) => {
                     return (
-                      <FixtureCard fixture={fixture} key={fixture.fixture.id} />
+                      <MatchCard match={match} key={match.fixture.id} />
                     );
                   })}
                 </Box>

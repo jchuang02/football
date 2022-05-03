@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import FixtureCard from "../FixtureCard";
+import MatchCard from "../MatchCard";
 import { Container, Grid } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
@@ -16,10 +16,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Bracket() {
-  const fixtures = useSelector((state) => state.fixtures);
+  const matches = useSelector((state) => state.matches);
   const dispatch = useDispatch();
-  const fillerFixture = {
-    fixture: {
+  const fillerMatch = {
+    match: {
       id: null,
       referee: null,
       timezone: null,
@@ -73,28 +73,28 @@ export default function Bracket() {
     <Container>
       <Grid container>
         <Grid container item xs={12} spacing={3}>
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <FixtureCard fixture={fillerFixture} />
+          <MatchCard match={fillerMatch} />
 
-          <FixtureCard fixture={fillerFixture} />
+          <MatchCard match={fillerMatch} />
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <FixtureCard fixture={fillerFixture} />
+          <MatchCard match={fillerMatch} />
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
-          <FixtureCard fixture={fillerFixture} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
+          <MatchCard match={fillerMatch} />
         </Grid>
       </Grid>
     </Container>

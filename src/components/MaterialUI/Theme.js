@@ -16,6 +16,7 @@ const theme = createTheme({
   },
   typography: {
     fontSize: 12,
+    fontFamily: `'Mulish', sans-serif`,
     color: colors["color-primary-700"],
   },
   components: {
@@ -37,6 +38,7 @@ const theme = createTheme({
       styleOverrides: `
           body  {
             margin-top: 120px;
+            font-family: 'Mulish', sans-serif;
           },
           html  {
             -webkit-font-smoothing: auto;

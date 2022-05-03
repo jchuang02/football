@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  updateAllLiveFixtures,
-  updateLiveFixturesById,
-} from "../actions/fixtures";
+  updateAllLiveMatches,
+  updateLiveMatchesById,
+} from "../actions/matches";
 import { updateStandings } from "../actions/standings";
-import { fixtureEnding, fixtureFinished } from "../helpers/fixtureStatusHelper";
-import { fixturesInProgress, fixturesToday } from "../helpers/fixturesHelper";
+import { matchEnding, matchFinished } from "../helpers/matchStatusHelper";
+import { matchesInProgress, matchesToday } from "../helpers/matchesHelper";
 
 import _ from "lodash";
 import useInterval from "../hooks/useInterval";
 export default function useLiveUpdates() {
   const dispatch = useDispatch();
   const leagues = useSelector((state) => state.leagues);
-  const fixtures = useSelector((state) => state.fixtures);
+  const matches = useSelector((state) => state.fixtures);
   const followedLeagues = useSelector((state) => state.followed.leagues);
   const standings = useSelector((state) => state.standings);
 
@@ -21,29 +21,29 @@ export default function useLiveUpdates() {
   useEffect(() => {
     let timer;
     if (
-      !Object.values(fixtures).filter((match) => {
+      !Object.values(matches).filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures));
-      let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
-        return fixture.timestamp * 1000 - Date.now();
+      const allMatchesToday = matchesToday(Object.values(matches));
+      let startUpdateTimes = allMatchesToday.map((match) => {
+        return match.fixture.timestamp * 1000 - Date.now();
       });
       startUpdateTimes = [...new Set(startUpdateTimes)];
       startUpdateTimes = startUpdateTimes.filter((time) => {
         return time > 0;
       });
-      //If a game is starting later, start a timer to start updating live fixtures when the game begins.
+      //If a game is starting later, start a timer to start updating live matches when the game begins.
       if (
         startUpdateTimes.length > 0 &&
-        !fixturesInProgress(allMatchesToday).length > 0
+        !matchesInProgress(allMatchesToday).length > 0
       ) {
         startUpdateTimes.forEach((time) => {
           console.log(
             "Setting timer for match starting later today at " + time
           );
           timer = setTimeout(() => {
-            dispatch(updateAllLiveFixtures());
+            dispatch(updateAllLiveMatches());
           }, time);
         });
       }
@@ -57,13 +57,13 @@ export default function useLiveUpdates() {
   let delay = 60000;
   useInterval(() => {
     if (
-      !Object.values(fixtures).filter((match) => {
+      !Object.values(matches).filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesToday = fixturesToday(Object.values(fixtures));
-      let startUpdateTimes = allMatchesToday.map(({ fixture }) => {
-        return fixture.timestamp * 1000 - Date.now();
+      const allMatchesToday = matchesToday(Object.values(matches));
+      let startUpdateTimes = allMatchesToday.map((match) => {
+        return match.fixture.timestamp * 1000 - Date.now();
       });
       startUpdateTimes = [...new Set(startUpdateTimes)];
       startUpdateTimes = startUpdateTimes.filter((time) => {
@@ -72,15 +72,15 @@ export default function useLiveUpdates() {
       const continueUpdates = startUpdateTimes.filter((time) => {
         return time <= 0 && time >= -(60000 * 5);
       });
-      const allMatchesOnBreak = Object.values(fixtures).filter(
-        ({ fixture }) => {
-          return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      const allMatchesOnBreak = Object.values(matches).filter(
+        ({ match }) => {
+          return match.status.short === "HT" && match.status.elapsed === 45;
         }
       );
-      const allMatchesEnding = Object.values(fixtures).filter(({ fixture }) => {
-        return fixtureEnding(fixture.status.elapsed, fixture.status.short);
+      const allMatchesEnding = Object.values(matches).filter(({ match }) => {
+        return matchEnding(match.status.elapsed, match.status.short);
       });
-      const allMatchesInProgress = fixturesInProgress(Object.values(fixtures));
+      const allMatchesInProgress = matchesInProgress(Object.values(matches));
       if (
         (allMatchesInProgress.length > 0 || continueUpdates.length > 0) &&
         !allMatchesOnBreak.length !== allMatchesInProgress.length
@@ -90,24 +90,24 @@ export default function useLiveUpdates() {
           allMatchesEnding.length < allMatchesInProgress.length
         ) {
           allMatchesEnding.forEach((match) => {
-            dispatch(updateLiveFixturesById(match.fixture.id, match.league.id));
+            dispatch(updateLiveMatchesById(match.fixture.id, match.league.id));
           });
-          dispatch(updateAllLiveFixtures());
+          dispatch(updateAllLiveMatches());
           //If all matches are ending
         } else if (
           allMatchesEnding.length > 0 &&
           allMatchesEnding.length === allMatchesInProgress.length
         ) {
           allMatchesEnding.forEach((match) => {
-            dispatch(updateLiveFixturesById(match.fixture.id, match.league.id));
+            dispatch(updateLiveMatchesById(match.fixture.id, match.league.id));
           });
         } else {
-          dispatch(updateAllLiveFixtures());
+          dispatch(updateAllLiveMatches());
         }
       } else if (
         allMatchesToday.length > 0 &&
         allMatchesToday.filter((match) => {
-          return fixtureFinished(match.fixture.status.short);
+          return matchFinished(match.fixture.status.short);
         }).length === allMatchesToday.length
       ) {
         const allStandings = _.uniq(
@@ -138,22 +138,22 @@ export default function useLiveUpdates() {
   }, delay);
 
   let breakDelay = 60000 * 5.1;
-  //When fixtures are all on break
+  //When matches are all on break
   useInterval(() => {
     if (
-      !Object.values(fixtures).filter((match) => {
+      !Object.values(matches).filter((match) => {
         return match.loading;
       }).length > 0
     ) {
-      const allMatchesOnBreak = Object.values(fixtures).filter(
-        ({ fixture }) => {
-          return fixture.status.short === "HT" && fixture.status.elapsed === 45;
+      const allMatchesOnBreak = Object.values(matches).filter(
+        ({ match }) => {
+          return match.status.short === "HT" && match.status.elapsed === 45;
         }
       );
-      const allMatchesInProgress = fixturesInProgress(Object.values(fixtures));
+      const allMatchesInProgress = matchesInProgress(Object.values(matches));
       if (allMatchesOnBreak.length === allMatchesInProgress.length) {
         console.log("Match at halftime break. Staggering updates");
-        dispatch(updateAllLiveFixtures());
+        dispatch(updateAllLiveMatches());
       }
     }
   }, breakDelay);

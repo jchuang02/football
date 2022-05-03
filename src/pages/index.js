@@ -9,10 +9,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
-  fixturesFinished,
-  fixturesInProgress,
-  fixturesUpcoming,
-} from "../helpers/fixturesHelper";
+  matchesFinished,
+  matchesInProgress,
+  matchesUpcoming,
+} from "../helpers/matchesHelper";
 import useSignInWithEmailLink from "../hooks/useSignInWithEmailLink";
 import useGetData from "../hooks/useGetData";
 
@@ -62,7 +62,7 @@ export default function Home() {
     }
   }, [selectorItems]);
 
-  const { allShownFixtures } = useGetData();
+  const { allShownMatches } = useGetData();
 
   useSignInWithEmailLink();
 
@@ -86,8 +86,8 @@ export default function Home() {
           <Layout>
             <>
               <Live
-                fixtures={fixturesInProgress(
-                  allShownFixtures !== undefined ? allShownFixtures : ""
+                matches={matchesInProgress(
+                  allShownMatches !== undefined ? allShownMatches : ""
                 )}
               />
               <Box
@@ -102,12 +102,12 @@ export default function Home() {
                 }
               >
                 <Recent
-                  fixtures={fixturesFinished(
-                    allShownFixtures !== undefined
-                      ? allShownFixtures.sort((fixture) => {
+                  matches={matchesFinished(
+                    allShownMatches !== undefined
+                      ? allShownMatches.sort((match) => {
                           if (
-                            followedTeams.includes(fixture.teams.home.id) ||
-                            followedTeams.includes(fixture.teams.away.id)
+                            followedTeams.includes(match.teams.home.id) ||
+                            followedTeams.includes(match.teams.away.id)
                           ) {
                             return 1;
                           } else {
@@ -118,13 +118,13 @@ export default function Home() {
                   )}
                 />
                 <Upcoming
-                  fixtures={fixturesUpcoming(
-                    allShownFixtures !== undefined
-                      ? allShownFixtures.length
-                        ? fixturesUpcoming(allShownFixtures).sort((fixture) => {
+                  matches={matchesUpcoming(
+                    allShownMatches !== undefined
+                      ? allShownMatches.length
+                        ? matchesUpcoming(allShownMatches).sort((match) => {
                             if (
-                              followedTeams.includes(fixture.teams.home.id) ||
-                              followedTeams.includes(fixture.teams.away.id)
+                              followedTeams.includes(match.teams.home.id) ||
+                              followedTeams.includes(match.teams.away.id)
                             ) {
                               return 1;
                             } else {

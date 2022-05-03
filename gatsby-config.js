@@ -39,5 +39,14 @@ module.exports = {
         allExtensions: true, // defaults to false
       },
     },
+    {
+      resolve: `gatsby-plugin-google-fonts`,
+      options: {
+        fonts: [
+          `Mulish`,
+        ],
+        display: 'swap'
+      }
+    }
   ],
 };
