@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { styled, Box, Divider, Fab, Container, Typography } from "@mui/material";
+import { Box, Divider, Fab, Container, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMatch } from "../../state/actions/fixtures";
 import Lineup from "./Lineup";
 import LiveIndicator from "../LiveIndicator";
 import { matchInProgress } from "../../helpers/matchStatusHelper";
-import LazyLoad from "react-lazyload";
 import CloseIcon from '@mui/icons-material/Close';
+import EventsTimeline from "./EventsTimeline";
+import TeamCrest from "./TeamCrest";
 
 export default function Match({ id, onClick }) {
 
@@ -20,16 +21,6 @@ export default function Match({ id, onClick }) {
       dispatch(fetchMatch(id))
     }
   }, [])
-
-  const TeamCrest = styled(Box)`
-  max-width: 64px;
-  max-height: 64px;
-  img {
-    max-width: 64px;
-    max-height: 64px;
-  }
-  margin: 0.5rem;
-`;
 
   const matchStyle = {
     marginTop: 8,
@@ -103,14 +94,7 @@ export default function Match({ id, onClick }) {
         <Box sx={{ display: "flex", flexFlow: "column nowrap", flexBasis: "35%" }}>
           <Typography variant="h2" align="center">{match.goals.home}</Typography>
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <TeamCrest>
-              <LazyLoad height={80}>
-                <img
-                  src={match.teams.home.logo}
-                  alt={`${match.teams.home.name} Logo`}
-                ></img>
-              </LazyLoad>
-            </TeamCrest>
+            <TeamCrest size="64px" name={match.teams.home.name} image={match.teams.home.logo} />
             <Typography variant="h4" align="center">{match.teams.home.name}</Typography>
           </Box>
         </Box>
@@ -129,19 +113,13 @@ export default function Match({ id, onClick }) {
           <Typography variant="h2" align="center">{match.goals.away}</Typography>
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Typography variant="h4" align="center">{match.teams.away.name}</Typography>
-            <TeamCrest>
-              <LazyLoad height={80}>
-                <img
-                  src={match.teams.away.logo}
-                  alt={`${match.teams.away.name} Logo`}
-                ></img>
-              </LazyLoad>
-            </TeamCrest>
+            <TeamCrest size="64px" name={match.teams.away.name} image={match.teams.away.logo} />
           </Box>
         </Box>
       </Box>
       <Divider />
-      <Fab color="primary" aria-label="add" onClick={onClick} sx={{ position: "absolute", top: "90vh", left: "50%" }}>
+      <EventsTimeline events={match.events} />
+      <Fab color="primary" aria-label="add" onClick={onClick} sx={{ position: "fixed", top: "90vh", left: "50%" }}>
         <CloseIcon />
       </Fab>
     </Box>

@@ -15,10 +15,10 @@ import {
   matchFinished,
   matchInProgress,
 } from "../../helpers/matchStatusHelper";
-import LazyLoad from "react-lazyload";
 import Match from "./Match";
 import LiveIndicator from "../LiveIndicator";
 import Events from "./Events";
+import TeamCrest from "./TeamCrest";
 
 export default function MatchCard({ match, loading }) {
   const [showMatch, setShowMatch] = useState(false);
@@ -40,16 +40,6 @@ export default function MatchCard({ match, loading }) {
     height: 100%;
   `;
 
-  const TeamCrest = styled(Box)`
-    max-width: 48px;
-    max-height: 48px;
-    img {
-      max-width: 48px;
-      max-height: 48px;
-    }
-    padding: 0.1rem;
-  `;
-
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Grow ref={ref} {...props} />;
   });
@@ -69,7 +59,7 @@ export default function MatchCard({ match, loading }) {
       {!loading ? (
         <CardContent>
           {showMatch ? (
-            <Dialog fullScreen onClose={handleClose} open={showMatch} TransitionComponent={Transition} >
+            <Dialog fullScreen onClose={handleClose} open={showMatch}>
               <Match id={match.fixture.id} onClick={handleOnClick} sx={{ backgroundColor: "transparent" }} />
             </Dialog>
           ) : (
@@ -104,14 +94,7 @@ export default function MatchCard({ match, loading }) {
                 ) : (
                   ""
                 )}
-                <TeamCrest>
-                  <LazyLoad height={80}>
-                    <img
-                      src={match.teams.home.logo}
-                      alt={`${match.teams.home.name} Logo`}
-                    ></img>
-                  </LazyLoad>
-                </TeamCrest>
+                <TeamCrest size="48px" name={match.teams.home.name} image={match.teams.home.logo} />
                 <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
                   {match.teams.home.name}
                 </Typography>
@@ -139,14 +122,7 @@ export default function MatchCard({ match, loading }) {
                 ) : (
                   ""
                 )}
-                <TeamCrest>
-                  <LazyLoad height={80}>
-                    <img
-                      src={match.teams.away.logo}
-                      alt={`${match.teams.away.name} Logo`}
-                    ></img>
-                  </LazyLoad>
-                </TeamCrest>
+                <TeamCrest size="48px" name={match.teams.away.name} image={match.teams.away.logo} />
                 <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
                   {match.teams.away.name}
                 </Typography>

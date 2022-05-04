@@ -1,11 +1,11 @@
 import React from "react"
-import { Box, Container } from "@mui/material"
+import { Box } from "@mui/material"
 import PlayerPin from "./PlayerPin";
 
 export default function Lineup({ lineup, direction }) {
     const players = lineup.startXI;
 
-    const createSpaces = () => {
+    const createPlayerSpaces = () => {
         let all = [];
         let column = [];
         let temp;
@@ -17,7 +17,7 @@ export default function Lineup({ lineup, direction }) {
                 column = [];
             }
             temp = grid[0];
-            column.push(<PlayerPin player={player} />);
+            column.push(<PlayerPin player={player} key={player.id} />);
         })
 
         if (column.length) {
@@ -26,7 +26,7 @@ export default function Lineup({ lineup, direction }) {
         return all;
     }
 
-    let spaces = createSpaces();
+    let playerSpaces = createPlayerSpaces();
     const fieldStyles = {
         height: "16rem",
         width: "20rem",
@@ -39,10 +39,10 @@ export default function Lineup({ lineup, direction }) {
 
     return (
         <Box sx={fieldStyles}>
-            {spaces.map(column => {
+            {playerSpaces.map((column, index) => {
                 return (
-                    <Box sx={{ display: "flex", flexFlow: "column", height: "100%", justifyContent: "center", alignItems: "center" }}>
-                        {column.map(space => <Box sx={{ flexBasis: "100%" }}>{space}</Box>)}
+                    <Box key={index} sx={{ display: "flex", flexFlow: "column", height: "100%", justifyContent: "center", alignItems: "center" }}>
+                        {column.map((space, index) => <Box sx={{ flexBasis: "100%" }} key={index}>{space}</Box>)}
                     </Box>
                 );
             })}
