@@ -156,6 +156,7 @@ export default function FixtureCard({ fixture, loading }) {
         borderRadius: "16px",
       }}
     >
+          <CardActionArea sx={{ borderRadius: "8px" }} onClick={handleOnClick}>
       {!loading ? (
         <CardContent>
           {showFixture ? (
@@ -165,7 +166,6 @@ export default function FixtureCard({ fixture, loading }) {
           ) : (
             ""
           )}
-          <CardActionArea sx={{ borderRadius: "8px" }} onClick={handleOnClick}>
             <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
               {fixture.league.name}
             </Typography>
@@ -287,12 +287,12 @@ export default function FixtureCard({ fixture, loading }) {
                   )
                 : ""}
             </Typography>
-          </CardActionArea>
           {showEvents()}
         </CardContent>
       ) : (
         <CircularProgress sx={{ display: "flex", justifyContent: "center" }} />
       )}
+      </CardActionArea>
     </Card>
   );
 }
